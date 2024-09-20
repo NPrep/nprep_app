@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "277757644257",
+    "project_id": "nprep-74859",
+    "storage_bucket": "nprep-74859.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277757644257:android:cc996704df25df6d3c56a0",
+        "android_client_info": {
+          "package_name": "com.n_prep.medieducation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcLnKD3EsO1KUhzI-6tKgY_rqEPzilLlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

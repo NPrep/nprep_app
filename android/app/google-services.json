@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "422387438549",
+    "project_id": "nprep-f64b1",
+    "storage_bucket": "nprep-f64b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422387438549:android:ffa86ab161f83b5a35a35c",
+        "android_client_info": {
+          "package_name": "com.n_prep.medieducation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "422387438549-j597gfn3q1m6k6ni0ljs1p30bqf1od2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.n_prep.medieducation",
+            "certificate_hash": "a7953cfbcd69eecf17f11eea12ff97bcdf5f211c"
+          }
+        },
+        {
+          "client_id": "422387438549-cvif318kp4ibepcl3ssl2d1a43v4691i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvZ2gP057TSUF4fJRaRlFAuFU5ELeAqu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "422387438549-cvif318kp4ibepcl3ssl2d1a43v4691i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "422387438549-1cp7loub6p5sgdo9k3mac4l2i2h3rs35.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nprep.nprepapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
