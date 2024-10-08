@@ -251,7 +251,7 @@ updatevideoOrentaion() {
       Duration startTime = _parseTime(labelData['start_time']);
       Duration endTime = _parseTime(labelData['end_time']);
 
-      if (currentPosition >= startTime && currentPosition < endTime) {
+      if (currentPosition >= startTime) {
         // Display label
         DurationMessage.value=labelData['label'];
        // log("To Show label  ${DurationMessage.value}");
@@ -592,7 +592,7 @@ updatevideoOrentaion() {
     log("exists>> : ${exists.toString()}");
     if(exists==false){
 
-      dbHelper.addbeforeTask(name.toString(),videoid, jsonEncode(video_stamps).toString(), remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),video_time.toString());
+      dbHelper.addbeforeTask(name.toString(),videoid, video_stamps.toString(), remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),video_time.toString());
 
     }else{
 
@@ -679,7 +679,7 @@ updatevideoOrentaion() {
               _databaseService.addTask(
                   beforeSingleTaskData[0]['videotitle'].toString(),
                   beforeSingleTaskData[0]['videokey'],
-                  jsonEncode(beforeSingleTaskData[0]['videostamps']).toString(),
+                  beforeSingleTaskData[0]['videostamps'].toString(),
                   beforeSingleTaskData[0]['videonotes'].toString(), file.path.toString(),
                   beforeSingleTaskData[0]['videothumbimage'].toString(),
                   beforeSingleTaskData[0]['videoduration'].toString());

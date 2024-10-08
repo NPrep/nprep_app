@@ -112,7 +112,7 @@ dependencies:
   the_apple_sign_in: ^1.1.1
   firebase_auth: ^4.16.0
   cloud_firestore: ^4.14.0
-  background_downloader: any
+  background_downloader: ^6.3.0
   shimmer: 3.0.0
   #  recaptcha_enterprise_flutter: any
   screen_protector: ^1.4.2
