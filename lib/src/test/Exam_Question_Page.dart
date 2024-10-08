@@ -72,7 +72,8 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
   print("timevalueInMin...InIT..."+timevalueInMin.toString());
   print("timeInMinutes......"+timeInMinutes.toString());
   print("timeInMilisecondes......"+timeInMilisecondes.toString());
-
+  examController.questionid =Get.arguments[0];
+  examController.questionExamid =Get.arguments[4];
   id = Get.arguments[0];
   percentage = Get.arguments[2];
   statusMinSec = Get.arguments[3];

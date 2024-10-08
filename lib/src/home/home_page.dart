@@ -599,6 +599,7 @@
 
 
 
+import 'dart:convert';
 import 'dart:developer';
 
 
@@ -624,8 +625,10 @@ import 'package:n_prep/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../Controller/Exam_Controller.dart';
 import '../../Notification_pages/NotificationModel.dart';
 import '../../Notification_pages/notification_redirect.dart';
+import '../Nphase2/VideoScreens/DatabaseSqflite.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key});
@@ -641,6 +644,7 @@ class _HomePageState extends State<HomePage> {
   HomeController homeController = Get.put(HomeController());
   AuthController authController =Get.put(AuthController());
   ProfileController profileController = Get.put(ProfileController());
+  ExamController examController =Get.put(ExamController());
   // List<String> options = [
   //   'Pneumonia is an infection of the',
   //   'Pneumonia is an infection of the',
@@ -667,10 +671,44 @@ class _HomePageState extends State<HomePage> {
 
   bool isAnswer = false;
   int correctans= 0;
+  updateExamExit() async {
+    final DatabaseService dbHelper = DatabaseService.instance;
+    dbHelper.getExamQuestion();
 
+
+    if(questionArray.length!=0) {
+      var id =questionArrayinfo[0]['id'].toString();
+      var type =questionArrayinfo[0]['type'].toString();
+      if(type=="0"){
+        var  examansUrl = apiUrls().Copy_exam_ans_attempt_api+id.toString();
+        var examBody = jsonEncode({
+          'answer_data': questionArray
+        });
+        log("examBody skip...."+examBody.toString());
+        await examController.ExamAnswerData(examansUrl, examBody);
+        var exitexamUrl = "${apiUrls().exit_exam_api}" "${id}";
+        print("exitexamUrl.... "+exitexamUrl.toString());
+        await examController.Exit_Exam_Data(exitexamUrl,false);
+      }
+      else{
+        var  examansUrl = apiUrls().Mock_Copy_exam_ans_attempt_api+id.toString();
+        var examBody = jsonEncode({
+          'answer_data': questionArray
+        });
+        log("examBody skip...."+examBody.toString());
+        log("examansUrl...."+examansUrl.toString());
+        await examController.ExamAnswerData(examansUrl, examBody);
+        var exitexamUrl = "${apiUrls().exit_exam_api}" "${id}";
+        print("exitexamUrl.... "+exitexamUrl.toString());
+
+        await examController.Exit_HomeExam_Data(exitexamUrl);
+      }
+    }
+  }
   @override
   void initState() {
     super.initState();
+    updateExamExit();
     scrollController = ScrollController();
 
 

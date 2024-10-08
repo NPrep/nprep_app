@@ -39,6 +39,8 @@ import 'package:wakelock/wakelock.dart';
 import '../Constant/VideoMcqdetail.dart';
 import 'package:screen_protector/screen_protector.dart';
 
+import '../Constant/download_file.dart';
+
 class VideoDetailScreen extends StatefulWidget {
   var CatId;
   var VideoDuration;
@@ -300,6 +302,50 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     }
   }
 
+  Widget uicall(){
+    beforevideodatatasks.forEach((e){
+      log("<<<id>>>"+e.videokey.toString());
+      log("<<<id  "+videoDetailcontroller.VideoDetaildata[0]['id'].toString());
+      if(e.videokey!=videoDetailcontroller.VideoDetaildata[0]['id']){
+        return  Image.asset(
+          "assets/nprep2_images/download.png",
+          color: primary,
+          height: 15,
+          width: 15,
+        );
+      }
+      else{
+        return e.videokey.toString()==videoDetailcontroller.VideoDetaildata[0]['id'].toString()?
+        Container(
+          height: 20,
+          width: 20,
+          color: Colors.red,
+          // child: CircularPercentIndicator(
+          //   radius: 15.0,
+          //   lineWidth: 5.0,
+          //   percent: 0.5,
+          //   center: videoDetailcontroller.buttonState==ButtonState.resume?
+          //   Icon(
+          //     Icons.play_arrow,
+          //     color: primary,
+          //     size: 12,
+          //   ):
+          //   Icon(
+          //     Icons.pause,
+          //     color: primary,
+          //     size: 12,
+          //   ),
+          //   progressColor: primary,
+          // ),
+        ):
+        Container( height: 20,
+          width: 20,
+          color: Colors.green,);
+      }
+
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -573,8 +619,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                               //   height: statusBarHeight,
                               // ),
                               ///Video Player
-// Text("Videoplayloader "+videoDetailcontroller.Videoplayloader.value.toString()),
-// Text("VideoAvailableloader "+videoDetailcontroller.VideoAvailableloader.value.toString()),
+                                            // Text("Videoplayloader "+videoDetailcontroller.Videoplayloader.value.toString()),
+                                            // Text("VideoAvailableloader "+videoDetailcontroller.VideoAvailableloader.value.toString()),
                               AspectRatio(
                               aspectRatio: 16 / 9,
                               child: videoDetailcontroller.Videoplayloader.value==false?
@@ -613,7 +659,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                               ),
 
                               ///Readmore
-                              sizebox_height_15,
+                              sizebox_height_10,
                               GetBuilder<VideoDetailcontroller>(
                                 builder: (videoDetailcontroller) {
                                   return Row(
@@ -644,32 +690,46 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                               fontSize: 14),
                                         ),
                                       ),
+                                      ///Old Download
                                       Expanded(
                                         flex: 5,
                                         child: GestureDetector(
                                           onTap: () async {
-                                             log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
-                                             // videoItems.length
-                                             final DatabaseService _databaseService = DatabaseService.instance;
+                                            log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
+                                            // videoItems.length
+                                            final DatabaseService dbHelper = DatabaseService.instance;
 
-                                             await _databaseService.getDatabase();
-                                             var data =_databaseService.getTasks();
+                                           await dbHelper.getTasks();
 
-                                             // log("tasks.length> "+videodatatasks.length.toString());
-                                             if (videodatatasks==null|| videodatatasks.length<=10) {
-                                               if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
-                                                      toastMsg('Already Downloaded', false);
-                                               } else {
-                                                  if (videoDetailcontroller .progressStatus ==false) {
-                                                      videoDetailcontroller .downloadButtonPressed
-                                                        (
-                                                          videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                                          videoDetailcontroller.VideoDetaildata[0] ['id'],
-                                                          videoDetailcontroller .VideoDetaildata[0]['title'],
-                                                          videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-                                                        );
-                                                   }
-                                                  else {
+                                            // log("tasks.length> "+videodatatasks.length.toString());
+                                            if (videodatatasks==null|| videodatatasks.length<=10) {
+                                              if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
+                                                toastMsg('Already Downloaded', false);
+                                              } else {
+                                                if (videoDetailcontroller.progressStatus ==false ) {
+                                                  //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                                  //                videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                                  //                videoDetailcontroller .VideoDetaildata[0]['title'],
+                                                  //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                                  //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                                  //                videoDetailcontroller .remotePDFpath,
+                                                  //                videoDetailcontroller .Thumbimg_remotePDFpath,
+                                                  //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+
+                                                  ///------------------///
+
+                                                  videoDetailcontroller.downloadButtonPressed(
+                                                      videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                                      videoDetailcontroller.VideoDetaildata[0]['id'],
+                                                      videoDetailcontroller .VideoDetaildata[0]['title'],
+                                                       videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                                       videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                                       videoDetailcontroller .remotePDFpath,
+                                                       videoDetailcontroller .Thumbimg_remotePDFpath,
+                                                      videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                                    );
+                                                }
+                                                else {
                                                     log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
                                                     log(">>>>>>>>>>"+ButtonState.download.toString());
                                                     if( videoDetailcontroller.buttonState==ButtonState.pause){
@@ -682,68 +742,248 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                                     toastMsg('Please Wait video is downloading', false);
 
 
-                                                  }
-                                               }
+                                                }
+                                              }
                                             }
                                             else {
                                               toastMsg('Not allow more than 10 videos ',false);
                                             }
                                           },
-                                         child: videoDetailcontroller.progressStatus == false?
-                                                videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
-                                                Icon(
+                                          child: videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                          Icon(
                                             Icons.check_circle_rounded,
                                             color: primary,
                                             size: 25,
-                                          ): videoDetailcontroller.progressStatus == false ? Image.asset(
-                                                "assets/nprep2_images/download.png",
-                                                color: primary,
-                                                height: 15,
-                                                width: 15,
-                                              ):
-                                                CircularPercentIndicator(
-                                                      radius: 15.0,
-                                                      lineWidth: 5.0,
-                                                      percent:
-                                                      videoDetailcontroller.progress,
-                                                      center: videoDetailcontroller.buttonState==ButtonState.resume ?
-                                                      Icon(
-                                                        Icons.play_arrow,
-                                                        color: primary,
-                                                        size: 12,
-                                                      ):
-                                                      Icon(
-                                                          Icons.pause,
-                                                          color: primary,
-                                                          size: 12,
-                                                        ),
+                                          ):videoDetailcontroller.progressdownloadStatus == false?
+                                          videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1? Icon(
+                                            Icons.check_circle_rounded,
+                                            color: primary,
+                                            size: 25,
+                                          ):
+                                          // Container( height: 20,
+                                          //   width: 20,
+                                          //   color: Colors.green,)
+                                          Image.asset(
+                                            "assets/nprep2_images/download.png",
+                                            color: primary,
+                                            height: 15,
+                                            width: 15,
+                                          )
+                                              :
+                                          CircularPercentIndicator(
+                                            radius: 15.0,
+                                            lineWidth: 5.0,
+                                            percent:
+                                            videoDetailcontroller.progress,
+                                            center: videoDetailcontroller.buttonState==ButtonState.resume ?
+                                            Icon(
+                                              Icons.play_arrow,
+                                              color: primary,
+                                              size: 12,
+                                            ):
+                                            Icon(
+                                              Icons.pause,
+                                              color: primary,
+                                              size: 12,
+                                            ),
                                             progressColor: primary,
                                           )
-                                              : videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1? Icon(
-                                                Icons.check_circle_rounded,
-                                                color: primary,
-                                                size: 25,
-                                              ):
-
-                                                CircularPercentIndicator(
-                                                  radius: 15.0,
-                                                  lineWidth: 5.0,
-                                                  percent:
-                                                  videoDetailcontroller.progress,
-                                                  center: videoDetailcontroller.buttonState.value==ButtonState.resume ?Icon(
-                                                    Icons.play_arrow,
-                                                    color: primary,
-                                                    size: 12,
-                                                  ):videoDetailcontroller.buttonState.value==ButtonState.complete?Icon(Icons.refresh,color: primary,
-                                                    size: 12,):Icon(
-                                                    Icons.pause,
-                                                    color: primary,
-                                                    size: 12,
-                                                  ),
-                                            progressColor: primary,
-                                          ),
+                                          // videoDetailcontroller.progressStatus == false?
+                                          // videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                          // Icon(
+                                          //   Icons.check_circle_rounded,
+                                          //   color: primary,
+                                          //   size: 25,
+                                          // ):
+                                          // videoDetailcontroller.progressdownloadStatus == false ?
+                                          // Image.asset(
+                                          //   "assets/nprep2_images/download.png",
+                                          //   color: primary,
+                                          //   height: 15,
+                                          //   width: 15,
+                                          // ):
+                                          // CircularPercentIndicator(
+                                          //   radius: 15.0,
+                                          //   lineWidth: 5.0,
+                                          //   percent:
+                                          //   videoDetailcontroller.progress,
+                                          //   center: videoDetailcontroller.buttonState==ButtonState.resume ?
+                                          //   Icon(
+                                          //     Icons.play_arrow,
+                                          //     color: primary,
+                                          //     size: 12,
+                                          //   ):
+                                          //   Icon(
+                                          //     Icons.pause,
+                                          //     color: primary,
+                                          //     size: 12,
+                                          //   ),
+                                          //   progressColor: primary,
+                                          // )
+                                          // : videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                          // Icon(
+                                          //   Icons.check_circle_rounded,
+                                          //   color: primary,
+                                          //   size: 25,
+                                          // ):
+                                          //
+                                          // CircularPercentIndicator(
+                                          //   radius: 15.0,
+                                          //   lineWidth: 5.0,
+                                          //   percent:
+                                          //   videoDetailcontroller.progress,
+                                          //   center: videoDetailcontroller.buttonState.value==ButtonState.resume ?Icon(
+                                          //     Icons.play_arrow,
+                                          //     color: primary,
+                                          //     size: 12,
+                                          //   ):videoDetailcontroller.buttonState.value==ButtonState.complete?Icon(Icons.refresh,color: primary,
+                                          //     size: 12,):Icon(
+                                          //     Icons.pause,
+                                          //     color: primary,
+                                          //     size: 12,
+                                          //   ),
+                                          //   progressColor: primary,
+                                          // ),
                                         ),
                                       )
+                                      ///New Download
+                                      // Container(
+                                      //     // height: 20,
+                                      //     width: 20,
+                                      //     margin: EdgeInsets.only(right: 25),
+                                      //     child: GestureDetector(
+                                      //           onTap: () async {
+                                      //        log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
+                                      //        // videoItems.length
+                                      //        final DatabaseService _databaseService = DatabaseService.instance;
+                                      //
+                                      //        await _databaseService.getDatabase();
+                                      //        var getTasksdata =_databaseService.getTasks();
+                                      //        var beforegetTasksdata =_databaseService.beforegetTasks();
+                                      //
+                                      //        log("beforevideodatatasks.length> "+beforevideodatatasks.toString());
+                                      //        if (videodatatasks==null|| videodatatasks.length<=10) {
+                                      //          if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
+                                      //                 toastMsg('Already Downloaded', false);
+                                      //          }
+                                      //          else {
+                                      //            if(beforevideodatatasks==null){
+                                      //              downloadfile().downloadHiveButtonPressed
+                                      //                (
+                                      //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                      //                videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                      //                videoDetailcontroller .VideoDetaildata[0]['title'],
+                                      //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                      //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                      //                videoDetailcontroller .remotePDFpath,
+                                      //                videoDetailcontroller .Thumbimg_remotePDFpath,
+                                      //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                      //              );
+                                      //            }else{
+                                      //              beforevideodatatasks.forEach((e){
+                                      //                log("beforevideodatatasks>>>>>"+e.toString());
+                                      //                if(e.videokey==videoDetailcontroller.VideoDetaildata[0]['id']){
+                                      //                  log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
+                                      //                  log(">>>>>>>>>>"+ButtonState.download.toString());
+                                      //                  // if( videoDetailcontroller.buttonState==ButtonState.pause){
+                                      //                  //   FileDownloader().pause(videoDetailcontroller.task);
+                                      //                  // }else if(videoDetailcontroller.buttonState==ButtonState.resume){
+                                      //                  //   FileDownloader().resume(videoDetailcontroller.task);
+                                      //                  // }else if(videoDetailcontroller.buttonState==ButtonState.download){
+                                      //                  //   FileDownloader().pause(videoDetailcontroller.task);
+                                      //                  // }
+                                      //                  toastMsg('Please Wait video is downloading', false);
+                                      //                }
+                                      //                else{
+                                      //                  downloadfile().downloadHiveButtonPressed
+                                      //                    (
+                                      //                    videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                      //                    videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                      //                    videoDetailcontroller .VideoDetaildata[0]['title'],
+                                      //                    videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                      //                    videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                      //                    videoDetailcontroller .remotePDFpath,
+                                      //                    videoDetailcontroller .Thumbimg_remotePDFpath,
+                                      //                    videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                      //                  );
+                                      //                }
+                                      //              });
+                                      //            }
+                                      //
+                                      //
+                                      //
+                                      //             // if (videoDetailcontroller .progressStatus ==false) {
+                                      //             //   downloadfile().downloadHiveButtonPressed
+                                      //             //       (
+                                      //             //         videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                      //             //         videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                      //             //         videoDetailcontroller .VideoDetaildata[0]['title'],
+                                      //             //         videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                      //             //         videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                      //             //         videoDetailcontroller .remotePDFpath,
+                                      //             //         videoDetailcontroller .Thumbimg_remotePDFpath,
+                                      //             //         videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                      //             //       );
+                                      //             //  }
+                                      //             // else {
+                                      //             //   log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
+                                      //             //   log(">>>>>>>>>>"+ButtonState.download.toString());
+                                      //             //   if( videoDetailcontroller.buttonState==ButtonState.pause){
+                                      //             //     FileDownloader().pause(videoDetailcontroller.task);
+                                      //             //   }else if(videoDetailcontroller.buttonState==ButtonState.resume){
+                                      //             //     FileDownloader().resume(videoDetailcontroller.task);
+                                      //             //   }else if(videoDetailcontroller.buttonState==ButtonState.download){
+                                      //             //     FileDownloader().pause(videoDetailcontroller.task);
+                                      //             //   }
+                                      //             //   toastMsg('Please Wait video is downloading', false);
+                                      //             //
+                                      //             //
+                                      //             // }
+                                      //          }
+                                      //       }
+                                      //       else {
+                                      //         toastMsg('Not allow more than 10 videos ',false);
+                                      //       }
+                                      //     },
+                                      //           child:
+                                      //           videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                      //                    Icon(
+                                      //                     Icons.check_circle_rounded,
+                                      //                     color: primary,
+                                      //                     size: 25,
+                                      //                   )
+                                      //                   // Container(color: Colors.yellow,height: 20,width: 20,)
+                                      //                    :beforevideodatatasks==null?
+                                      //                    Image.asset(
+                                      //                      "assets/nprep2_images/download.png",
+                                      //                      color: primary,
+                                      //                      height: 15,
+                                      //                      width: 15,
+                                      //                    )
+                                      //                   // Container(color: Colors.yellow,height: 20,width: 20,)
+                                      //                    :
+                                      //                   CircularPercentIndicator(
+                                      //                     radius: 15.0,
+                                      //                     lineWidth: 5.0,
+                                      //                     percent: videoDetailcontroller.progress,
+                                      //                     center:videoDetailcontroller.buttonState==ButtonState.resume ?
+                                      //                       Icon(
+                                      //                         Icons.play_arrow,
+                                      //                         color: primary,
+                                      //                         size: 8,
+                                      //                       ):
+                                      //                       Icon(
+                                      //                       Icons.pause,
+                                      //                       color: primary,
+                                      //                       size: 8,
+                                      //                     ),
+                                      //                     progressColor: primary,
+                                      //                   )
+                                      //
+                                      //     ),
+                                      // ),
+
+
                                     ],
                                   );
                                 }

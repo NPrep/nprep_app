@@ -62,16 +62,15 @@ class _SaveVideosState extends State<SaveVideos> {
   Map<String, double> progressMap = {};
 
   getHiveData() async {
-    // await _databaseService.getDatabase();
+
     await _databaseService.getTasks();
-    // log("videodatatasks >> "+videodatatasks.toString());
+
 
     await FileDownloader().trackTasks();
     records = await FileDownloader().database.allRecords();
     TotalDownload.clear();
 
-    // log('getHiveData length>> ${records.length}');
-    // log('getHiveData>> $records');
+
 
 
 
@@ -260,27 +259,27 @@ class _SaveVideosState extends State<SaveVideos> {
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  top:0,
-                                  bottom: 0,
-                                  right: 10,
-                                  child: IconButton(
-                                      onPressed: () async {
-                                        log("onPressed");
-
-                                        log("onPressed 7");
-                                        log("onPressed 8");
-                                        FileDownloader().database.deleteRecordWithId(databasevideo.taskId.toString());
-                                        FileDownloader().cancelTasksWithIds([databasevideo.taskId.toString()]);
-
-                                        log("onPressed 9");
-                                        setState(() {
-
-                                        });
-                                      },
-                                      icon: Icon(Icons.delete,color: primary,)
-                                  ),
-                                ),
+                                // Positioned(
+                                //   top:0,
+                                //   bottom: 0,
+                                //   right: 10,
+                                //   child: IconButton(
+                                //       onPressed: () async {
+                                //         log("onPressed");
+                                //
+                                //         log("onPressed 7");
+                                //         log("onPressed 8");
+                                //         FileDownloader().database.deleteRecordWithId(databasevideo.taskId.toString());
+                                //         FileDownloader().cancelTasksWithIds([databasevideo.taskId.toString()]);
+                                //
+                                //         log("onPressed 9");
+                                //         setState(() {
+                                //
+                                //         });
+                                //       },
+                                //       icon: Icon(Icons.delete,color: primary,)
+                                //   ),
+                                // ),
 
                               ],
                             );
@@ -332,136 +331,140 @@ class _SaveVideosState extends State<SaveVideos> {
                                 letterSpacing: 0.5),
                           ),
                         ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: videodatatasks.length,
-                            // videoItems.length
-                            itemBuilder: (context, index) {
-                              // var data = videoItems[index];
-                              var data = videodatatasks[index];
+                        SingleChildScrollView(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: videodatatasks.length,
 
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.to(HiveSavedVideoDetailScreen(
-                                    index: index,
-                                    title: data.videotitle,
-                                  ));
-                                },
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 0),
-                                      child: Nprep2CustomTimelineVideoSave(
-                                        step: index + 1,
-                                        image: data.videothumbimage,
-                                        isLast: true,
-                                        showimage: true,
-                                        isFirst: true,
-                                        mcq: data.videoduration,
-                                        // noofattemp:data['attempt_videos'] ,
-                                        // questionnoofattemp: data['attempt_videos'] ,
-                                        // examstatus:data['video_status'] ,
-                                        topic: data.videotitle,
-                                        // status: data['attempt_videos']
-                                        //     .toString() +
-                                        //     "/" +
-                                        //     data['total_videos'].toString(),
-                                        // label: data['fee_type'],
-                                        // labelColor: data['fee_type'].toString() ==
-                                        //     '2'
-                                        //     ? Colors.orange
-                                        //     : Colors.indigo.shade700,
-                                      ),
-                                    ),
-                                    Positioned(
-                                        top:0,
-                                        bottom: 0,
-                                        right: 10,
-                                        child: IconButton(
-                                           onPressed: () async {
-                                             log("onPressed");
-                                                File file =File(data.videopath);
-                                             log("onPressed 1");
-                                                File file2 =File(data.videonotes);
-                                             log("onPressed 2");
-                                                if (await file.exists()) {
-                                                      await file.delete();
-                                                      await file2.delete();
-                                                }
-                                             log("onPressed 3");
-                                                var videos_saved ="${apiUrls().videos_unsaved_api}${data.videokey}";
-                                                // await apiCallingHelper().getAPICall(videos_saved, true);
-                                             log("onPressed 4");
-                                                var result = await apiCallingHelper().getAPICall(videos_saved, true);
-                                             log("onPressed 5");
-                                                var datas =jsonDecode(result.body);
-                                             log("onPressed 6");
-                                                toastMsg(datas['message'], true);
-                                             final DatabaseService _databaseService = DatabaseService.instance;
+                              // videoItems.length
+                       physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                // var data = videoItems[index];
+                                var data = videodatatasks[index];
 
-                                             _databaseService.deleteTask(data.id);
-                                             log("onPressed 7");
-                                             log("onPressed 8");
-                                                FileDownloader().database.deleteRecordWithId(data.videokey.toString());
-                                             FileDownloader().cancelTasksWithIds([data.videokey.toString()]);
-
-                                             log("onPressed 9");
-                                             setState(() {
-
-                                             });
-                                           },
-                                           icon: Icon(Icons.delete,color: primary,)
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.to(HiveSavedVideoDetailScreen(
+                                      index: index,
+                                      title: data.videotitle,
+                                    ));
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 0),
+                                        child: Nprep2CustomTimelineVideoSave(
+                                          step: index + 1,
+                                          image: data.videothumbimage,
+                                          isLast: true,
+                                          showimage: true,
+                                          isFirst: true,
+                                          mcq: data.videoduration,
+                                          // noofattemp:data['attempt_videos'] ,
+                                          // questionnoofattemp: data['attempt_videos'] ,
+                                          // examstatus:data['video_status'] ,
+                                          topic: data.videotitle,
+                                          // status: data['attempt_videos']
+                                          //     .toString() +
+                                          //     "/" +
+                                          //     data['total_videos'].toString(),
+                                          // label: data['fee_type'],
+                                          // labelColor: data['fee_type'].toString() ==
+                                          //     '2'
+                                          //     ? Colors.orange
+                                          //     : Colors.indigo.shade700,
                                         ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              // return Card(
-                              //   margin: EdgeInsets.only(top: 6, left: 8, right: 8),
-                              //   elevation: 3,
-                              //
-                              //   // color: Colors.orange,
-                              //   child: ListTile(
-                              //     onTap: () {
-                              //       Get.to(HiveSavedVideoDetailScreen(
-                              //         index:  index,
-                              //         title: currentItm['video_title'],
-                              //       ));
-                              //     },
-                              //     leading: Container(
-                              //       width: width * 0.2,
-                              //       height: height * 0.05,
-                              //       child: Image.asset(
-                              //         "assets/nprep2_images/LOGO.png", fit: BoxFit.fill,
-                              //         // scale: 5,
-                              //       ),
-                              //     ),
-                              //     title: Text(currentItm['video_title'].toString()),
-                              //     //subtitle: Text(currentItm['file_path'].toString()),
-                              //     trailing: Row(
-                              //       mainAxisSize: MainAxisSize.min,
-                              //       children: [
-                              //         IconButton(
-                              //             onPressed: () async {
-                              //               File file =File(currentItm['video_path']);
-                              //               File file2 =File(currentItm['video_Notes']);
-                              //               videoDetailcontroller.deleteItem(currentItm['key']);
-                              //               if (await file.exists()) {
-                              //                 await file.delete();
-                              //                 await file2.delete();
-                              //               }
-                              //               var videos_saved ="${apiUrls().videos_unsaved_api}${currentItm['id']}";
-                              //               await apiCallingHelper().getAPICall(videos_saved, true);
-                              //               var result = await apiCallingHelper().getAPICall(videos_saved, true);
-                              //               var data =jsonDecode(result.body);
-                              //               toastMsg(data['message'], true);
-                              //               },
-                              //             icon: Icon(Icons.delete,color: primary,)),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // );
-                            }),
+                                      ),
+                                      Positioned(
+                                          top:0,
+                                          bottom: 0,
+                                          right: 10,
+                                          child: IconButton(
+                                             onPressed: () async {
+                                               log("onPressed");
+                                                  File file =File(data.videopath);
+                                               log("onPressed 1");
+                                                  File file2 =File(data.videonotes);
+                                               log("onPressed 2");
+                                                  if (await file.exists()) {
+                                                        await file.delete();
+                                                        await file2.delete();
+                                                  }
+                                               log("onPressed 3");
+                                                  var videos_saved ="${apiUrls().videos_unsaved_api}${data.videokey}";
+                                                  // await apiCallingHelper().getAPICall(videos_saved, true);
+                                               log("onPressed 4");
+                                                  var result = await apiCallingHelper().getAPICall(videos_saved, true);
+                                               log("onPressed 5");
+                                                  var datas =jsonDecode(result.body);
+                                               log("onPressed 6");
+                                                  toastMsg(datas['message'], true);
+                                               final DatabaseService _databaseService = DatabaseService.instance;
+
+                                               _databaseService.deleteTask(data.id);
+                                               log("onPressed 7");
+                                               log("onPressed 8");
+                                                  FileDownloader().database.deleteRecordWithId(data.videokey.toString());
+                                               FileDownloader().cancelTasksWithIds([data.videokey.toString()]);
+
+                                               log("onPressed 9");
+                                               setState(() {
+
+                                               });
+                                             },
+                                             icon: Icon(Icons.delete,color: primary,)
+                                          ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                // return Card(
+                                //   margin: EdgeInsets.only(top: 6, left: 8, right: 8),
+                                //   elevation: 3,
+                                //
+                                //   // color: Colors.orange,
+                                //   child: ListTile(
+                                //     onTap: () {
+                                //       Get.to(HiveSavedVideoDetailScreen(
+                                //         index:  index,
+                                //         title: currentItm['video_title'],
+                                //       ));
+                                //     },
+                                //     leading: Container(
+                                //       width: width * 0.2,
+                                //       height: height * 0.05,
+                                //       child: Image.asset(
+                                //         "assets/nprep2_images/LOGO.png", fit: BoxFit.fill,
+                                //         // scale: 5,
+                                //       ),
+                                //     ),
+                                //     title: Text(currentItm['video_title'].toString()),
+                                //     //subtitle: Text(currentItm['file_path'].toString()),
+                                //     trailing: Row(
+                                //       mainAxisSize: MainAxisSize.min,
+                                //       children: [
+                                //         IconButton(
+                                //             onPressed: () async {
+                                //               File file =File(currentItm['video_path']);
+                                //               File file2 =File(currentItm['video_Notes']);
+                                //               videoDetailcontroller.deleteItem(currentItm['key']);
+                                //               if (await file.exists()) {
+                                //                 await file.delete();
+                                //                 await file2.delete();
+                                //               }
+                                //               var videos_saved ="${apiUrls().videos_unsaved_api}${currentItm['id']}";
+                                //               await apiCallingHelper().getAPICall(videos_saved, true);
+                                //               var result = await apiCallingHelper().getAPICall(videos_saved, true);
+                                //               var data =jsonDecode(result.body);
+                                //               toastMsg(data['message'], true);
+                                //               },
+                                //             icon: Icon(Icons.delete,color: primary,)),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // );
+                              }),
+                        ),
                       ],
                     ),
                   ],

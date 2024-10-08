@@ -17,7 +17,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-// import 'package:hive/hive.dart';
+
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:n_prep/App_update/App_Mentaintion_Mood.dart';
@@ -37,7 +37,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../../Envirovement/Environment.dart';
 import 'custom_controls_widget.dart';
-enum ButtonState { download, cancel, pause, resume, reset,running,complete }
+enum ButtonState { download, cancel, pause, resume, reset,running,complete,enqueued,none }
 
 class VideoDetailcontroller extends GetxController {
   ///Hive
@@ -65,11 +65,12 @@ var videoVisable = false.obs;
 
 
 
-var videothumbImgUrl;
+  var videothumbImgUrl;
 
-DownloadTask task;
+  DownloadTask task;
   double progress = 0.0;
   var progressStatus = false.obs;
+  var progressdownloadStatus = false.obs;
   Rx<ButtonState> buttonState = ButtonState.download.obs;
   var _status = "Not Downloaded";
   get status => _status;
@@ -243,7 +244,9 @@ updatevideoOrentaion() {
       currentPosition = _parseTime(VideoDetaildata[0]['video_stamps'][0]["time"]);
     }
      var videoLabels =VideoDetaildata[0]['video_labels'];
+    log("To Show label currentPosition ${currentPosition}");
     log("To Show label videoLabels ${videoLabels}");
+    log("To Show label VideoDetaildata ${VideoDetaildata[0]}");
     for (var labelData in videoLabels) {
       Duration startTime = _parseTime(labelData['start_time']);
       Duration endTime = _parseTime(labelData['end_time']);
@@ -257,7 +260,8 @@ updatevideoOrentaion() {
 
       }else{
         DurationMessage.value="";
-        update();
+        // update();
+        break;
       }
     }
   }
@@ -270,9 +274,9 @@ updatevideoOrentaion() {
 
     Duration currentPosition;
     if(Videoplayloader.value==true){
-    currentPosition = betterPlayerController.videoPlayerController.value.position;
+     currentPosition = betterPlayerController.videoPlayerController.value.position;
     }else{
-    currentPosition = _parseTime(VideoDetaildata[0]['video_stamps'][0]["time"]);
+     currentPosition = _parseTime(VideoDetaildata[0]['video_stamps'][0]["time"]);
     }
 
     Duration startTime = _parseTime(time);
@@ -280,6 +284,7 @@ updatevideoOrentaion() {
 
     if (currentPosition >= startTime && currentPosition < endTime) {
       // Display label
+
       _showLabels(time);
       // update();
       return true;
@@ -497,6 +502,7 @@ updatevideoOrentaion() {
     // or get record for specific task
     final record = await FileDownloader().database.recordForId(taskId.toString());
     log('Video_downloadlisner>> download taskss|| '+record.toString());
+    log('Video_downloadlisner>> download taskss |status| '+record.status.toString());
     // Listen for download progress
     if(record!=null){
       try{
@@ -504,7 +510,9 @@ updatevideoOrentaion() {
           var text = ButtonState.complete;
           buttonstateUpdate(text);
           progressStatus(false);
+          progressdownloadStatus(false);
           progress = record.progress;
+          update();
         }
         else if(record.status==TaskStatus.paused){
           var text = ButtonState.resume;
@@ -558,19 +566,16 @@ updatevideoOrentaion() {
     }
     else{
       progressStatus(false);
+      progressdownloadStatus(false);
       progress = 0.0;
       update();
     }
 
   }
-  void downloadButtonPressed(url, videoid,name,image) async {
-    var text = ButtonState.download;
-    buttonstateUpdate(text);
+  ///download old 2st
+  void downloadButtonPressed(url, videoid,name,video_time,video_stamps,remotePDFpath,Thumbimg_remotePDFpath,thumb_image) async {
+
     File file;
-
-
-    update();
-
     final filename = url.substring(url.lastIndexOf("/") + 1);
     var dir;
     if(Platform.isAndroid){
@@ -581,6 +586,26 @@ updatevideoOrentaion() {
 
     file = File('${dir.path}/$filename');
     log("file>> : ${file}");
+
+    final DatabaseService dbHelper = DatabaseService.instance;
+    var exists = await dbHelper.beforeTaskExists(videoid);
+    log("exists>> : ${exists.toString()}");
+    if(exists==false){
+
+      dbHelper.addbeforeTask(name.toString(),videoid, jsonEncode(video_stamps).toString(), remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),video_time.toString());
+
+    }else{
+
+      dbHelper.GetSingleDataTaskExists(videoid);
+    }
+
+
+
+
+
+    update();
+
+
 
     try{
 
@@ -593,7 +618,7 @@ updatevideoOrentaion() {
           taskId: videoid.toString(),
           allowPause: true,
           baseDirectory: BaseDirectory.applicationDocuments,
-          metaData: '${image}/-/${name}');
+          metaData: '${thumb_image}/-/${name}');
       progressStatus(true);
       log("downloadButtonPressed task : $task");
       FileDownloader().configureNotification(
@@ -611,11 +636,21 @@ updatevideoOrentaion() {
             if (!value.isNegative) {
               progress = value;
               log("Download Progress Button >> "+progress.toString());
+              log("Download Progress Button taskId>> "+task.taskId.toString());
+              log("Download Progress Button id>> "+VideoDetaildata[0]['id'].toString());
 
               progressStatus(true);
-              update();
 
+              if(task.taskId.toString()==VideoDetaildata[0]['id'].toString()){
+                progressdownloadStatus(true);
+                update();
+              }else{
+                progressdownloadStatus(false);
+                update();
+              }
+              update();
             }
+
 
           },
           onStatus: (status) async {
@@ -627,26 +662,32 @@ updatevideoOrentaion() {
                 print('Failed to download <video.>');
               }
               var text = ButtonState.complete;
-
+               await dbHelper.GetSingleDataTaskExists(int.parse(task.taskId));
               var body={
-                'id': VideoDetaildata[0]['id'].toString(),
-                'video_path': file.path.toString(),
-                'video_title': VideoDetaildata[0]['title'],
-                'video_duration': VideoDetaildata[0]['video_time'],
-                'video_Stamps': VideoDetaildata[0]['video_stamps'],
-                'video_Notes': remotePDFpath.toString(),
-                'video_thumb_image': Thumbimg_remotePDFpath.toString(),
+                'id': beforeSingleTaskData[0]['videokey'].toString(),
+                'video_path': beforeSingleTaskData[0]['videopath'].toString(),
+                'video_title': beforeSingleTaskData[0]['videotitle'].toString(),
+                'video_duration': beforeSingleTaskData[0]['videoduration'].toString(),
+                'video_Stamps': beforeSingleTaskData[0]['videostamps'].toString(),
+                'video_Notes': beforeSingleTaskData[0]['videonotes'].toString(),
+                'video_thumb_image': beforeSingleTaskData[0]['videothumbimage'].toString(),
               };
 
               log("Video Saved body"+body.toString());
 
               final DatabaseService _databaseService = DatabaseService.instance;
-              _databaseService.addTask(VideoDetaildata[0]['title'].toString(),VideoDetaildata[0]['id'], jsonEncode(VideoDetaildata[0]['video_stamps']).toString(), remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),VideoDetaildata[0]['video_time'].toString());
+              _databaseService.addTask(
+                  beforeSingleTaskData[0]['videotitle'].toString(),
+                  beforeSingleTaskData[0]['videokey'],
+                  jsonEncode(beforeSingleTaskData[0]['videostamps']).toString(),
+                  beforeSingleTaskData[0]['videonotes'].toString(), file.path.toString(),
+                  beforeSingleTaskData[0]['videothumbimage'].toString(),
+                  beforeSingleTaskData[0]['videoduration'].toString());
 
               log("Video Saved Api");
               var videos_saved = "${apiUrls().videos_saved_api}$videoid";
               var result = await apiCallingHelper().getAPICall(videos_saved, true);
-              updatecatid(videoid);
+
               var data = jsonDecode(result.body);
               toastMsg(data['message'], true);
               VideoDetaildata[0]['is_download'] =1;
@@ -685,9 +726,8 @@ updatevideoOrentaion() {
             print("Download onelp << "+onelp.toString());
           },
 
-
       );
-      ///--------------------///
+
 
 
     }catch (e) {
@@ -696,7 +736,7 @@ updatevideoOrentaion() {
 
 
   }
-
+  ///download old 1st
   // void downloadButtonPressed(url, videoid,name) async {
   //   File file;
   //   progressStatus(true);
@@ -758,7 +798,7 @@ updatevideoOrentaion() {
   //         log("Video Saved Api");
   //         var videos_saved = "${apiUrls().videos_saved_api}$videoid";
   //         var result = await apiCallingHelper().getAPICall(videos_saved, true);
-  //         updatecatid(videoid);
+
   //         videolisner();
   //         var data = jsonDecode(result.body);
   //         toastMsg(data['message'], true);

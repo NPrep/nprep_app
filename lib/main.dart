@@ -18,6 +18,7 @@ import 'package:n_prep/Envirovement/Environment.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/store_config.dart';
 import 'package:n_prep/splash_screen.dart';
+import 'package:n_prep/src/Nphase2/VideoScreens/DatabaseSqflite.dart';
 
 import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/utils/colors.dart';
@@ -171,13 +172,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  final DatabaseService _databaseService = DatabaseService.instance;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     log("On run >> MyApp StatefulWidget");
     var initializationSettingsAndroid = new AndroidInitializationSettings('logo');
-
+     _databaseService.getDatabase();
      DarwinInitializationSettings initializationSettingsDarwin =const DarwinInitializationSettings(
       onDidReceiveLocalNotification: onDidReceiveLocalNotification,
 

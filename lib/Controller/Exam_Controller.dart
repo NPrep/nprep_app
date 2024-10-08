@@ -18,6 +18,7 @@ import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../constants/Api_Urls.dart';
+import '../src/Nphase2/VideoScreens/DatabaseSqflite.dart';
 import '../src/test/Mock_Exam_Question_Page.dart';
 
 class ExamController extends GetxController {
@@ -154,7 +155,8 @@ class ExamController extends GetxController {
         if (result.statusCode == 200) {
           exit_exam_data = jsonDecode(result.body);
           log("exit_exam_data Exit_Exam_Data " + exit_exam_data.toString());
-
+          final DatabaseService dbHelper = DatabaseService.instance;
+          await dbHelper.deleteExamTask();
           if(exit_exam_data['data']['id']!=null){
 
             Get.offAll(ExamReviewPage(exam_Ids: exit_exam_data['data']['id'].toString(),exam_Id:exit_exam_data['data']['exam_id'] ,today: today,));
@@ -181,7 +183,8 @@ class ExamController extends GetxController {
           update();
           refresh();
         }
-      } else {
+      }
+      else {
         exitLoader(false);
         update();
         refresh();
@@ -192,7 +195,51 @@ class ExamController extends GetxController {
       update();
     }
   }
+  Exit_HomeExam_Data(url) async {
+    exitLoader(true);
+    try {
+      var result = await apiCallingHelper().getAPICall(url, true);
+      exit_exam_data = jsonDecode(result.body);
+      if (result != null) {
+        if (result.statusCode == 200) {
+          exit_exam_data = jsonDecode(result.body);
+          log("exit_exam_data Exit_Exam_Data " + exit_exam_data.toString());
+          final DatabaseService dbHelper = DatabaseService.instance;
+          await dbHelper.deleteExamTask();
 
+          print("exit_exam_data " + get_data.toString());
+
+          exitLoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 401) {
+          exitLoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 404) {
+          exitLoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 500) {
+          exitLoader(false);
+          update();
+          refresh();
+        }
+      }
+      else {
+        exitLoader(false);
+        update();
+        refresh();
+      }
+    } catch (e) {
+      Logger().e("catch error ........${e}");
+      exitLoader(false);
+      update();
+    }
+  }
   AttemptExamData(url,Examduration) async {
     attemptELoader(true);
     log("AttemptExamData>> ");
@@ -559,6 +606,7 @@ class ExamController extends GetxController {
     getQueLoader(true);
     try {
       var result = await apiCallingHelper().getAPICall(url, true);
+
       get_que_data = jsonDecode(result.body);
       log("get_que_data>> "+get_que_data.toString() );
 
@@ -586,6 +634,7 @@ class ExamController extends GetxController {
             log("Copy_get_que_list length>> "+Copy_get_que_list.length.toString() );
             log("allQuestiondata length>> "+allQuestiondata.length.toString() );
 
+
           }
           else{
             get_que_list.clear();
@@ -605,14 +654,31 @@ class ExamController extends GetxController {
                 "your_answer": element['your_answer'],
               });
             });
-
+            log("allQuestiondata data>> "+allQuestiondata.toString() );
           }
+          log("Copy_get_que_list Data>> "+Copy_get_que_list.toString() );
           print("MenuQuestionList......" + MenuQuestionList.toString());
           print("MenuQuestionList..length...." + MenuQuestionList.length.toString());
           print("get_que_data......" + get_que_data.toString());
-          print("get_que_list......" + get_que_list.toString());
+          log("get_que_list......" + jsonEncode(get_que_list).toString());
           print("get_que_list......" + ontap_answer.toString());
+          final DatabaseService dbHelper = DatabaseService.instance;
+          await dbHelper.deleteExamTask();
+          // Insert questiondata
+          Copy_get_que_list.forEach((element) async {
+            await dbHelper.insertQuestionData(
+              element['id'],
+              element['is_attempt'],
+              element['your_answer'],
+            );
+          });
+          // Insert examinfo
 
+          await dbHelper.insertExamInfo(
+            questionExamid.toString(),
+            questionid.toString(),
+            type.toString(),
+          );
           getQueLoader(false);
           update();
           refresh();
@@ -658,7 +724,7 @@ class ExamController extends GetxController {
     // ontap_check = indexx;
     update();
   }
-  updatesessioncallindex(index,id,answer_id){
+  updatesessioncallindex(index,id,answer_id) async {
 
     var indexs = allQuestiondata.indexWhere((element) => (element['id']==id));
 
@@ -675,18 +741,30 @@ class ExamController extends GetxController {
     ontap_answer[index]=true;
     Copy_get_que_list[indexs]['is_attempt'] = 1;
     update();
+    final DatabaseService dbHelper = DatabaseService.instance;
+
+    // Insert/Update questiondata
+    await dbHelper.updateQuestionData( Copy_get_que_list[indexs]['id'], 1, Copy_get_que_list[indexs]['your_answer'].toString());
+
+
   }
-  UpdateExamAnswerData(index,answer_id){
+  UpdateExamAnswerData(index,answer_id) async {
     log("UpdateExamAnswerData onstart $index :: $answer_id");
     log("UpdateExamAnswerData your_answer before ${get_que_list[index]['your_answer']}");
-    log("UpdateExamAnswerData is_attempt before${get_que_list[index]['is_attempt']}");
+    log("UpdateExamAnswerData is_attempt before ${get_que_list[index]['is_attempt']}");
     get_que_list[index]['your_answer'] = answer_id;
     get_que_list[index]['is_attempt'] = 1;
     Copy_get_que_list[index]['your_answer'] = answer_id;
     Copy_get_que_list[index]['is_attempt'] = 1;
     log("UpdateExamAnswerData your_answer ${get_que_list[index]['your_answer']}");
     log("UpdateExamAnswerData is_attempt ${get_que_list[index]['is_attempt']}");
+    log("Copy_get_que_list is_attempt length ${Copy_get_que_list.length.toString()}");
     update();
+    final DatabaseService dbHelper = DatabaseService.instance;
+
+    // Insert/Update questiondata
+    await dbHelper.updateQuestionData( Copy_get_que_list[index]['id'], 1, Copy_get_que_list[index]['your_answer'].toString());
+
   }
   updateExitLoader(){
     ExitLoader(true);

@@ -129,7 +129,7 @@ class _Nprep2CustomTimelineDownloadingState extends State<Nprep2CustomTimelineDo
                             LinearPercentIndicator(
                                   width: width > 500
                                       ? width * .820
-                                      : width * .600,
+                                      : width * .500,
                                   animation: true,
                                   animateFromLastPercent: true,
                                   animationDuration: 500,
