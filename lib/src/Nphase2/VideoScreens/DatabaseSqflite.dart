@@ -53,7 +53,7 @@ class DatabaseService{
                   $_tasksIdColumnName INTEGER PRIMARY KEY,
                   $_tasksvideoColumnkey INTEGER NOT NULL,
                   $_tasksVideoColumnTitle VARCHAR NOT NULL,
-                  $_tasksVideoColumnStamps TEXT NOT NULL,
+                  $_tasksVideoColumnStamps VARCHAR NOT NULL,
                   $_tasksVideoColumnNotes VARCHAR NOT NULL,
                   $_tasksVideoColumnPath VARCHAR NOT NULL,
                   $_tasksVideoColumnThumbImage VARCHAR NOT NULL,
@@ -67,7 +67,7 @@ class DatabaseService{
                   $_tasksIdColumnName INTEGER PRIMARY KEY,
                   $_tasksvideoColumnkey INTEGER NOT NULL,
                   $_tasksVideoColumnTitle VARCHAR NOT NULL,
-                  $_tasksVideoColumnStamps TEXT NOT NULL,
+                  $_tasksVideoColumnStamps VARCHAR NOT NULL,
                   $_tasksVideoColumnNotes VARCHAR NOT NULL,
                   $_tasksVideoColumnPath VARCHAR NOT NULL,
                   $_tasksVideoColumnThumbImage VARCHAR NOT NULL,
@@ -77,7 +77,7 @@ class DatabaseService{
           db.execute('''
                 CREATE TABLE $_questiondataarray (
                   id INTEGER PRIMARY KEY,
-                  is_attempt INTEGER,
+                  is_attempt TEXT,
                   your_answer TEXT
                 )
                 ''');
