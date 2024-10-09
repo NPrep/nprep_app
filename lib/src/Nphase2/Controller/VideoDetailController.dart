@@ -16,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 // import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -36,12 +35,16 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../Envirovement/Environment.dart';
+import '../../home/bottom_bar.dart';
 import 'custom_controls_widget.dart';
 enum ButtonState { download, cancel, pause, resume, reset,running,complete }
 
 class VideoDetailcontroller extends GetxController {
   ///Hive
-@override
+
+  bool isFullScreen = false;
+
+  @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
@@ -121,32 +124,23 @@ DownloadTask task;
    AnimationController Animation_controller;
    Animation<Alignment> Animation_con;
   final Animation_spring = SpringDescription(mass: 10, stiffness: 1000, damping: 0.9);
-updatevideoOrentaion() {
-  if (VideoDetailOrintaion==true){
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
 
-    ]);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-    VideoDetailOrintaion.value=false;
-    update();
-  }
-  else{
-    SystemChrome.setPreferredOrientations([
-
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-
-    ]);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-    VideoDetailOrintaion.value=true;
-    update();
+  updateVideoOrientation() {
+    if (isFullScreen) {
+      // Exit full-screen mode
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+      isFullScreen = false;
+    } else {
+      // Enter full-screen mode
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+      isFullScreen = true;
+    }
+    update(); // Notify listeners
   }
 
-}
+
   updatevideoscreen() {
     if (isInSmallMode == false) {
       isInSmallMode.value = true;
@@ -346,92 +340,103 @@ updatevideoOrentaion() {
       update();
     }
   }
+
+
+
   FetchVideoDetailData(Pausevideoduration) async {
-    VideoDetailloader(true);
+    var temp = await sprefs.getBool("is_internet");
+    if(temp){
+      VideoDetailloader(true);
+
+      VideoAvailableloader(false);
+      Map<String, String> queryParams = {
+        "category_id": VideoDetailCatid.value.toString(),
+      };
+      String queryString = Uri(queryParameters: queryParams).query;
+      var videourl_api = apiUrls().videos_deatil_api + '?' + queryString;
+      log("FetchVideoDetailData>> url :${videourl_api} ");
+      try {
+        var result = await apiCallingHelper().getAPICall(videourl_api, true);
+
+        if (result != null) {
+          if (result.statusCode == 200) {
+            var FetchSubjectData = jsonDecode(result.body);
+            // log("FetchVideoDetailData response :$FetchSubjectData ");
+            VideoDetaildata.clear();
+            VideoDetaildata.add(FetchSubjectData['data']);
+            var pdfurl = "${VideoDetaildata[0]['pdf_attachment']}";
+            var thumbImgurl = "${VideoDetaildata[0]['thumb_image']}";
+            videothumbImgUrl=thumbImgurl;
+            update();
+            log("FetchVideoDetailData>> pdf :${pdfurl} ");
+            print("FetchVideoDetailData>>>> image :${thumbImgurl} ");
 
 
-    VideoAvailableloader(false);
-    Map<String, String> queryParams = {
-      "category_id": VideoDetailCatid.value.toString(),
-    };
-    String queryString = Uri(queryParameters: queryParams).query;
-    var videourl_api = apiUrls().videos_deatil_api + '?' + queryString;
-    log("FetchVideoDetailData>> url :${videourl_api} ");
-    try {
-      var result = await apiCallingHelper().getAPICall(videourl_api, true);
-
-      if (result != null) {
-        if (result.statusCode == 200) {
-          var FetchSubjectData = jsonDecode(result.body);
-          // log("FetchVideoDetailData response :$FetchSubjectData ");
-          VideoDetaildata.clear();
-          VideoDetaildata.add(FetchSubjectData['data']);
-          var pdfurl = "${VideoDetaildata[0]['pdf_attachment']}";
-          var thumbImgurl = "${VideoDetaildata[0]['thumb_image']}";
-          videothumbImgUrl=thumbImgurl;
-          update();
-          log("FetchVideoDetailData>> pdf :${pdfurl} ");
-          print("FetchVideoDetailData>>>> image :${thumbImgurl} ");
-
-
-          var videoplayerUrl = VideoDetaildata[0]['video_attachment'];
-          videoplayerstart(videoplayerUrl);
-          if(VideoDetaildata[0]['pdf_attachment']!=null){
-            await createFileOfPdfUrl(pdfurl).then((f) async {
-              remotePDFpath = f.path;
-              log("FetchVideoDetailData>> remotePDFpath >> " + remotePDFpath.toString());
+            var videoplayerUrl = VideoDetaildata[0]['video_attachment'];
+            videoplayerstart(videoplayerUrl);
+            if(VideoDetaildata[0]['pdf_attachment']!=null){
+              await createFileOfPdfUrl(pdfurl).then((f) async {
+                remotePDFpath = f.path;
+                log("FetchVideoDetailData>> remotePDFpath >> " + remotePDFpath.toString());
 
 
 
-              // pages= int.parse(controllerpdfview.getPageCount().toString());
-              update();
-            });
+                // pages= int.parse(controllerpdfview.getPageCount().toString());
+                update();
+              });
+            }
+            if(VideoDetaildata[0]['thumb_image']!=null){
+              await createFileOfPdfUrl(thumbImgurl).then((f) {
+                Thumbimg_remotePDFpath = f.path;
+                log("FetchVideoDetailData>> Thumbimg >> " + Thumbimg_remotePDFpath.toString());
+                update();
+              });
+            }
+
+
+            var videoId = VideoDetaildata[0]['id'];
+            var videoTitle = VideoDetaildata[0]['title'];
+            log("FetchVideoDetailData>> videoplayerUrl :$videoplayerUrl ");
+            Video_downloadlisner(videoplayerUrl,videoId,videoTitle);
+
+            opendilog();
+            update();
+            refresh();
           }
-          if(VideoDetaildata[0]['thumb_image']!=null){
-            await createFileOfPdfUrl(thumbImgurl).then((f) {
-              Thumbimg_remotePDFpath = f.path;
-              log("FetchVideoDetailData>> Thumbimg >> " + Thumbimg_remotePDFpath.toString());
-              update();
-            });
+          else if (result.statusCode == 404) {
+            var FetchSubjectData = jsonDecode(result.body);
+            VideoDetailStatusCode.value = result.statusCode;
+            VideoDetailErrorMSg.value = FetchSubjectData['message'];
+            VideoDetaildata = [];
+            VideoDetailloader(false);
+            update();
           }
-
-
-          var videoId = VideoDetaildata[0]['id'];
-          var videoTitle = VideoDetaildata[0]['title'];
-          log("FetchVideoDetailData>> videoplayerUrl :$videoplayerUrl ");
-          Video_downloadlisner(videoplayerUrl,videoId,videoTitle);
-
-          opendilog();
+          else if (result.statusCode == 401) {
+            var FetchSubjectData = jsonDecode(result.body);
+            VideoDetailStatusCode.value = result.statusCode;
+            VideoDetailErrorMSg.value = FetchSubjectData['message'];
+            VideoDetaildata = [];
+            VideoDetailloader(false);
+            update();
+          }
+          else {
+            VideoDetaildata = [];
+            VideoDetailloader(false);
+          }
           update();
           refresh();
         }
-        else if (result.statusCode == 404) {
-          var FetchSubjectData = jsonDecode(result.body);
-          VideoDetailStatusCode.value = result.statusCode;
-          VideoDetailErrorMSg.value = FetchSubjectData['message'];
-          VideoDetaildata = [];
-          VideoDetailloader(false);
-          update();
-        }
-        else if (result.statusCode == 401) {
-          var FetchSubjectData = jsonDecode(result.body);
-          VideoDetailStatusCode.value = result.statusCode;
-          VideoDetailErrorMSg.value = FetchSubjectData['message'];
-          VideoDetaildata = [];
-          VideoDetailloader(false);
-          update();
-        }
-        else {
-          VideoDetaildata = [];
-          VideoDetailloader(false);
-        }
+      } catch (e) {
+        log("FetchVideoDetailData error ........${e}");
+        VideoDetailloader(false);
         update();
-        refresh();
       }
-    } catch (e) {
-      log("FetchVideoDetailData error ........${e}");
-      VideoDetailloader(false);
+    }else{
+      VideoDetailloader(true);
       update();
+      refresh();
+      Get.offAll(BottomBar(bottomindex: 3,));
+      toastMsg("No Internet Connected with No Internet Available", true);
     }
   }
 

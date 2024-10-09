@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/indicator_position.dart';
-import 'package:image_fade/image_fade.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/utils/colors.dart';
 
@@ -99,64 +98,40 @@ class Nprep2CustomTimeline extends StatelessWidget {
                           // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
                           //   color: Colors.grey.shade300,),
                         ):
-                        ImageFade(
-                          image: NetworkImage(image),
-                              height: 70,
-                              width: 70,
-                          // slow fade for newly loaded images:
-                          duration: const Duration(milliseconds: 900),
-
-                          // if the image is loaded synchronously (ex. from memory), fade in faster:
-                          syncDuration: const Duration(milliseconds: 150),
-
-                          // supports most properties of Image:
-                          alignment: Alignment.center,
-                          fit: BoxFit.cover,
-
-                          // shown behind everything:
-                          placeholder: Container(
-
-                            // color: Colors.grey.shade300,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "assets/nprep2_images/LOGO.png",
-                              height: 20,
-                              width: 20,
-                            ),
-                            // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                            //   color: Colors.grey.shade300,),
-                          ),
-
-                          // shows progress while loading an image:
-                          loadingBuilder: (context, progress, chunkEvent) =>
-                              Container(
-
-
-                                // color: Colors.grey.shade300,
+                        Container(
+                          height: 70,
+                          width: 70,
+                          child: Image.network(
+                            image,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return Container(
+                                  alignment: Alignment.center,
+                                  child: Image.asset(
+                                    "assets/nprep2_images/LOGO.png", // Placeholder while loading
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                );
+                              }
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
                                 alignment: Alignment.center,
                                 child: Image.asset(
-                                  "assets/nprep2_images/LOGO.png",
+                                  "assets/nprep2_images/LOGO.png", // Fallback if error occurs
                                   height: 20,
                                   width: 20,
                                 ),
-                                // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                //   color: Colors.grey.shade300,),
-                              ),
-
-                          // displayed when an error occurs:
-                          errorBuilder: (context, error) => Container(
-
-                            // color: Colors.grey.shade300,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "assets/nprep2_images/LOGO.png",
-                              height: 20,
-                              width: 20,
-                            ),
-                            // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                            //   color: Colors.grey.shade300,),
+                              );
+                            },
                           ),
                         )
+
+
                         // FadeInImage.memoryNetwork(
                         //     height: MediaQuery.of(context).size.height *0.08,
                         //     width: MediaQuery.of(context).size.width * 0.18,

@@ -18,6 +18,7 @@ import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../constants/Api_Urls.dart';
+import '../main.dart';
 import '../src/test/Mock_Exam_Question_Page.dart';
 
 class ExamController extends GetxController {
@@ -25,7 +26,7 @@ class ExamController extends GetxController {
   var examScoreLoader = false.obs;
   var ExitLoader = false.obs;
   var SubjectLoader = false.obs;
-  var SubjectData ;
+  var SubjectData;
   var get_data;
   List examScore_data = [];
   var attemptELoader = false.obs;
@@ -99,9 +100,146 @@ class ExamController extends GetxController {
       update();
     }
   }
+
+
   GetExamData(url) async {
     getELoader(true);
+
+    String jsonData = sprefs.getString('pyq_data');
+
+    if(jsonData==null){
+      await getdata(url);
+    }else{
+      get_data = jsonDecode(jsonData);
+      getELoader(false);
+      await getdata(url);
+      update();
+      refresh();
+    }
+  }
+
+  GetExamData2(url,status) async {
+    getELoader(true);
+    String jsonData;
+
+    log("status : $status");
+
+    if(status=="4"){
+      jsonData = sprefs.getString('test_data');
+    }else{
+      jsonData = sprefs.getString('mock_data');
+    }
+
+    if(jsonData==null){
+      await getdata2(url,status);
+    }else{
+      get_data = jsonDecode(jsonData);
+      getELoader(false);
+      await getdata2(url,status);
+      update();
+      refresh();
+    }
+  }
+
+
+  getdata2(url,status)async{
     try {
+      var result = await apiCallingHelper().getAPICall(url, true);
+      if (result != null) {
+        if (result.statusCode == 200) {
+           if(status == "4"){
+             get_data.clear();
+             get_data = jsonDecode(result.body);
+             await sprefs.setString('test_data', result.body);
+
+             print("get year exam  list > " + get_data.toString());
+           }else{
+             get_data.clear();
+             get_data = jsonDecode(result.body);
+             await sprefs.setString('mock_data', result.body);
+
+             print("get year exam  list > " + get_data.toString());
+           }
+
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 401) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 404) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 500) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+      } else {
+        getELoader(false);
+        update();
+        refresh();
+      }
+    } catch (e) {
+      Logger().e("catch error ........${e}");
+      getELoader(false);
+      update();
+    }
+  }
+
+
+  getdata(url)async{
+    try {
+      var result = await apiCallingHelper().getAPICall(url, true);
+      get_data = jsonDecode(result.body);
+      if (result != null) {
+        if (result.statusCode == 200) {
+          get_data.clear();
+          get_data = jsonDecode(result.body);
+          await sprefs.setString('pyq_data', result.body);
+          print("get year exam  list > " + get_data.toString());
+
+
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 401) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 404) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+        else if (result.statusCode == 500) {
+          getELoader(false);
+          update();
+          refresh();
+        }
+      } else {
+        getELoader(false);
+        update();
+        refresh();
+      }
+    } catch (e) {
+      Logger().e("catch error ........${e}");
+      getELoader(false);
+      update();
+    }
+  }
+
+
+  GetExamData3(url)async{
+    try {
+      getELoader(true);
       var result = await apiCallingHelper().getAPICall(url, true);
       get_data = jsonDecode(result.body);
       if (result != null) {
@@ -141,6 +279,8 @@ class ExamController extends GetxController {
       update();
     }
   }
+
+
 
   var exitLoader = false.obs;
   var exit_exam_data;
@@ -282,6 +422,8 @@ class ExamController extends GetxController {
       update();
     }
   }
+
+
   MockAttemptExamData(url,Examduration,bool value) async {
     attemptELoader(true);
     log("MockAttemptExamData>> ");
@@ -735,16 +877,35 @@ class ExamController extends GetxController {
       refresh();
     }
   }
+
+
+
   SubjectApi(url)async{
 
-
     SubjectLoader(true);
+    String jsonData = sprefs.getString('subject_data');
+
+    if(jsonData==null){
+      await getdata3(url);
+    }else{
+      SubjectData = jsonDecode(jsonData);
+      SubjectLoader(false);
+      await getdata3(url);
+      update();
+      refresh();
+    }
+
+  }
+
+
+  getdata3(url)async{
     try{
       var result=  await apiCallingHelper().getAPICall(url,true);
       if (result != null) {
         if(result.statusCode == 200){
 
           SubjectData =jsonDecode(result.body);
+          await sprefs.setString('subject_data', result.body);
           SubjectLoader(false);
           update();
           refresh();

@@ -7,6 +7,7 @@ import 'package:n_prep/Service/Service.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/error_message.dart';
 import 'package:n_prep/constants/validations.dart';
+import 'package:n_prep/main.dart';
 import 'package:n_prep/src/login_page/login_page.dart';
 
 
@@ -55,30 +56,48 @@ class HomeController extends GetxController{
     HomeApi(homeUrl,false);
     log("lessormore $lessormore");
   }
+
+
   HomeApi(url,bool status)async{
     homeLoading(status);
+
+    String jsonData = sprefs.getString('home_data');
+
+    if(jsonData == null){
+      await Getdata(url, status);
+    }else{
+      home_data = jsonDecode(jsonData);
+      homeLoading(false);
+      await Getdata(url, status);
+      update(['home_page']);
+      refresh();
+    }
+  }
+
+  Getdata(url,bool status)async{
     try{
-      var result=  await apiCallingHelper().getAPICall(url,true);
+      var result = await apiCallingHelper().getAPICall(url, true);
       if (result != null) {
-        if(result.statusCode == 200){
-          home_data =jsonDecode(result.body);
+        if (result.statusCode == 200) {
+          home_data = jsonDecode(result.body);
+          await sprefs.setString('home_data', result.body);
           // _correct_ans = home_data['data']['todayquestion']['currect_answer'];
           // _user_answer = home_data['data']['todayquestion']['your_answer'];
           // _is_answer = home_data['data']['todayquestion']['is_answer'];
           homeLoading(false);
           update(['home_page']);
           refresh();
-        }else if(result.statusCode == 401){
+        } else if (result.statusCode == 401) {
           homeLoading(false);
           Get.offAll(LoginPage());
           update();
           refresh();
         }
-      } else if(result.statusCode == 501){
+      } else if (result.statusCode == 501) {
         homeLoading(false);
         update();
         refresh();
-      }else {
+      } else {
         homeLoading(false);
         update();
         refresh();

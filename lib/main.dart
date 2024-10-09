@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 
 import 'package:n_prep/Envirovement/Environment.dart';
@@ -26,6 +25,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import 'Local_Database/database.dart';
 import 'Notification_pages/notification_redirect.dart';
 /// Defines a iOS/MacOS notification category for plain actions.
 const String darwinNotificationCategoryPlain = 'plainCategory';
@@ -127,8 +127,6 @@ Future<void> main() async {
 log("On run >> main.dart");
 
   sprefs = await SharedPreferences.getInstance();
-  await GetStorage.init();
-  box = GetStorage();
   HttpOverrides.global = MyHttpOverrides();
   await dotenv.load(fileName: Environment.filename);
   await Firebase.initializeApp();
@@ -200,7 +198,15 @@ class _MyAppState extends State<MyApp> {
 
     _requestPermissions();
     registerForegroundMessageHandler();
+    initializeDB();
   }
+
+
+  Future<void> initializeDB() async {
+    await DatabaseHelper().initializeDatabase(); // Ensure database is created
+    // You can now perform insertions or queries
+  }
+
   Future<void> _requestPermissions() async {
     if (Platform.isIOS || Platform.isMacOS) {
       await flutterLocalNotificationsPlugin
@@ -225,7 +231,7 @@ class _MyAppState extends State<MyApp> {
           AndroidFlutterLocalNotificationsPlugin>();
 
       final bool grantedNotificationPermission =
-      await androidImplementation?.requestPermission();
+      await androidImplementation?.requestNotificationsPermission();
       setState(() {
      var   _notificationsEnabled = grantedNotificationPermission ?? false;
       });

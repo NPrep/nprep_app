@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -21,10 +20,9 @@ import 'package:n_prep/src/Nphase2/VideoScreens/video_detail_screen.dart';
 import 'package:n_prep/src/Nphase2/VideoScreens/video_sub_subjectscreen.dart';
 import 'package:n_prep/src/Nphase3/youtubelive/Liveclasses.dart';
 import 'package:n_prep/utils/colors.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-import 'package:transparent_image/transparent_image.dart';
+
 class VideoSubjectScreen extends StatefulWidget {
   const VideoSubjectScreen({Key key}) : super(key: key);
 
@@ -239,7 +237,7 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                               ),
                                               Expanded(
                                                 child: Container(
-                                                  child: AutoSizeText(" ${Environment.videoTitle}",
+                                                  child: Text(" ${Environment.videoTitle}",
                                                     style: TextStyle(color: primary,
                                                       fontWeight: FontWeight.w500,
                                                       fontSize: 13,
@@ -423,25 +421,39 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      FadeInImage.memoryNetwork(
-                                          height: 50,
-                                          width: 55,
-                                          imageErrorBuilder: (context, error, stackTrace) {
+                                      Container(
+                                        height: 50,
+                                        width: 55,
+                                        child: Image.network(
+                                          "assets/images/liveanimation.gif",
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
                                             return Container(
-
-                                              // color: Colors.grey.shade300,
                                               alignment: Alignment.center,
                                               child: Image.asset(
-                                                "assets/images/liveanimation.gif",
+                                                "assets/images/liveanimation.gif", // Display the GIF in case of error too
                                                 height: 50,
                                                 width: 55,
                                               ),
-                                              // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                              //   color: Colors.grey.shade300,),
                                             );
                                           },
-                                          placeholder: kTransparentImage,
-                                          image: "assets/images/liveanimation.gif"),
+                                          loadingBuilder: (context, child, loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            } else {
+                                              return Container(
+                                                alignment: Alignment.center,
+                                                child: Image.asset(
+                                                  "assets/images/liveanimation.gif", // Placeholder GIF while loading
+                                                  height: 50,
+                                                  width: 55,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+
 
                                       sizebox_width_10,
                                       Container(
@@ -562,7 +574,7 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                                       // color: Colors.grey.shade300,
                                                       alignment: Alignment.center,
                                                       child: Image.asset(
-                                                        "assets/nprep2_images/LOGO.png",
+                                                        "assets/images/NPrep.jpeg",
                                                         // height: 20,
                                                         width: MediaQuery.of(context).size.width * 0.18,
                                                       ),
@@ -571,27 +583,38 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                                     );
                                                   }
                                               ):
-                                              FadeInImage.memoryNetwork(
-                                                  height: 50,
-                                                  width: 50,
-                                                  imageErrorBuilder: (context, error, stackTrace) {
+                                              Container(
+                                                height: 50,
+                                                width: 50,
+                                                child: Image.network(
+                                                  subjectsData['image'] != null ? subjectsData['image'].toString() : '',
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error, stackTrace) {
                                                     return Container(
-
-                                                      // color: Colors.grey.shade300,
                                                       alignment: Alignment.center,
                                                       child: Image.asset(
-                                                        "assets/nprep2_images/LOGO.png",
-                                                        height: 20,
-                                                        width: 20,
+                                                        "assets/images/NPrep.jpeg",
+                                                        height: 50,
+                                                        width: 50,
                                                       ),
-                                                      // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                                      //   color: Colors.grey.shade300,),
                                                     );
                                                   },
-                                                  placeholder: kTransparentImage,
-                                                  image: subjectsData['image']==null?
-                                                  "assets/nprep2_images/LOGO.png":
-                                                  subjectsData['image'].toString()),
+                                                  loadingBuilder: (context, child, loadingProgress) {
+                                                    if (loadingProgress == null) {
+                                                      return child;
+                                                    } else {
+                                                      return Container(
+                                                        alignment: Alignment.center,
+                                                        child: Image.asset(
+                                                          "assets/images/NPrep.jpeg", // Placeholder image
+                                                          height: 50,
+                                                          width: 50,
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
 
                                               sizebox_width_5,
                                               Column(
@@ -696,7 +719,7 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                                       // color: Colors.grey.shade300,
                                                       alignment: Alignment.center,
                                                       child: Image.asset(
-                                                        "assets/nprep2_images/LOGO.png",
+                                                        "assets/images/NPrep.jpeg",
                                                         // height: 20,
                                                         width: MediaQuery.of(context).size.width * 0.18,
                                                       ),
@@ -704,26 +727,39 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                                       //   color: Colors.grey.shade300,),
                                                     );
                                                   }
-                                              ): FadeInImage.memoryNetwork(
-                                                  height: 50,
-                                                  width: 50,
-                                                  imageErrorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-
-                                                      // color: Colors.grey.shade300,
-                                                      alignment: Alignment.center,
-                                                      child: Image.asset(
-                                                        "assets/nprep2_images/LOGO.png",
-                                                        height: 20,
-                                                        width: 20,
-                                                      ),
-                                                      // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                                      //   color: Colors.grey.shade300,),
-                                                    );
-                                                  },
-                                                  placeholder: kTransparentImage,
-                                                  image: subjectsData['image']==null?"assets/nprep2_images/LOGO.png":subjectsData['image'].toString()),
-                                              // Image.network( '${subjectsData['image']}',
+                                              ): Container(
+                                        height: 50,
+                                        width: 50,
+                                        child: Image.network(
+                                          subjectsData['image']?.toString() ?? "assets/images/NPrep.jpeg",
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              alignment: Alignment.center,
+                                              child: Image.asset(
+                                                "assets/images/NPrep.jpeg",
+                                                height: 50,
+                                                width: 50,
+                                              ),
+                                            );
+                                          },
+                                          loadingBuilder: (context, child, loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            } else {
+                                              return Container(
+                                                alignment: Alignment.center,
+                                                child: Image.asset(
+                                                  "assets/nprep2_images/LOGO.png",
+                                                  height: 20,
+                                                  width: 20,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      // Image.network( '${subjectsData['image']}',
                                               //   height: 50,
                                               //   width: 50,
                                               //     errorBuilder: (context, error, stackTrace) {

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -42,7 +41,6 @@ class QuestionMcq extends StatefulWidget {
 
 class _QuestionMcqState extends State<QuestionMcq>
     with TickerProviderStateMixin {
-  CountDownController countDownController = CountDownController();
   CategoryController categoryController = Get.put(CategoryController());
 
   SettingController settingController = Get.put(SettingController());
@@ -1159,7 +1157,7 @@ class _QuestionMcqState extends State<QuestionMcq>
                                                       .toString(),
                                             style: {
                                               "table": Style( ),
-                                              // some other granular customizations are also possible
+                                              // some other granulr customizations are also possible
                                               "tr": Style(
                                                 border: Border(
                                                   bottom: BorderSide(color: Colors.black, width: 1.0, style: BorderStyle.solid),

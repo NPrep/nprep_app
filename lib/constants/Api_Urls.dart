@@ -118,6 +118,8 @@ class apiUrls{
   var parent_video_categories_api = baseUrl+"parent_video_categories";
   var child_video_categories_api = baseUrl+"child_video_categories";
   var videos_deatil_api = baseUrl+"videos";
+  var all_video_categories = baseUrl+"all_videos_category";
+  var all_videos = baseUrl+"all_videos";
   var search_categories_api = baseUrl+"categories/search";
   var videos_saved_api = baseUrl+"videos/saved?video_id=";
   var videos_pause_api = baseUrl+"videos/pause?video_id=";

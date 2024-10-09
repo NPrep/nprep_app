@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/indicator_position.dart';
-import 'package:image_fade/image_fade.dart';
 import 'package:intl/intl.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/utils/colors.dart';
@@ -94,65 +93,32 @@ class LiveClassCardUITimeLine extends StatelessWidget {
                       //   color: Colors.grey.shade300,),
                     ):
 
-                    ImageFade(
+                    FadeInImage(
                       image: NetworkImage(image),
-                      height: 75,
-                      width: 120,
-
-                      // slow fade for newly loaded images:
-                      duration: const Duration(milliseconds: 900),
-
-                      // if the image is loaded synchronously (ex. from memory), fade in faster:
-                      syncDuration: const Duration(milliseconds: 150),
-
-                      // supports most properties of Image:
-                      alignment: Alignment.center,
-                      fit: BoxFit.contain,
-
-                      // shown behind everything:
-                      placeholder: Container(
-
-                        // color: Colors.grey.shade300,
+                      placeholder: AssetImage("assets/nprep2_images/LOGO.png"),
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, stackTrace) => Container(
                         alignment: Alignment.center,
                         child: Image.asset(
                           "assets/nprep2_images/LOGO.png",
-                          height: MediaQuery.of(context).size.width * 0.20,
-                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 20,
+                          width: 20,
                         ),
-                        // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                        //   color: Colors.grey.shade300,),
                       ),
-
-                      // shows progress while loading an image:
-                      loadingBuilder: (context, progress, chunkEvent) =>
-                          Container(
-
-
-                            // color: Colors.grey.shade300,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "assets/nprep2_images/LOGO.png",
-                              height: MediaQuery.of(context).size.width * 0.20,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                            ),
-                            // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                            //   color: Colors.grey.shade300,),
-                          ),
-
-                      // displayed when an error occurs:
-                      errorBuilder: (context, error) => Container(
-
-                        // color: Colors.grey.shade300,
+                      fadeInDuration: const Duration(milliseconds: 900), // Slow fade for newly loaded images
+                      fadeOutDuration: const Duration(milliseconds: 150), // Fast fade if sync loading
+                      placeholderErrorBuilder: (context, error, stackTrace) => Container(
                         alignment: Alignment.center,
                         child: Image.asset(
                           "assets/nprep2_images/LOGO.png",
-                          height: MediaQuery.of(context).size.width * 0.20,
-                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 20,
+                          width: 20,
                         ),
-                        // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                        //   color: Colors.grey.shade300,),
                       ),
                     )
+
 
                   ),
                   Padding(

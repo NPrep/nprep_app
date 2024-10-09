@@ -611,6 +611,10 @@ class _PlandetailScreenState extends State<PlandetailScreen> {
                      ),
                      GestureDetector(
                        onTap: () async {
+                         bool temp = sprefs.getBool("is_internet");
+                         if(!temp){
+                           toastMsg("Please Check Your Internet", true);
+                         }
                          // subscriptionController.GetDilogssss(true);
                             if(selectedItemIndex!= -1){
                                 var buyplanUrl = apiUrls().buy_user_plan_api;

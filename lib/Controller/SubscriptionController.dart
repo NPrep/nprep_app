@@ -610,11 +610,27 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
 
   SubscriptionsData(url)async{
     subsLoader(true);
+    String jsonData = sprefs.getString('sub_data');
+
+    if(jsonData==null){
+      await getdata(url);
+    }else{
+      subscriptionData =jsonDecode(jsonData);
+      subsLoader(false);
+      await getdata(url);
+      update();
+      refresh();
+    }
+  }
+
+  getdata(url)async{
     try{
       var result = await apiCallingHelper().getAPICall(url, true);
       if(result != null){
         if(result.statusCode == 200){
           subscriptionData =jsonDecode(result.body);
+          await sprefs.setString('sub_data', result.body);
+
           Logger_D("subscriptionData ........${subscriptionData}");
           subsLoader(false);
           update();

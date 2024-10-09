@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -59,8 +58,6 @@ class _OTPRegPasswordState extends State<OTPRegPassword> {
   AuthController authController =Get.put(AuthController());
   TextEditingController pinController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  CountDownController countDownController = CountDownController();
-
 
   bool isResend = false;
 

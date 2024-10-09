@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:get/get.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/Controller/CmsController.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/error_message.dart';
@@ -28,15 +28,13 @@ class _TermsConditionsState extends State<TermsConditions> {
   CmsController cmsController =Get.put(CmsController());
   bannerImages(imagess){
     print("imagess...."+imagess.toString());
-    return  ImagePixels.container(
-      imageProvider: NetworkImage(imagess),
-      child: Container(
+    return  Container(
         width: MediaQuery.of(context).size.width,
         height:  MediaQuery.of(context).size.width-120,
         color: Colors.transparent,
-        child: Image(image:NetworkImage(imagess),
+        child: CachedNetworkImage(
+          imageUrl: imagess,
         ),
-      ),
     );
   }
   @override

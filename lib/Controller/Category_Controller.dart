@@ -18,6 +18,9 @@ import 'package:n_prep/src/q_bank/quetions.dart';
 import 'package:n_prep/src/q_bank/detail.dart';
 import 'package:n_prep/src/Coupon%20and%20Buy%20plan/subsciption_plan.dart';
 
+import '../main.dart';
+import '../src/home/bottom_bar.dart';
+
 
 class CategoryController extends GetxController  with GetSingleTickerProviderStateMixin{
   var parentLoader = false.obs;
@@ -135,15 +138,30 @@ class CategoryController extends GetxController  with GetSingleTickerProviderSta
     update();
   }
  ParentCategoryApi(url)async{
-
-
    parentLoader(true);
+
+   String jsonData = sprefs.getString('qbank_data');
+
+   if(jsonData==null){
+     await getdata(url);
+   }else{
+     parentData = jsonDecode(jsonData);
+     parentLoader(false);
+     await getdata(url);
+     update();
+     refresh();
+   }
+  }
+
+  getdata(url)async{
     try{
       var result=  await apiCallingHelper().getAPICall(url,true);
       if (result != null) {
         if(result.statusCode == 200){
 
           parentData =jsonDecode(result.body);
+          await sprefs.setString('qbank_data', result.body);
+
           parentLoader(false);
           update();
           refresh();
@@ -170,56 +188,62 @@ class CategoryController extends GetxController  with GetSingleTickerProviderSta
 
   ChildCategoryApi(url)async{
     childLoader(true);
+    var temp = await sprefs.getBool("is_internet");
+    if(temp) {
+      try {
+        var result = await apiCallingHelper().getAPICall(url, true);
+        if (result != null) {
+          print("childdata Check statusCode.......${result.statusCode}");
+          child = jsonDecode(result.body);
+          if (result.statusCode == 200) {
+            // childData.clear();
 
-    try{
-      var result=  await apiCallingHelper().getAPICall(url,true);
-      if (result != null) {
-        print("childdata Check statusCode.......${result.statusCode}");
-        child =jsonDecode(result.body);
-        if(result.statusCode == 200){
-          // childData.clear();
-
-          childdata.clear();
+            childdata.clear();
             childdata.add(child['data']);
-          second_levelCount.value =childdata[0]['second_level'].length;
-          print("childdata Check.......${childdata[0]['third_level']}");
-          print("second_levelCount.......${second_levelCount}");
-          // print("second_level Check.......${second_level}");
-          childLoader(false);
-          update();
-          refresh();
-        }else  if(result.statusCode == 404){
-          childLoader(false);
-          childdata.clear();
-          childdata.addAll(child['data']);
+            second_levelCount.value = childdata[0]['second_level'].length;
+            print("childdata Check.......${childdata[0]['third_level']}");
+            print("second_levelCount.......${second_levelCount}");
+            // print("second_level Check.......${second_level}");
+            childLoader(false);
+            update();
+            refresh();
+          } else if (result.statusCode == 404) {
+            childLoader(false);
+            childdata.clear();
+            childdata.addAll(child['data']);
 
-          print("childdata Check 404......${childdata}");
-          update();
-          refresh();
-        }
-        else  if(result.statusCode == 401){
+            print("childdata Check 404......${childdata}");
+            update();
+            refresh();
+          }
+          else if (result.statusCode == 401) {
+            childLoader(false);
+            Get.offAll(LoginPage());
+            update();
+            refresh();
+          }
+          else if (result.statusCode == 500) {
+            childLoader(false);
+            toastMsg("Internal Server Error", true);
+            update();
+            refresh();
+          }
+        } else {
           childLoader(false);
-          Get.offAll(LoginPage());
           update();
           refresh();
         }
-        else  if(result.statusCode == 500){
-          childLoader(false);
-          toastMsg("Internal Server Error", true);
-          update();
-          refresh();
-        }
-      } else {
-        childLoader(false);
-        update();
-        refresh();
       }
-    }
-    on SocketException {
-      throw FetchDataException('No Internet connection');
-
-    } on TimeoutException {
-      throw FetchDataException('Something went wrong, try again later');
+      on SocketException {
+        throw FetchDataException('No Internet connection');
+      } on TimeoutException {
+        throw FetchDataException('Something went wrong, try again later');
+      }
+    }else{
+      childLoader(false);
+      update();
+      Get.offAll(BottomBar(bottomindex: 1,));
+      toastMsg("No Internet Connected with No Internet Available", true);
     }
   }
 
