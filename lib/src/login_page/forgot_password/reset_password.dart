@@ -1,4 +1,5 @@
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,11 +29,12 @@ class _ResetPasswordState extends State<ResetPassword> {
   AuthController authController =Get.put(AuthController());
 
   TextEditingController emailController = TextEditingController();
-  CountDownController countDownController = CountDownController();
   // TextEditingController pinController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cPasswordController = TextEditingController();
 
+  Timer _timer;
+  int _duration = 60;
   var email;
   bool isResend = false;
   bool isCounterRunning = false;
@@ -80,7 +82,6 @@ class _ResetPasswordState extends State<ResetPassword> {
         isResend = false;
         // isCounterRunning = true;
       });
-      countDownController.start();
     }
 
   }
@@ -100,10 +101,33 @@ class _ResetPasswordState extends State<ResetPassword> {
         border: Border.all(color: Colors.grey)),
   );
 
+  void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_duration > 0) {
+        setState(() {
+          _duration--;
+        });
+      } else {
+        timer.cancel();
+        setState(() {
+          isResend = true;
+        });
+        print('Timer completed, isResend: $isResend');
+      }
+    });
+  }
+
+  String formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+
   @override
   void initState() {
     super.initState();
-
+    startTimer();
   }
 
 
@@ -208,36 +232,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                                               fontFamily: 'Poppins-Regular'),
                                         ),
                                       ),
-                                      CircularCountDownTimer(
+                                      Container(
                                         width: 40,
                                         height: 40,
-                                        duration: 60,
-                                        fillColor: Colors.transparent,
-                                        ringColor: Colors.transparent,
-                                        controller: countDownController,
-                                        initialDuration: 0,
-                                        textFormat: CountdownTextFormat.MM_SS,
-                                        isReverse: true,
-                                        isReverseAnimation: true,
-                                        isTimerTextShown: true,
-                                        autoStart:true,
-                                        //isCounterRunning,
-                                        onStart: (){
-
-                                        },
-                                        onComplete: () {
-                                          print('isResend  ............. outside of setStaste${isResend}');
-                                          setState(() {
-                                            isResend = true;
-                                            print('isResend  ............. inside of setStaste${isResend}');
-                                          });
-                                        },
-
-                                        textStyle: TextStyle(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          formatTime(_duration),
+                                          style: TextStyle(
                                             fontWeight: FontWeight.w400,
-                                            color: grey,
+                                            color: Colors.grey,
                                             fontSize: 16,
-                                            fontFamily: 'Poppins-Regular'),
+                                            fontFamily: 'Poppins-Regular',
+                                          ),
+                                        ),
                                       )
                                     ],
                                   ),

@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:get/get.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/Controller/CmsController.dart';
 import 'package:n_prep/constants/error_message.dart';
 import 'package:n_prep/helper_widget/appbar_helper.dart';
@@ -23,16 +23,14 @@ class _AboutUsState extends State<AboutUs> {
 
   bannerImages(imagess){
     print("imagess...."+imagess.toString());
-    return  ImagePixels.container(
-      imageProvider: NetworkImage(imagess),
-      child: Container(
+    return  Container(
         color: Colors.transparent,
         width: MediaQuery.of(context).size.width,
         height:  MediaQuery.of(context).size.width-180,
 
-        child: Image(image:NetworkImage(imagess),
-        ),
-      ),
+        child: CachedNetworkImage(
+          imageUrl: imagess,
+        )
     );
   }
 
@@ -43,7 +41,7 @@ class _AboutUsState extends State<AboutUs> {
     var aboutUrl ="${apiUrls().cms_api}7";
     print("aboutUrl...."+aboutUrl.toString());
     Logger_D(aboutUrl);
-    cmsController.CmsData(aboutUrl);
+    cmsController.CmsData2(aboutUrl);
   }
   @override
   Widget build(BuildContext context) {

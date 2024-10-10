@@ -79,8 +79,10 @@ class AuthController extends GetxController{
       return androidInfo.id; // unique ID on Android
     }
   }
+
   var NotregisteredmobileNo;
-updatelogin(){
+
+  updatelogin(){
   googleloginLoading(true);
   update();
 }

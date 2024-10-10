@@ -603,13 +603,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:get/get.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/Controller/Auth/Auth_Controller.dart';
 import 'package:n_prep/Controller/Home/HomeController.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
@@ -625,10 +625,20 @@ import 'package:n_prep/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
+
 import '../../Controller/Exam_Controller.dart';
 import '../../Notification_pages/NotificationModel.dart';
 import '../../Notification_pages/notification_redirect.dart';
 import '../Nphase2/VideoScreens/DatabaseSqflite.dart';
+import '../../Controller/Category_Controller.dart';
+import '../../Controller/CmsController.dart';
+import '../../Controller/Exam_Controller.dart';
+import '../../Controller/SubscriptionController.dart';
+import '../../Local_Database/database.dart';
+import '../../Notification_pages/NotificationModel.dart';
+import '../../Notification_pages/notification_redirect.dart';
+import '../Nphase2/Controller/VideoSubjectController.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key});
@@ -640,11 +650,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ScrollController scrollController;
   SettingController settingController =Get.put(SettingController());
+  var page = 1;
+  var limit = 100;
+  var perentUrl;
+  var videos = [];
+  ExamController examController = Get.put(ExamController());
+  Videosubjectcontroller videosubjectcontroller =Get.put(Videosubjectcontroller());
+  SubscriptionController subscriptionController = Get.put(
+      SubscriptionController());
+  CategoryController categoryController = Get.put(CategoryController());
+
 
   HomeController homeController = Get.put(HomeController());
   AuthController authController =Get.put(AuthController());
   ProfileController profileController = Get.put(ProfileController());
-  ExamController examController =Get.put(ExamController());
+  CmsController cmsController =Get.put(CmsController());
+
   // List<String> options = [
   //   'Pneumonia is an infection of the',
   //   'Pneumonia is an infection of the',
@@ -658,15 +679,13 @@ class _HomePageState extends State<HomePage> {
 
   bannerImages(imagess){
     print("imagess...."+imagess.toString());
-    return  ImagePixels.container(
-      imageProvider: NetworkImage(imagess),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-
-        child: Image(image:NetworkImage(imagess),
-        ),
+    return  Container(
+      width: MediaQuery.of(context).size.width,
+      child: CachedNetworkImage(
+        imageUrl: imagess
       ),
-    );
+    )
+    ;
   }
 
   bool isAnswer = false;
@@ -711,6 +730,25 @@ class _HomePageState extends State<HomePage> {
     updateExamExit();
     scrollController = ScrollController();
 
+    getTestData("1","");
+    getTestDataMock("4","");
+    getTestDataMock("2","");
+    getSubjectData();
+    var aboutUrl ="${apiUrls().cms_api}9";
+    cmsController.CmsData(aboutUrl);
+    var aboutUrl2 ="${apiUrls().cms_api}7";
+    cmsController.CmsData2(aboutUrl2);
+    var aboutUrl3 ="${apiUrls().cms_api}8";
+    cmsController.CmsData3(aboutUrl3);
+    var profileUrl = "${apiUrls().profile_api}";
+    profileController.GetProfile(profileUrl);
+    videosubjectcontroller.FetchAllVideoCategories();
+    videosubjectcontroller.FetchAllVideos();
+    videosubjectcontroller.FetchSubjectData();
+    subscriptionController.SubscriptionsData(apiUrls().subscriptions_api);
+
+    scrollController = ScrollController();
+    loadVideos();
 
     call_profile();
     var homeUrl = apiUrls().home_api;
@@ -728,6 +766,85 @@ class _HomePageState extends State<HomePage> {
 
     });
   }
+
+  getdata() async {
+    Map<String, String> queryParams = {
+      'page': page.toString(),
+      'limit': limit.toString(),
+    };
+    String queryString = Uri(queryParameters: queryParams).query;
+    perentUrl = apiUrls().parent_categories_api + '?' + queryString;
+    print("perentUrl......" + perentUrl.toString());
+
+    await categoryController.ParentCategoryApi(perentUrl);
+    log('parentData==>'+categoryController.parentData.toString());
+  }
+
+  loadVideos() async {
+    var temp = await DatabaseHelper().getVideos();
+    setState(() {
+      videos = temp;
+    });
+  }
+
+  getSubjectData() async {
+    Map<String, String> queryParams = {
+      'page': page.toString(),
+      'limit': limit.toString(),
+    };
+    String queryString = Uri(queryParameters: queryParams).query;
+    perentUrl = apiUrls().exam_subjects_categories_api + '?' + queryString;
+    print("perentUrl==>" + perentUrl.toString());
+
+    await examController.SubjectApi(perentUrl);
+    log('parentData==>'+examController.SubjectData.toString());
+    log('parentData==>'+examController.SubjectData['data']['data'].length.toString());
+  }
+
+  getTestData(exam_type,subjectId) async {
+    Map<String, String> queryParams;
+    subjectId==''?
+    queryParams = {
+      'exam_type': exam_type,
+    }:
+    queryParams = {
+      'exam_type': exam_type,
+      'subject': subjectId,
+    };
+    log('queryParams==>'+queryParams.toString());
+    String queryString = Uri(queryParameters: queryParams).query;
+    var getExamUrl = apiUrls().exam_list_api + '?' + queryString;
+    log('getExamUrl==>'+getExamUrl.toString());
+    // getExamUrl = apiUrls().exam_list_api;
+    await examController.GetExamData(getExamUrl);
+    setState(() {
+
+    });
+  }
+  getTestDataMock(exam_type,subjectId) async {
+    Map<String, String> queryParams;
+    subjectId==''?
+    queryParams = {
+      'exam_type': exam_type,
+    }:
+    queryParams = {
+      'exam_type': exam_type,
+      'subject': subjectId,
+    };
+    log('queryParams==>'+queryParams.toString());
+    String queryString = Uri(queryParameters: queryParams).query;
+    var getExamUrl = apiUrls().Mock_exam_list_api + '?' + queryString;
+    log('getExamUrl==>'+getExamUrl.toString());
+    // getExamUrl = apiUrls().exam_list_api;
+    await examController.GetExamData2(getExamUrl,exam_type);
+    setState(() {
+
+    });
+  }
+
+
+
+
   call_profile() async {
 
     var profileUrl = "${apiUrls().profile_api}";
@@ -917,6 +1034,7 @@ class _HomePageState extends State<HomePage> {
                                                               color:homeContro.home_data['data']['is_active_gold']==true?Colors.black: black54)),]))
 
                                                 ),
+
                                               ],
                                             ),
                                           ),
@@ -1359,120 +1477,6 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //     Navigator.push(
-                                    //         context,
-                                    //         MaterialPageRoute(
-                                    //             builder: (context) => BottomBar(
-                                    //               bottomindex: 1,
-                                    //             )));
-                                    //   },
-                                    //   child: Stack(
-                                    //     clipBehavior: Clip.hardEdge,
-                                    //     children: [
-                                    //       Container(
-                                    //         padding: EdgeInsets.only(left: 75,bottom: 17,top: 20),
-                                    //         margin: EdgeInsets.only(bottom: 2,top: 4),
-                                    //         alignment: Alignment.center,
-                                    //         width: size.width,
-                                    //         // alignment: Alignment.center,
-                                    //         decoration: BoxDecoration(
-                                    //           color: primary,
-                                    //           borderRadius: BorderRadius.circular(35),
-                                    //           // border: Border.all(color: Colors.grey)
-                                    //         ),
-                                    //         child: Text(
-                                    //           'Subject wise questions                                                               ',
-                                    //           style:
-                                    //           TextStyle(color: white,
-                                    //               fontSize: 20,
-                                    //               fontFamily: 'Helvetica',
-                                    //               fontWeight: FontWeight.w400),
-                                    //         ),
-                                    //       ),
-                                    //       Positioned(
-                                    //         child: CircleAvatar(
-                                    //           radius: 32,
-                                    //           backgroundColor: Colors.white,
-                                    //           child: CircleAvatar(
-                                    //             radius: 30,
-                                    //             backgroundColor: homeCatBackgroundColor1,
-                                    //             child: Image.asset(
-                                    //               home_test1,
-                                    //               color: white,
-                                    //               height: 40,
-                                    //
-                                    //             ),
-                                    //           ),
-                                    //         )
-                                    //         ,)
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    //
-                                    // SizedBox(
-                                    //   height: cheight * 0.03,
-                                    // ),
-                                    // GestureDetector(
-                                    //     onTap: () {
-                                    //       Navigator.push(
-                                    //           context,
-                                    //           MaterialPageRoute(
-                                    //               builder: (context) => BottomBar(
-                                    //                     bottomindex: 2,
-                                    //                   )));
-                                    //     },
-                                    //   child: Stack(
-                                    //     clipBehavior: Clip.hardEdge,
-                                    //     children: [
-                                    //       Container(
-                                    //         alignment: Alignment.center,
-                                    //         child: Column(
-                                    //           children: [
-                                    //             Container(
-                                    //               padding: EdgeInsets.only(left: 75,bottom: 17,top: 20),
-                                    //               margin: EdgeInsets.only(bottom: 2,top: 4),
-                                    //
-                                    //               width: size.width,
-                                    //               // alignment: Alignment.center,
-                                    //               decoration: BoxDecoration(
-                                    //                 color: primary,
-                                    //                 borderRadius: BorderRadius.circular(35),
-                                    //                 // border: Border.all(color: Colors.grey)
-                                    //               ),
-                                    //               child: Text(
-                                    //                 "Previous Year question",
-                                    //                 style:
-                                    //                 TextStyle(color: white,
-                                    //                     fontSize: 20,
-                                    //                     fontFamily: 'Helvetica',
-                                    //                     fontWeight: FontWeight.w400),
-                                    //               ),
-                                    //             ),
-                                    //           ],
-                                    //         ),
-                                    //       ),
-                                    //       Positioned(
-                                    //         child: CircleAvatar(
-                                    //           radius: 32,
-                                    //           backgroundColor: Colors.white,
-                                    //           child: CircleAvatar(
-                                    //             radius: 30,
-                                    //             backgroundColor: homeCatBackgroundColor2,
-                                    //             child: Image.asset(
-                                    //               home_test,
-                                    //               color: white,
-                                    //               height: 40,
-                                    //
-                                    //             ),
-                                    //           ),
-                                    //         )
-                                    //         ,)
-                                    //     ],
-                                    //   ),
-                                    // ),
-
                                   ]),
                             )
                           ],

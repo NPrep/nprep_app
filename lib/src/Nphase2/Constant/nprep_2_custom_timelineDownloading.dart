@@ -5,7 +5,6 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/indicator_position.dart';
-import 'package:image_fade/image_fade.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';

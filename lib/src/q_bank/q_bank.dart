@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/Controller/Category_Controller.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
@@ -55,17 +54,14 @@ class _QbankState extends State<Qbank> {
   }
 
   categoryImage(imagess) {
-    return ImagePixels.container(
-      imageProvider: NetworkImage(imagess),
-      child: ClipRRect(
+    return ClipRRect(
         borderRadius: BorderRadius.circular(5.0),
         child: Image(
           image: NetworkImage(imagess),
           fit: BoxFit.cover,
           height: 80,
           width: 100,
-        ),
-      ),
+        )
     );
   }
 
@@ -170,7 +166,7 @@ class _QbankState extends State<Qbank> {
                                   return Container(
                                     alignment: Alignment.center,
                                     child: Image.asset(
-                                      "assets/nprep2_images/LOGO.png",
+                                      "assets/images/NPrep.jpeg",
                                       height: 55,
                                       width: MediaQuery.of(context).size.width *
                                           0.15,

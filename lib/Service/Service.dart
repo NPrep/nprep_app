@@ -26,7 +26,6 @@ class apiCallingHelper{
     sprefs.setString("user_name",data['data']['user']['name'].toString());
     sprefs.setString("email",data["data"]['user']['email'].toString());
     sprefs.setString("mobile",data["data"]['user']['mobile'].toString());
-    box.write('mobile', data["data"]['user']['mobile'].toString());
     sprefs.setString("deviceid", data["data"]["user"]['device_id'].toString());
     sprefs.setString("fcm_Id", data["data"]["user"]['fcm_id'].toString());
 

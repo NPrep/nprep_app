@@ -684,7 +684,7 @@ class CustomProgressBar extends StatelessWidget {
                           ),
                         ),
                         onTap: (){
-                       videoDetailcontroller.updatevideoOrentaion();
+                       videoDetailcontroller.updateVideoOrientation();
                       },
                       ),
                     ],

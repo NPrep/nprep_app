@@ -6,7 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:n_prep/constants/validations.dart';
 import 'package:n_prep/utils/colors.dart';
+
+import '../main.dart';
 
 class ConnectivityController extends GetxController {
   final _connectionType = MConnectivityResult.none.obs;
@@ -40,36 +43,25 @@ class ConnectivityController extends GetxController {
     return _updateState(connectivityResult);
   }
 
-  _updateState(ConnectivityResult result) {
+  _updateState(ConnectivityResult result) async{
     switch (result) {
       case ConnectivityResult.wifi:
+        await sprefs.setBool('is_internet', true);
         connectionType = MConnectivityResult.wifi;
-        Get.snackbar("Wifi", "Connected with wifi",
-    icon: Icon(
-    Icons.circle,
-    color: Colors.green,
-    ),backgroundColor: Colors.white.withOpacity(0.5) );
-
+        toastMsg("Wifi Connected with wifi", true);
         update();
         break;
       case ConnectivityResult.mobile:
+        await sprefs.setBool('is_internet', true);
         connectionType = MConnectivityResult.mobile;
-        Get.snackbar("Mobile Data", "Connected with mobile data", 
-            icon: Icon(
-          Icons.circle,
-          color: Colors.green,
-        ),backgroundColor: Colors.white.withOpacity(0.5) );
+        toastMsg("Mobile Data Connected with mobile data", true);
 
         update();
         break;
       case ConnectivityResult.none:
         connectionType = MConnectivityResult.none;
-        Get.snackbar("No Internet", "Connected with No Internet Available",
-            icon: Icon(
-              Icons.circle,
-              color: Colors.red,
-            ),backgroundColor: Colors.white.withOpacity(0.5) );
-
+        await sprefs.setBool('is_internet', false);
+        toastMsg("No Internet Connected with No Internet Available", true);
         update();
         break;
       default:

@@ -53,7 +53,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void initState() {
     super.initState();
     authController.emailController.clear();
-    authController.emailController.text = box.read("mobile");
+    authController.emailController.text = sprefs.getString("mobile");
   }
 
 

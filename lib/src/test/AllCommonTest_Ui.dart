@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -55,14 +54,12 @@ class _AllCommonTest_UiState extends State<AllCommonTest_Ui> {
           ),
           elevation: 0,
           toolbarHeight: 50,
-          title: AutoSizeText(
-              '${widget.type == 0 ? "PYQ" : widget.type == 1 ? "Daily Test" : widget.type == 2 ? "Mock" : "Test"}',
-              style: TextStyle(
-                  color: white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                  letterSpacing: 0.5),
-              maxLines: 2),
+          title: Text('${widget.type==0?"PYQ":widget.type==1?"Daily Test":widget.type==2?"Mock":"Test"}',
+              style: TextStyle(color: white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
+                                  letterSpacing: 0.5), maxLines: 2),
+
         ),
         body: AllUiTestscroll());
   }
@@ -82,12 +79,12 @@ class _AllCommonTest_UiState extends State<AllCommonTest_Ui> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 40, top: 20, bottom: 20),
-                child: AutoSizeText('Exam : ${widget.subjectName}',
-                    textScaleFactor:
-                        MediaQuery.textScaleFactorOf(context).clamp(1.10, 1.20),
-                    style: TextStyle(
-                        color: Colors.grey.shade800,
+
+                padding: const EdgeInsets.only(left: 40,top: 20,bottom: 20),
+                child: Text('Exam : ${widget.subjectName}',
+                    textScaleFactor: MediaQuery.textScaleFactorOf(context).clamp(1.10, 1.20),
+
+                    style: TextStyle(color: Colors.grey.shade800,
                         fontWeight: FontWeight.w500,
                         // fontSize: 20,
                         letterSpacing: 0.5),

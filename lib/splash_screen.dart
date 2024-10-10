@@ -6,16 +6,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:n_prep/Controller/Exam_Controller.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/Force_update_page.dart';
 import 'package:n_prep/constants/MaitainceScreen.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/constants/images.dart';
+import 'package:n_prep/main.dart';
+import 'package:n_prep/src/Nphase2/Controller/VideoSubjectController.dart';
 import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/src/login_page/login_page.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Controller/SubscriptionController.dart';
 
 class SpalshScreen extends StatefulWidget {
   const SpalshScreen({Key key});
@@ -28,16 +33,21 @@ class SpalshScreen extends StatefulWidget {
 
 class SpalshScreenState extends State<SpalshScreen> {
 
+  var page = 1;
+  var limit = 100;
+  var perentUrl;
   SettingController settingController =Get.put(SettingController());
+  ExamController examController = Get.put(ExamController());
+  Videosubjectcontroller videosubjectcontroller =Get.put(Videosubjectcontroller());
+  SubscriptionController subscriptionController = Get.put(
+      SubscriptionController());
 
 
 
   @override
   void initState(){
     super.initState();
-
     toLogin();
-
   }
 
   void toLogin() async {
@@ -45,8 +55,7 @@ class SpalshScreenState extends State<SpalshScreen> {
       systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
       statusBarColor: primarysplash, // status bar color
     ));
-    var settingUrl ="${apiUrls().setting_api}";
-    await settingController.SettingData(settingUrl);
+    await settingController.getdata();
     log("App_version_server ${settingController.App_version_server}");
     if (double.parse(settingController.App_version_server) > (Platform.isAndroid?apiUrls().app_version:apiUrls().ios_app_version)) {
       print("force update here 1");
@@ -67,19 +76,6 @@ class SpalshScreenState extends State<SpalshScreen> {
             appurl: settingController.App_app_url_server.toString() ,
           ),
       );
-      // showDialog(
-      //     context: context,
-      //     barrierDismissible:
-      //     settingController.Force_update.toString() ==apiUrls().App_force_updateNo.toString() ? false : true,
-      //     builder: (_) => ForceUpdatePage(
-      //       forceupdate: settingController.Force_update,
-      //       applogo:  settingController.settingData['data']['general_settings']['logo'].toString(),
-      //       appupdatetext:settingController.App_update_text_server.toString() ,
-      //       appname:  settingController.settingData['data']['general_settings']['application_name'].toString(),
-      //       appurl: settingController.App_app_url_server.toString() ,
-      //     ),
-      //
-      // );
     }
     else if (settingController.Maitaince ==apiUrls(). App_Maintaince_updateNo) {
       print("force update here 2");
@@ -89,18 +85,6 @@ class SpalshScreenState extends State<SpalshScreen> {
         appname:  settingController.settingData['data']['general_settings']['application_name'].toString(),
         appurl: settingController.settingData['data']['general_settings']['playstore_link'].toString() ,
       ));
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => MaitainceScreen(
-      //           Maitaince_text:Maitaince_text,
-      //           applogo: jsonGetSetting['data']['front_logo'].toString(),
-      //           appname: jsonGetSetting['data']['application_name'].toString(),
-      //           appurl:jsonGetSetting['data']['app_url'].toString() ,maintainceupdate: Maitaince.toString(),
-      //         )
-      //
-      //     ));
-
     }
     else{
       print("force update here 3");
@@ -109,17 +93,9 @@ class SpalshScreenState extends State<SpalshScreen> {
         var isLoggedIn = sharedPref.getBool("islogin");
 
         if (isLoggedIn != null && isLoggedIn) {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => BottomBar()),
-          // );
           Get.to(BottomBar());
         } else {
           print("force update here 4");
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => LoginPage()),
-          // );
           Get.to(LoginPage());
         }
       });

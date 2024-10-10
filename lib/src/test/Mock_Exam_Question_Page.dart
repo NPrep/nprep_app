@@ -14,7 +14,6 @@ import 'package:n_prep/src/test/ExamReview_Page.dart';
 import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:photo_view/photo_view.dart';
 
 import 'exam_menu.dart';
 
