@@ -74,72 +74,76 @@ class _ContactUsState extends State<ContactUs> {
   @override
   Widget build(BuildContext context) {
     Size size =MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBarHelper(
-        title: 'Contact Us',
-        context: context,
-        showBackIcon: true,
-      ),
-      body: GetBuilder<SettingController>(
-        builder: (settingContro) {
-          if(settingContro.settingLoader.value){
-            return Center(child: CircularProgressIndicator());
-          }
-          else {
-            return SingleChildScrollView(
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.10, 1.10)),
 
-                children: [
-                  GetBuilder<CmsController>(
-                      builder: (cmsController) {
-                        if(cmsController.aboutLoader.value){
-                          return CircularProgressIndicator();
-                        }
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset("assets/images/contactimg.png",scale: 2.9,)
-                      );
-                    }
-                  ),
+      child: Scaffold(
+        appBar: AppBarHelper(
+          title: 'Contact Us',
+          context: context,
+          showBackIcon: true,
+        ),
+        body: GetBuilder<SettingController>(
+          builder: (settingContro) {
+            if(settingContro.settingLoader.value){
+              return Center(child: CircularProgressIndicator());
+            }
+            else {
+              return SingleChildScrollView(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                  Padding(
-                    padding:EdgeInsets.only(top: Get.height*0.18),
-                    child: ContactContainer(
-                      title: "Call us",
-                      // title: "${settingController.settingData['data']['general_settings']['phone'].toString()}",
-                      iconName: 'phone',
+                  children: [
+                    GetBuilder<CmsController>(
+                        builder: (cmsController) {
+                          if(cmsController.aboutLoader.value){
+                            return CircularProgressIndicator();
+                          }
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset("assets/images/contactimg.png",scale: 2.9,)
+                        );
+                      }
+                    ),
+
+                    Padding(
+                      padding:EdgeInsets.only(top: Get.height*0.18),
+                      child: ContactContainer(
+                        title: "Call us",
+                        // title: "${settingController.settingData['data']['general_settings']['phone'].toString()}",
+                        iconName: 'phone',
+                        onTap: () {
+                          var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
+                          makePhoneCall(phoneNumber);
+                          Logger().d("phoneNumber ........${phoneNumber}");
+
+                        },
+                      ),
+                    ),
+                    ContactContainer(
+                      // title: "${settingController.settingData['data']['general_settings']['email'].toString()}",
+                      title: "Email us",
+                      iconName: 'email',
                       onTap: () {
-                        var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
-                        makePhoneCall(phoneNumber);
-                        Logger().d("phoneNumber ........${phoneNumber}");
-
+                        var emailpath = settingController.settingData['data']['general_settings']['email'].toString();
+                        launchEmailSubmission(emailpath);
                       },
                     ),
-                  ),
-                  ContactContainer(
-                    // title: "${settingController.settingData['data']['general_settings']['email'].toString()}",
-                    title: "Email us",
-                    iconName: 'email',
-                    onTap: () {
-                      var emailpath = settingController.settingData['data']['general_settings']['email'].toString();
-                      launchEmailSubmission(emailpath);
-                    },
-                  ),
-                  ContactContainer(
-                    // title: "${settingController.settingData['data']['general_settings']['phone'].toString()}",
-                    title: "Whatsapp us",
-                    iconName: 'whatsapp',
-                    onTap: () {
-                      var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
-                      openWhatsApp(phoneNumber);
-                    },
-                  ),
-                ],
-              ),
-            );
+                    ContactContainer(
+                      // title: "${settingController.settingData['data']['general_settings']['phone'].toString()}",
+                      title: "Whatsapp us",
+                      iconName: 'whatsapp',
+                      onTap: () {
+                        var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
+                        openWhatsApp(phoneNumber);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }
           }
-        }
+        ),
       ),
     );
   }

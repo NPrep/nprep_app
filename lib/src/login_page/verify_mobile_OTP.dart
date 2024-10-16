@@ -145,170 +145,174 @@ class _VerifyMobileOTPState extends State<VerifyMobileOTP> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      backgroundColor: white,
-      body: Stack(
-        // fit: StackFit.passthrough,
-        children: [
-      Column(
-        children: [
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Container(
-                  color: Colors.white,
-                  child: Image.asset(backgroundtop,width: size.width,fit: BoxFit.contain,)),
-              Positioned(
-                top: 70,
-                child:  Image.asset(logo,color: white,scale: 1.8,),),
-            ],
-          ),
-          Container(
-            height: size.height-350,
-            width: size.width,
-            // color: Colors.red,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text('Enter OTP',
-                                  style: TextStyles.loginTStyle),
-                            ],
-                          ),
-                          SizedBox(
-                            height: size.height * 0.03,
-                          ),
-                          Column(
-                            children: [
-                              Pinput(
-                                focusNode: focusNode,
-                                validator: Validations.pinputOtp,
-                                controller: authController.pinController,
-                                length: 4,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.10, 1.10)),
 
-                                keyboardType: TextInputType.number,
-                                // androidSmsAutofillMethod:AndroidSmsAutofillMethod.smsUserConsentApi,
-                                // listenForMultipleSmsOnAndroid: true,
-                                pinputAutovalidateMode:PinputAutovalidateMode.onSubmit,
-                                defaultPinTheme: defaultPinTheme,
-                                focusedPinTheme: defaultPinTheme.copyWith(
-                                  decoration:
-                                  defaultPinTheme.decoration.copyWith(
-                                    border: Border.all(color: primary),
+      child: Scaffold(
+        backgroundColor: white,
+        body: Stack(
+          // fit: StackFit.passthrough,
+          children: [
+        Column(
+          children: [
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                    color: Colors.white,
+                    child: Image.asset(backgroundtop,width: size.width,fit: BoxFit.contain,)),
+                Positioned(
+                  top: 70,
+                  child:  Image.asset(logo,color: white,scale: 1.8,),),
+              ],
+            ),
+            Container(
+              height: size.height-350,
+              width: size.width,
+              // color: Colors.red,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text('Enter OTP',
+                                    style: TextStyles.loginTStyle),
+                              ],
+                            ),
+                            SizedBox(
+                              height: size.height * 0.03,
+                            ),
+                            Column(
+                              children: [
+                                Pinput(
+                                  focusNode: focusNode,
+                                  validator: Validations.pinputOtp,
+                                  controller: authController.pinController,
+                                  length: 4,
+
+                                  keyboardType: TextInputType.number,
+                                  // androidSmsAutofillMethod:AndroidSmsAutofillMethod.smsUserConsentApi,
+                                  // listenForMultipleSmsOnAndroid: true,
+                                  pinputAutovalidateMode:PinputAutovalidateMode.onSubmit,
+                                  defaultPinTheme: defaultPinTheme,
+                                  focusedPinTheme: defaultPinTheme.copyWith(
+                                    decoration:
+                                    defaultPinTheme.decoration.copyWith(
+                                      border: Border.all(color: primary),
+                                    ),
                                   ),
+                                  errorPinTheme: defaultPinTheme.copyWith(
+                                    decoration:
+                                    defaultPinTheme.decoration.copyWith(
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: Colors
+                                              .red), // Set the error border color to red
+                                    ),
+                                  ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  isCursorAnimationEnabled: true,
                                 ),
-                                errorPinTheme: defaultPinTheme.copyWith(
-                                  decoration:
-                                  defaultPinTheme.decoration.copyWith(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(
-                                        color: Colors
-                                            .red), // Set the error border color to red
-                                  ),
+                                SizedBox(
+                                  height: size.height * 0.02,
                                 ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                isCursorAnimationEnabled: true,
-                              ),
-                              SizedBox(
-                                height: size.height * 0.02,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Didn't receive the OTP? ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: grey,
-                                        fontSize: 14,
-                                        fontFamily: 'Poppins-Regular'),
-                                  ),
-                                  GestureDetector(
-                                    onTap: resend,
-                                    child: Text(
-                                      isResend==true?"Resend":'Resend in ${secondsRemaining}s',
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Didn't receive the OTP? ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
-                                          color: primary,
+                                          color: grey,
                                           fontSize: 14,
                                           fontFamily: 'Poppins-Regular'),
                                     ),
-                                  ),
+                                    GestureDetector(
+                                      onTap: resend,
+                                      child: Text(
+                                        isResend==true?"Resend":'Resend in ${secondsRemaining}s',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: primary,
+                                            fontSize: 14,
+                                            fontFamily: 'Poppins-Regular'),
+                                      ),
+                                    ),
 
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: size.height * 0.01,
-                          ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: size.height * 0.01,
+                            ),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: LoginWithMobile,
-                          child: Text(
-                            'Login'.toUpperCase(),
-                            style: TextStyles.BtnStyle,
-                          )),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: LoginWithMobile,
+                            child: Text(
+                              'Login'.toUpperCase(),
+                              style: TextStyles.BtnStyle,
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
+            )
+          ],
+        ),
 
-      Positioned(
-        top:35,
-        left: 10,
-        child: GestureDetector(
-          onTap: () {
-            SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
-                  systemNavigationBarColor: Color(
-                      0xFFFFFFFF), // navigation bar color
-                  statusBarColor: Color(
-                      0xFF64C4DA), // status bar color
-                ));
-            Get.back();
-          },
-          child: Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-                color:
-                Colors.black45.withOpacity(0.0),
-                borderRadius: BorderRadius.all(
-                    Radius.circular(50))),
-            child: Icon(
-              Icons.chevron_left,
-              color: white,
-              size: 30,
+        Positioned(
+          top:35,
+          left: 10,
+          child: GestureDetector(
+            onTap: () {
+              SystemChrome.setSystemUIOverlayStyle(
+                  SystemUiOverlayStyle(
+                    systemNavigationBarColor: Color(
+                        0xFFFFFFFF), // navigation bar color
+                    statusBarColor: Color(
+                        0xFF64C4DA), // status bar color
+                  ));
+              Get.back();
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                  color:
+                  Colors.black45.withOpacity(0.0),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(50))),
+              child: Icon(
+                Icons.chevron_left,
+                color: white,
+                size: 30,
+              ),
             ),
           ),
+        )
+          ],
         ),
-      )
-        ],
       ),
     );
   }

@@ -18,7 +18,7 @@ const entitlementID = 'Plan 1 Year';
 
 class apiUrls{
 
-  var app_version= 30;
+  var app_version= 31;
   var ios_app_version= 9;
   var App_force_updateNo="1";
   var App_Maintaince_updateNo="1";

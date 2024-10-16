@@ -10,12 +10,14 @@ List<VideoModel> beforevideodatatasks;
 List beforeSingleTaskData = [];
 List questionArray = [];
 List questionArrayinfo = [];
+List downloadsavevideoinfo = [];
 
 class DatabaseService{
   final String _tasksTableName = "videodownload";
   final String _tasksdownloadstart = "downloadstart";
   final String _questiondataarray = "questiondata";
   final String _questionexaminfo = "examinfo";
+  final String _questionSavedownloadinfo = "savedownloadinfo";
   final String _tasksIdColumnName = "id";
   final String _tasksvideoColumnkey = "videokey";
   final String _tasksVideoColumnTitle = "videotitle";
@@ -53,7 +55,7 @@ class DatabaseService{
                   $_tasksIdColumnName INTEGER PRIMARY KEY,
                   $_tasksvideoColumnkey INTEGER NOT NULL,
                   $_tasksVideoColumnTitle VARCHAR NOT NULL,
-                  $_tasksVideoColumnStamps VARCHAR NOT NULL,
+                  $_tasksVideoColumnStamps TEXT NOT NULL,
                   $_tasksVideoColumnNotes VARCHAR NOT NULL,
                   $_tasksVideoColumnPath VARCHAR NOT NULL,
                   $_tasksVideoColumnThumbImage VARCHAR NOT NULL,
@@ -67,7 +69,7 @@ class DatabaseService{
                   $_tasksIdColumnName INTEGER PRIMARY KEY,
                   $_tasksvideoColumnkey INTEGER NOT NULL,
                   $_tasksVideoColumnTitle VARCHAR NOT NULL,
-                  $_tasksVideoColumnStamps VARCHAR NOT NULL,
+                  $_tasksVideoColumnStamps TEXT NOT NULL,
                   $_tasksVideoColumnNotes VARCHAR NOT NULL,
                   $_tasksVideoColumnPath VARCHAR NOT NULL,
                   $_tasksVideoColumnThumbImage VARCHAR NOT NULL,
@@ -77,7 +79,7 @@ class DatabaseService{
           db.execute('''
                 CREATE TABLE $_questiondataarray (
                   id INTEGER PRIMARY KEY,
-                  is_attempt TEXT,
+                  is_attempt INTEGER,
                   your_answer TEXT
                 )
                 ''');
@@ -89,10 +91,18 @@ class DatabaseService{
                   type TEXT
                 )
                 ''');
+          db.execute('''
+                CREATE TABLE $_questionSavedownloadinfo (
+                  taskId TEXT,
+                  progress TEXT,
+                  status TEXT
+                )
+                ''');
           log("Table>> $_tasksTableName created");
           log("Table>> $_tasksdownloadstart created");
           log("Table>> $_questiondataarray created");
           log("Table>> $_questionexaminfo created");
+          log("Table>> $_questionSavedownloadinfo created");
         },
         onOpen: (db) {
           log("Database opened: $db");
@@ -323,7 +333,67 @@ class DatabaseService{
 
   }
 
+  // Insert Download Savevideo Info
+  Future<void> insertSavevideoInfo(String taskId, String progress, String status) async {
+    final db = await database;
+    await db.insert(
+      _questionSavedownloadinfo,
+      {
+        'taskId': taskId,
+        'progress': progress,
+        'status': status,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    GetDownloadSavevideo();
+  }
+  // Update Download Savevideo Info
+  Future<void> updateSavevideoInfo(String taskId,String progress,String status) async {
+    final db = await database;
 
+    // Prepare the updated data
+    Map<String, dynamic> updatedData = {
+      'progress': progress,
+      'status': status,
+    };
+
+    // Update the row that matches the id
+    await db.update(
+      _questionSavedownloadinfo,
+      updatedData,
+      where: 'taskId = ?',
+      whereArgs: [taskId],
+    );
+    GetDownloadSavevideo();
+  }
+  // Delete Download Savevideo Info
+  void deleteDownloadSavevideo(String taskId) async {
+    final db = await database;
+    await db.delete(
+      _questionSavedownloadinfo,
+      where: 'taskId = ?',
+      whereArgs: [taskId],
+    );
+  }
+  // Get Download Savevideo Info
+  Future GetDownloadSavevideo() async {
+    final db = await database;
+    log("get db>> getTasks "+db.toString());
+    try{
+      final data = await db.query(_questionSavedownloadinfo);
+
+
+      downloadsavevideoinfo.clear();
+      downloadsavevideoinfo.addAll(data);
+      log(" _questionSavedownloadinfo length >> "+downloadsavevideoinfo.length.toString());
+      log(" _questionSavedownloadinfo >> "+downloadsavevideoinfo.toString());
+
+    }catch(e){
+      log("get _questionSavedownloadinfo Exception "+e.toString());
+    }
+
+
+  }
 
   Future<void> deleteDatabaseIfExists() async {
     final databaseDirPath = await getDatabasesPath();

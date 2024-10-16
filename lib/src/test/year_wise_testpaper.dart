@@ -146,7 +146,7 @@ if(widget.indexslected==3){
     var width=size.width;
     var height=size.height;
     var mediaquary=MediaQuery.of(context);
-    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.20);
+    var    scale =mediaquary.textScaleFactor.clamp(1.10, 1.10);
 
 
 

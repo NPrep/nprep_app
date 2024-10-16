@@ -60,13 +60,15 @@ class _BottomBarState extends State<BottomBar> {
       statusBarColor: Color(0xFF64C4DA), // status bar color
     ));
   }
-
+  var scale;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
       statusBarColor: Color(0xFF64C4DA),// status bar color
     ));
+    var mediaquary=MediaQuery.of(context);
+     scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
     return WillPopScope(
       onWillPop: () async {
         if(_scaffoldKey.currentState.isDrawerOpen){
@@ -141,11 +143,7 @@ class _BottomBarState extends State<BottomBar> {
       },
       child: GetBuilder<ConnectivityController>(
           builder: (intcontrl) {
-            return
-            //   intcontrl.connectionType == MConnectivityResult.wifi
-            // ///Wifi Connected
-            //     ?
-              Scaffold(
+            return  Scaffold(
               key: _scaffoldKey,
               appBar:AppBar(
                 systemOverlayStyle: SystemUiOverlayStyle(
@@ -233,19 +231,22 @@ class _BottomBarState extends State<BottomBar> {
 
   Widget _bottomappbar(size) {
     return BottomAppBar(
-      child: Container(
-        color: white,
-        width: MediaQuery.of(context).size.width / 6,
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            buildNavBarItem('assets/images/home.png', "Home", 0),
-            buildNavBarItem('assets/images/qbank.png', "Qbank", 1),
-            buildNavBarItem('assets/images/test.png', "Tests", 2),
-            buildNavBarItem('assets/nprep2_images/bottomyoutube.png', "Video", 3),
-            buildNavBarItem('assets/nprep2_images/subscription.png', "Buy", 4),
-          ],
+      child:MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+        child: Container(
+          color: white,
+          width: MediaQuery.of(context).size.width / 6,
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              buildNavBarItem('assets/images/home.png', "Home", 0),
+              buildNavBarItem('assets/images/qbank.png', "Qbank", 1),
+              buildNavBarItem('assets/images/test.png', "Tests", 2),
+              buildNavBarItem('assets/nprep2_images/bottomyoutube.png', "Video", 3),
+              buildNavBarItem('assets/nprep2_images/subscription.png', "Buy", 4),
+            ],
+          ),
         ),
       ),
     );

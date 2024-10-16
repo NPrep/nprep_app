@@ -13,12 +13,12 @@ class Environment {
   static String get apibaseurl{
 
 
-    return  dotenv.env['baseurl'];
+    return  dotenv.env['baseurls'];
   }
   static String get imgapibaseurl{
 
 
-    return  dotenv.env['imgbaseurl'];
+    return  dotenv.env['imgbaseurls'];
   }
   static String get apibasetoken{
 

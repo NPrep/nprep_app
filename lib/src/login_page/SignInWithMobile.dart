@@ -113,97 +113,101 @@ class _SignInWithMobileState extends State<SignInWithMobile> {
   Widget build(BuildContext context) {
     Size size =  MediaQuery.of(context).size;
     log(size.height.toString());
-    return Scaffold(
-      resizeToAvoidBottomInset : false,
-      backgroundColor: white,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.10, 1.10)),
 
-      body:   Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Container(
-              color: Colors.white,
-              child: Image.asset(backgroundtop,width: size.width,fit: BoxFit.contain,)),
+      child: Scaffold(
+        resizeToAvoidBottomInset : false,
+        backgroundColor: white,
 
-          Positioned(
-            top: 70,
-            child:  Image.asset(logo,color: white,scale: 1.8,),),
+        body:   Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+                color: Colors.white,
+                child: Image.asset(backgroundtop,width: size.width,fit: BoxFit.contain,)),
 
-          Container(
-            margin: EdgeInsets.only(
-              left: 20,right: 20
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Row(
-                  //   children: [
-                  //     Text('Update Phone no.'.toUpperCase(),
-                  //         style: TextStyle(
-                  //           color: primary,
-                  //           fontSize: 20,
-                  //           fontWeight: FontWeight.w600,
-                  //           fontFamily:'Poppins-Regular',
-                  //         )),
-                  //   ],
-                  // ),
-                  SizedBox(height: 40,),
-                  Text('Please link your phone number',style: TextStyle(
-                    fontSize: 19,
-                    fontFamily:'Poppins-Regular',
-                    color: black54,
-                    letterSpacing: -0.3,
-                  ),),
-                  SizedBox(height: 29,),
-                  CustomTextFormField(
-                    controller: signInMobilCtrl,
-                    validator: Validations.validateMobile,
-                    maxLength: 10,
-                    hintText: 'Mobile No.',
-                    l_icon: Image.asset(profile_user,scale: 3,),
-                    keyType: TextInputType.phone,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  sizebox_height_35,
+            Positioned(
+              top: 70,
+              child:  Image.asset(logo,color: white,scale: 1.8,),),
 
-                  GestureDetector(
-                    onTap: (){
-                      if(_formKey.currentState.validate()){
-                        var social_otpSend_url = apiUrls().Social_send_otp_api;
-                        var body ={
-                          'mobile':signInMobilCtrl.text.toString(),
-                        };
-                        log('social_otpSend_url==>'+social_otpSend_url.toString());
-                        log('body==>'+body.toString());
-                        authController.SignInWithmobile(social_otpSend_url,body);
-                      }
-
-
-                      // Get.offAll(BottomBar(bottomindex: 0,));
-                      // Get.to(SignInMobileOtpScreen());
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: size.width,
-
-                      padding: EdgeInsets.all(9),
-                      decoration: BoxDecoration(
-                          color: primary,
-                          borderRadius: BorderRadius.all(Radius.circular(5))
-                      ),
-
-                      child:
-                      Text("Send OTP",style: TextStyle(color: white,
-                          fontSize: 17,fontWeight: FontWeight.w600),) ,
+            Container(
+              margin: EdgeInsets.only(
+                left: 20,right: 20
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Row(
+                    //   children: [
+                    //     Text('Update Phone no.'.toUpperCase(),
+                    //         style: TextStyle(
+                    //           color: primary,
+                    //           fontSize: 20,
+                    //           fontWeight: FontWeight.w600,
+                    //           fontFamily:'Poppins-Regular',
+                    //         )),
+                    //   ],
+                    // ),
+                    SizedBox(height: 40,),
+                    Text('Please link your phone number',style: TextStyle(
+                      fontSize: 19,
+                      fontFamily:'Poppins-Regular',
+                      color: black54,
+                      letterSpacing: -0.3,
+                    ),),
+                    SizedBox(height: 29,),
+                    CustomTextFormField(
+                      controller: signInMobilCtrl,
+                      validator: Validations.validateMobile,
+                      maxLength: 10,
+                      hintText: 'Mobile No.',
+                      l_icon: Image.asset(profile_user,scale: 3,),
+                      keyType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
                     ),
-                  ),
-                ],
+                    sizebox_height_35,
+
+                    GestureDetector(
+                      onTap: (){
+                        if(_formKey.currentState.validate()){
+                          var social_otpSend_url = apiUrls().Social_send_otp_api;
+                          var body ={
+                            'mobile':signInMobilCtrl.text.toString(),
+                          };
+                          log('social_otpSend_url==>'+social_otpSend_url.toString());
+                          log('body==>'+body.toString());
+                          authController.SignInWithmobile(social_otpSend_url,body);
+                        }
+
+
+                        // Get.offAll(BottomBar(bottomindex: 0,));
+                        // Get.to(SignInMobileOtpScreen());
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: size.width,
+
+                        padding: EdgeInsets.all(9),
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.all(Radius.circular(5))
+                        ),
+
+                        child:
+                        Text("Send OTP",style: TextStyle(color: white,
+                            fontSize: 17,fontWeight: FontWeight.w600),) ,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -561,101 +561,99 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
   @override
   Widget build(BuildContext context) {
     var mediaquary=MediaQuery.of(context);
-    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.20);
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight:widget.pagenav==true?0:AppBar().preferredSize.height,
-          automaticallyImplyLeading: false,
-          // centerTitle: center,
-          elevation: 0,
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight:widget.pagenav==true?0:AppBar().preferredSize.height,
+            automaticallyImplyLeading: false,
+            // centerTitle: center,
+            elevation: 0,
 
-          title: widget.pagenav==true?Container(): Row(
-            mainAxisAlignment:
-            MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.offAll(BottomBar(bottomindex: 0,));
+            title: widget.pagenav==true?Container(): Row(
+              mainAxisAlignment:
+              MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.offAll(BottomBar(bottomindex: 0,));
 
-                },
-                child: Icon(Icons.arrow_back_ios, color: Colors.white),
-              ),
-
-              Container(
-                width: MediaQuery.of(context).size.width-60,
-                child: Text("Subscription Plans",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(color: Colors.white, fontSize: 17.0,fontWeight: FontWeight.w400)),
-              ),
-            ],
-          ),
-
-        ),
-        body: WillPopScope(
-
-          onWillPop: () async {
-            Get.offAll(BottomBar(bottomindex: 0,));
-            return true;
-
-          },
-          child: GetBuilder<SubscriptionController>  (
-              builder: (subscriptionController) {
-                if (subscriptionController.subsLoader.value) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                return RefreshIndicator(
-                  displacement: 65,
-                  backgroundColor: Colors.white,
-                  color: primary,
-                  strokeWidth: 3,
-                  triggerMode: RefreshIndicatorTriggerMode.onEdge,
-                  onRefresh: () async {
-                    await Future.delayed(Duration(milliseconds: 1500));
-                    subscriptions_apiUrl = apiUrls().subscriptions_api;
-                    subscriptionController.SubscriptionsData(
-                        subscriptions_apiUrl);
                   },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        MediaQuery(
-                          child: Container(
+                  child: Icon(Icons.arrow_back_ios, color: Colors.white),
+                ),
+
+                Container(
+                  width: MediaQuery.of(context).size.width-60,
+                  child: Text("Subscription Plans",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(color: Colors.white, fontSize: 17.0,fontWeight: FontWeight.w400)),
+                ),
+              ],
+            ),
+
+          ),
+          body: WillPopScope(
+
+            onWillPop: () async {
+              Get.offAll(BottomBar(bottomindex: 0,));
+              return true;
+
+            },
+            child: GetBuilder<SubscriptionController>  (
+                builder: (subscriptionController) {
+                  if (subscriptionController.subsLoader.value) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return RefreshIndicator(
+                    displacement: 65,
+                    backgroundColor: Colors.white,
+                    color: primary,
+                    strokeWidth: 3,
+                    triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                    onRefresh: () async {
+                      await Future.delayed(Duration(milliseconds: 1500));
+                      subscriptions_apiUrl = apiUrls().subscriptions_api;
+                      subscriptionController.SubscriptionsData(
+                          subscriptions_apiUrl);
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
                             width: MediaQuery.of(context).size.width,
                             color: versionColor,
                             padding: EdgeInsets.fromLTRB(12, 20, 12, 12),
                             alignment: Alignment.center,
                             child: Text("Choose a plan according \n to your preference.",textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.w500),),
                           ),
-                          data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                        ),
-                        SizedBox(height: 10,),
-                        ListView.builder(
-                          itemCount: subscriptionController.subscriptionData['data'].length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            var subscription_datas = subscriptionController.subscriptionData['data'][index];
-                            print("subscription_data....." + subscription_datas.toString());
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                elevation: 8.2,
-                                child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 18,vertical: 20),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
-                                          // mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                MediaQuery(
-                                                  child: Text(
+                          SizedBox(height: 10,),
+                          ListView.builder(
+                            itemCount: subscriptionController.subscriptionData['data'].length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              var subscription_datas = subscriptionController.subscriptionData['data'][index];
+                              print("subscription_data....." + subscription_datas.toString());
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  elevation: 8.2,
+                                  child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 18,vertical: 20),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            // mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
                                                     " ${subscription_datas['name'].toString()}" == "null"? ""
                                                         :
                                                     "${subscription_datas['name'].toString()}",
@@ -665,18 +663,15 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                         fontFamily: 'PublicSans',
                                                         color: black54),
                                                   ),
-                                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                                                ),
-                                                SizedBox(width: 5,),
-                                                subscription_datas['name']==null?Container():subscription_datas['name'].contains("GOLD") ? Image.asset("assets/nprep2_images/gold.gif",height: 25,):Container(),
-                                              ],
-                                            ),
-                                            SizedBox(height: 12,),
-                                            Container(
-                                              // color: Colors.red,
-                                              // padding: EdgeInsets.only(left: 15.0),
-                                              width: MediaQuery.of(context).size.width-200,
-                                              child: MediaQuery(
+                                                  SizedBox(width: 5,),
+                                                  subscription_datas['name']==null?Container():subscription_datas['name'].contains("GOLD") ? Image.asset("assets/nprep2_images/gold.gif",height: 25,):Container(),
+                                                ],
+                                              ),
+                                              SizedBox(height: 12,),
+                                              Container(
+                                                // color: Colors.red,
+                                                // padding: EdgeInsets.only(left: 15.0),
+                                                width: MediaQuery.of(context).size.width-200,
                                                 child: Html(
                                                   data:subscription_datas['description'],
 
@@ -720,20 +715,17 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                   //     fontFamily: 'Helvetica',
                                                   //     color: black54),
                                                 ),
-                                                data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
-                                              // mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                MediaQuery(
-                                                  child: Text(
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
+                                                // mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
                                                     '\u20B9 ',
                                                     style: TextStyle(
                                                         fontSize: 20,
@@ -743,10 +735,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                         color: black54
                                                     ),
                                                   ),
-                                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                                                ),
-                                                MediaQuery(
-                                                  child: Text(
+                                                  Text(
                                                     " ${subscription_datas['price']==null?"":
                                                     double.parse(subscription_datas['price'].toString())
                                                         .toStringAsFixed(0)}" =="null"? ""
@@ -760,25 +749,22 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                             .w700,
                                                         fontFamily: 'PublicSans',
                                                         color: black54),
-                                                  ),
-                                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(height: 5,),
-                                            GestureDetector(
-                                              onTap: () async {
-                                                var settingUrl ="${apiUrls().setting_api}";
-                                                await settingController.SettingData(settingUrl);
-                                                Navigator.push(context,MaterialPageRoute(builder: (context)=>
-                                                    PlandetailScreen(
-                                                      plan_name: subscription_datas['name'].toString(),
-                                                      plan_description:subscription_datas['description'].toString(),
-                                                      plan_price: subscription_datas['price'].toString(),
-                                                      plan_index: index,
-                                                    )));
-                                              },
-                                              child: MediaQuery(
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 5,),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  var settingUrl ="${apiUrls().setting_api}";
+                                                  await settingController.SettingData(settingUrl);
+                                                  Navigator.push(context,MaterialPageRoute(builder: (context)=>
+                                                      PlandetailScreen(
+                                                        plan_name: subscription_datas['name'].toString(),
+                                                        plan_description:subscription_datas['description'].toString(),
+                                                        plan_price: subscription_datas['price'].toString(),
+                                                        plan_index: index,
+                                                      )));
+                                                },
                                                 child: Container(
                                                   // width: 120,
                                                   // height: 40,
@@ -809,284 +795,283 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
 
                                                   ),
                                                 ),
-                                                data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                              ),
-                            );
-    //                   return subscription_datas['subscriptions'].length==0 ?
-    //                   ListTile(title: Text(subscription_datas['subscription_category'].toString().capitalize,style: TextStyle(
-    //                       fontSize: 20,
-    //                       fontWeight: FontWeight
-    //                           .w700,
-    //                       fontFamily: 'Helvetica',
-    //                       color: black54),),
-    //                     )
-    //                       : ExpansionTile(
-    //                     title: Text(subscription_datas['subscription_category'].toString().capitalize,style: TextStyle(
-    //                         fontSize: 20,
-    //                         fontWeight: FontWeight
-    //                             .w700,
-    //                         fontFamily: 'Helvetica',
-    //                         color: black54),),
-    //                     children: [
-    //                       ListView.builder(
-    // itemCount: subscription_datas['subscriptions'].length,
-    // shrinkWrap: true,
-    // physics: NeverScrollableScrollPhysics(),
-    // itemBuilder: (BuildContext context, int index) {
-    // var subscription_data = subscription_datas['subscriptions'][index];
-    // print("subscription_data....." + subscription_data.toString());
-    // return Padding(
-    //   padding: const EdgeInsets.all(8.0),
-    //   child: Stack(
-    //     children: [
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 2.5),
-    //         child: Card(
-    //           elevation: 8.2,
-    //           child: Container(
-    //               margin: EdgeInsets.symmetric(
-    //                   horizontal: 18,vertical: 20),
-    //
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                 children: [
-    //                   Column(
-    //                     crossAxisAlignment: CrossAxisAlignment
-    //                         .start,
-    //                     // mainAxisAlignment: MainAxisAlignment.start,
-    //                     children: [
-    //                       Row(
-    //                         children: [
-    //                           Text(
-    //                             " ${subscription_data['plan_title']
-    //                                 .toString()}" ==
-    //                                 "null"
-    //                                 ? ""
-    //                                 :
-    //                             "${subscription_data['plan_title']
-    //                                 .toString()}",
-    //                             style: TextStyle(
-    //                                 fontSize: 20,
-    //                                 fontWeight: FontWeight
-    //                                     .w700,
-    //                                 fontFamily: 'Helvetica',
-    //                                 color: black54),
-    //                           ),
-    //                           SizedBox(width: 5,),
-    //                           subscription_data['plan_title'].contains("GOLD") ? Image.asset("assets/nprep2_images/gold.gif",height: 25,):Container(),
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 12,),
-    //                       Container(
-    //                         // color: Colors.red,
-    //                         padding: EdgeInsets.only(left: 15.0),
-    //                         width: MediaQuery.of(context).size.width-200,
-    //                         child: Text(
-    //
-    //                           " ${subscription_data['description']
-    //                               .toString()}" ==
-    //                               "null"
-    //                               ? ""
-    //                               :
-    //                           "${subscription_data['description']
-    //                               .toString()}",
-    //
-    //                           style: TextStyle(
-    //                               fontSize: 12,
-    //
-    //                               fontWeight: FontWeight.w400,
-    //                               fontFamily: 'Helvetica',
-    //                               color: black54),
-    //                         ),
-    //                       ),
-    //                       SizedBox(height: 12,),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment
-    //                             .start,
-    //                         children: [
-    //                           Text(
-    //                             '${subscription_data['period_duration']
-    //                                 .toString() == "null"
-    //                                 ? ""
-    //                                 : subscription_data['period_duration']
-    //                                 .toString()}'
-    //                                 ' ${int.parse(
-    //                                 subscription_data['plan_duration']
-    //                                     .toString()) == 1
-    //                                 ? "Month Validity"
-    //                                 : "Year Validity"}',
-    //                             style: TextStyle(
-    //                                 fontSize: 15,
-    //                                 fontStyle: FontStyle.italic,
-    //                                 fontWeight: FontWeight
-    //                                     .w700,
-    //                                 fontFamily: 'Helvetica',
-    //                                 color: Colors.black38),
-    //                           ),
-    //                         ],
-    //                       )
-    //                     ],
-    //                   ),
-    //                   Column(
-    //                     children: [
-    //                       Row(
-    //                         crossAxisAlignment: CrossAxisAlignment
-    //                             .start,
-    //                         // mainAxisAlignment: MainAxisAlignment.start,
-    //                         children: [
-    //                           Text(
-    //                             '\u20B9 ',
-    //                             style: TextStyle(
-    //                                 fontSize: 20,
-    //                                 fontWeight: FontWeight
-    //                                     .w700,
-    //                                 fontFamily: 'Helvetica',
-    //                                 color: black54
-    //                             ),
-    //                           ),
-    //                           Text(
-    //                             " ${double.parse(
-    //                                 subscription_data['plan_price']
-    //                                     .toString())
-    //                                 .toStringAsFixed(0)}" ==
-    //                                 "null"
-    //                                 ? ""
-    //                                 :
-    //                             "${double.parse(
-    //                                 subscription_data['plan_price']
-    //                                     .toString())
-    //                                 .toStringAsFixed(0)}",
-    //                             style: TextStyle(
-    //                                 fontSize: 20,
-    //                                 fontWeight: FontWeight
-    //                                     .w700,
-    //                                 fontFamily: 'Helvetica',
-    //                                 color: black54),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 5,),
-    //                       GestureDetector(
-    //                         onTap: () {
-    //                           Navigator.push(context,
-    //                               MaterialPageRoute(
-    //                                   builder: (context) =>
-    //                                       PlanScreen(
-    //                                         plan_price: double
-    //                                             .parse(
-    //                                             subscription_data['plan_price']
-    //                                                 .toString())
-    //                                             .toStringAsFixed(
-    //                                             0),
-    //                                         plan_name: subscription_data['plan_title']
-    //                                             .toString(),
-    //                                         plan_id: subscription_data['id']
-    //                                             .toString(),
-    //                                         plan_mrp: subscription_data['mrp_price']
-    //                                             .toString(),
-    //                                         plan_duration: subscription_data['period_duration']
-    //                                             .toString(),
-    //                                         plan_description: subscription_data['description']
-    //                                             .toString(),
-    //                                         plan_period: subscription_data['plan_duration'].toString(),
-    //                                         plan_inapp_id: subscription_data['package_id'].toString(),
-    //
-    //                                       )));
-    //
-    //                         },
-    //                         child: Container(
-    //                           // width: 120,
-    //                           // height: 40,
-    //                           decoration: BoxDecoration(
-    //                               color: primary,
-    //                               borderRadius: BorderRadius
-    //                                   .circular(
-    //                                   18)),
-    //                           child:Padding(
-    //                               padding: EdgeInsets.symmetric(
-    //                                   horizontal: 16,
-    //                                   vertical: 8),
-    //                               child: Text(
-    //                                 subscriptionController
-    //                                     .buyplanLoader.value ==
-    //                                     false
-    //                                     ||
-    //                                     selectedIndex != index
-    //                                     ? 'Buy Now'
-    //                                     : "Loading..",
-    //                                 style: TextStyle(
-    //                                     fontWeight: FontWeight
-    //                                         .w700,
-    //                                     fontFamily: 'Helvetica',
-    //                                     fontSize: 18,
-    //                                     color: white),
-    //                               )
-    //
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   )
-    //                 ],
-    //               )),
-    //         ),
-    //       ),
-    //
-    //       subscription_data['is_recomended']==1? Image.asset("assets/nprep2_images/recmmended.png",height: 40,):Container(),
-    //     ],
-    //   ),
-    // );
-    // }),
-    //                     ],
-    //                   );
-                          },
-                        ),
-
-
-                        SizedBox(height: 15,),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: "Have any query? ",
-                            style:  TextStyles.loginB1Style,
-                            children: [
-                              TextSpan(
-                                text: 'Whatsapp us ',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: primary,
-                                  fontWeight: FontWeight.bold,
+                                            ],
+                                          )
+                                        ],
+                                      )),
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // GetDilogssss("sucessmsg");
-                                    var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
-                                    openWhatsApp(phoneNumber);
-                                  },
-                              ),
-                              TextSpan(
-                                text: 'for assistance. ',
-                                style: TextStyles.loginB1Style,
-
-                              ),
-
-                            ],
+                              );
+      //                   return subscription_datas['subscriptions'].length==0 ?
+      //                   ListTile(title: Text(subscription_datas['subscription_category'].toString().capitalize,style: TextStyle(
+      //                       fontSize: 20,
+      //                       fontWeight: FontWeight
+      //                           .w700,
+      //                       fontFamily: 'Helvetica',
+      //                       color: black54),),
+      //                     )
+      //                       : ExpansionTile(
+      //                     title: Text(subscription_datas['subscription_category'].toString().capitalize,style: TextStyle(
+      //                         fontSize: 20,
+      //                         fontWeight: FontWeight
+      //                             .w700,
+      //                         fontFamily: 'Helvetica',
+      //                         color: black54),),
+      //                     children: [
+      //                       ListView.builder(
+      // itemCount: subscription_datas['subscriptions'].length,
+      // shrinkWrap: true,
+      // physics: NeverScrollableScrollPhysics(),
+      // itemBuilder: (BuildContext context, int index) {
+      // var subscription_data = subscription_datas['subscriptions'][index];
+      // print("subscription_data....." + subscription_data.toString());
+      // return Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Stack(
+      //     children: [
+      //       Padding(
+      //         padding: const EdgeInsets.only(top: 2.5),
+      //         child: Card(
+      //           elevation: 8.2,
+      //           child: Container(
+      //               margin: EdgeInsets.symmetric(
+      //                   horizontal: 18,vertical: 20),
+      //
+      //               child: Row(
+      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                 children: [
+      //                   Column(
+      //                     crossAxisAlignment: CrossAxisAlignment
+      //                         .start,
+      //                     // mainAxisAlignment: MainAxisAlignment.start,
+      //                     children: [
+      //                       Row(
+      //                         children: [
+      //                           Text(
+      //                             " ${subscription_data['plan_title']
+      //                                 .toString()}" ==
+      //                                 "null"
+      //                                 ? ""
+      //                                 :
+      //                             "${subscription_data['plan_title']
+      //                                 .toString()}",
+      //                             style: TextStyle(
+      //                                 fontSize: 20,
+      //                                 fontWeight: FontWeight
+      //                                     .w700,
+      //                                 fontFamily: 'Helvetica',
+      //                                 color: black54),
+      //                           ),
+      //                           SizedBox(width: 5,),
+      //                           subscription_data['plan_title'].contains("GOLD") ? Image.asset("assets/nprep2_images/gold.gif",height: 25,):Container(),
+      //                         ],
+      //                       ),
+      //                       SizedBox(height: 12,),
+      //                       Container(
+      //                         // color: Colors.red,
+      //                         padding: EdgeInsets.only(left: 15.0),
+      //                         width: MediaQuery.of(context).size.width-200,
+      //                         child: Text(
+      //
+      //                           " ${subscription_data['description']
+      //                               .toString()}" ==
+      //                               "null"
+      //                               ? ""
+      //                               :
+      //                           "${subscription_data['description']
+      //                               .toString()}",
+      //
+      //                           style: TextStyle(
+      //                               fontSize: 12,
+      //
+      //                               fontWeight: FontWeight.w400,
+      //                               fontFamily: 'Helvetica',
+      //                               color: black54),
+      //                         ),
+      //                       ),
+      //                       SizedBox(height: 12,),
+      //                       Row(
+      //                         mainAxisAlignment: MainAxisAlignment
+      //                             .start,
+      //                         children: [
+      //                           Text(
+      //                             '${subscription_data['period_duration']
+      //                                 .toString() == "null"
+      //                                 ? ""
+      //                                 : subscription_data['period_duration']
+      //                                 .toString()}'
+      //                                 ' ${int.parse(
+      //                                 subscription_data['plan_duration']
+      //                                     .toString()) == 1
+      //                                 ? "Month Validity"
+      //                                 : "Year Validity"}',
+      //                             style: TextStyle(
+      //                                 fontSize: 15,
+      //                                 fontStyle: FontStyle.italic,
+      //                                 fontWeight: FontWeight
+      //                                     .w700,
+      //                                 fontFamily: 'Helvetica',
+      //                                 color: Colors.black38),
+      //                           ),
+      //                         ],
+      //                       )
+      //                     ],
+      //                   ),
+      //                   Column(
+      //                     children: [
+      //                       Row(
+      //                         crossAxisAlignment: CrossAxisAlignment
+      //                             .start,
+      //                         // mainAxisAlignment: MainAxisAlignment.start,
+      //                         children: [
+      //                           Text(
+      //                             '\u20B9 ',
+      //                             style: TextStyle(
+      //                                 fontSize: 20,
+      //                                 fontWeight: FontWeight
+      //                                     .w700,
+      //                                 fontFamily: 'Helvetica',
+      //                                 color: black54
+      //                             ),
+      //                           ),
+      //                           Text(
+      //                             " ${double.parse(
+      //                                 subscription_data['plan_price']
+      //                                     .toString())
+      //                                 .toStringAsFixed(0)}" ==
+      //                                 "null"
+      //                                 ? ""
+      //                                 :
+      //                             "${double.parse(
+      //                                 subscription_data['plan_price']
+      //                                     .toString())
+      //                                 .toStringAsFixed(0)}",
+      //                             style: TextStyle(
+      //                                 fontSize: 20,
+      //                                 fontWeight: FontWeight
+      //                                     .w700,
+      //                                 fontFamily: 'Helvetica',
+      //                                 color: black54),
+      //                           )
+      //                         ],
+      //                       ),
+      //                       SizedBox(height: 5,),
+      //                       GestureDetector(
+      //                         onTap: () {
+      //                           Navigator.push(context,
+      //                               MaterialPageRoute(
+      //                                   builder: (context) =>
+      //                                       PlanScreen(
+      //                                         plan_price: double
+      //                                             .parse(
+      //                                             subscription_data['plan_price']
+      //                                                 .toString())
+      //                                             .toStringAsFixed(
+      //                                             0),
+      //                                         plan_name: subscription_data['plan_title']
+      //                                             .toString(),
+      //                                         plan_id: subscription_data['id']
+      //                                             .toString(),
+      //                                         plan_mrp: subscription_data['mrp_price']
+      //                                             .toString(),
+      //                                         plan_duration: subscription_data['period_duration']
+      //                                             .toString(),
+      //                                         plan_description: subscription_data['description']
+      //                                             .toString(),
+      //                                         plan_period: subscription_data['plan_duration'].toString(),
+      //                                         plan_inapp_id: subscription_data['package_id'].toString(),
+      //
+      //                                       )));
+      //
+      //                         },
+      //                         child: Container(
+      //                           // width: 120,
+      //                           // height: 40,
+      //                           decoration: BoxDecoration(
+      //                               color: primary,
+      //                               borderRadius: BorderRadius
+      //                                   .circular(
+      //                                   18)),
+      //                           child:Padding(
+      //                               padding: EdgeInsets.symmetric(
+      //                                   horizontal: 16,
+      //                                   vertical: 8),
+      //                               child: Text(
+      //                                 subscriptionController
+      //                                     .buyplanLoader.value ==
+      //                                     false
+      //                                     ||
+      //                                     selectedIndex != index
+      //                                     ? 'Buy Now'
+      //                                     : "Loading..",
+      //                                 style: TextStyle(
+      //                                     fontWeight: FontWeight
+      //                                         .w700,
+      //                                     fontFamily: 'Helvetica',
+      //                                     fontSize: 18,
+      //                                     color: white),
+      //                               )
+      //
+      //                           ),
+      //                         ),
+      //                       ),
+      //                     ],
+      //                   )
+      //                 ],
+      //               )),
+      //         ),
+      //       ),
+      //
+      //       subscription_data['is_recomended']==1? Image.asset("assets/nprep2_images/recmmended.png",height: 40,):Container(),
+      //     ],
+      //   ),
+      // );
+      // }),
+      //                     ],
+      //                   );
+                            },
                           ),
-                        ),
-                        SizedBox(height: 30,),
-                      ],
+
+
+                          SizedBox(height: 15,),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: "Have any query? ",
+                              style:  TextStyles.loginB1Style,
+                              children: [
+                                TextSpan(
+                                  text: 'Whatsapp us ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      // GetDilogssss("sucessmsg");
+                                      var phoneNumber =settingController.settingData['data']['general_settings']['phone'].toString();
+                                      openWhatsApp(phoneNumber);
+                                    },
+                                ),
+                                TextSpan(
+                                  text: 'for assistance. ',
+                                  style: TextStyles.loginB1Style,
+
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
-          ),
-        )
+                  );
+                }
+            ),
+          )
+      ),
     );
   }
 
