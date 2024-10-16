@@ -86,8 +86,6 @@ if(widget.indexslected==3){
     setState(() {
 
     });
-    log('getExamTypeData(Pyq,mock,sub)==>'+examController.get_data.toString());
-    log('length==>'+examController.get_data['data'].length.toString());
   }
   getTestDataMock(exam_type,subjectId) async {
     Map<String, String> queryParams;
@@ -104,12 +102,10 @@ if(widget.indexslected==3){
     var getExamUrl = apiUrls().Mock_exam_list_api + '?' + queryString;
     log('getExamUrl==>'+getExamUrl.toString());
    // getExamUrl = apiUrls().exam_list_api;
-    await examController.GetExamData(getExamUrl);
+    await examController.GetExamData2(getExamUrl,exam_type);
     setState(() {
 
     });
-    log('getExamTypeData(Pyq,mock,sub)==>'+examController.get_data.toString());
-    log('length==>'+examController.get_data['data'].length.toString());
   }
 
   getSubjectData() async {
@@ -357,158 +353,6 @@ if(widget.indexslected==3){
                               //   print('isExpanded....true.......${isExpanded}');
                               // },
                               trailing: Icon(Icons.arrow_forward_ios_rounded),
-                              // children: [
-                              //
-                              //
-                              //   // LIST VIEW BUILDER = = = = = = = = = =  =========>
-                              //
-                              //
-                              //   ListView.builder(
-                              //       itemCount: examController.get_data['data'][index1]['exam_details'].length,
-                              //       shrinkWrap: true,
-                              //       physics: NeverScrollableScrollPhysics(),
-                              //       itemBuilder: (BuildContext context, index2) {
-                              //         var examdetails= examController.get_data['data'][index1]['exam_details'][index2];
-                              //         return  Stack(
-                              //           children: [
-                              //             Container(
-                              //               color: lightPrimary,
-                              //               child:  Padding(
-                              //                 padding:
-                              //                 const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-                              //                 child: GestureDetector(
-                              //                   onTap: () async {
-                              //                     log("examdetails['last_attempt_result_id']>> "+examdetails['last_attempt_result_id'].toString());
-                              //                     if(examdetails['last_attempt_result_id']!=null){
-                              //                       Get.to(TestSeriesHistory(title: examdetails['title'],
-                              //                         header: "Year ${yeardata['exam_year']}",
-                              //                         attempquestion: examdetails['MCQs'],
-                              //                         checkstatus: 3,
-                              //                         completed_date: examdetails['last_attempt_result_date'],
-                              //                         examid:examdetails['id'] ,
-                              //                         lastexamid: examdetails['last_attempt_result_id'] ,
-                              //                         total_questions: examdetails['MCQs'],
-                              //                         total_questions_duration: int.parse(examdetails['exam_duration'].toString()), created_at: examdetails['last_attempt_result_date'],));
-                              //                     }else{
-                              //                       var exam_details_id = examdetails['id'];
-                              //                       var exam_duration = int.parse(examdetails['exam_duration'].toString());
-                              //                       var attemptExamUrl = "${apiUrls().Mock_exam_attempt_api}" "${exam_details_id}";
-                              //
-                              //                       await examController.MockAttemptExamData(attemptExamUrl,exam_duration);
-                              //                       print("attemptExamUrl......"+attemptExamUrl.toString());
-                              //
-                              //                     }
-                              //
-                              //                     print("examdetails......"+examdetails.toString());
-                              //                   },
-                              //                   child: Container(
-                              //                     decoration: BoxDecoration(
-                              //                       color: white,
-                              //                       // color: lightPrimary,
-                              //                       borderRadius: BorderRadius.circular(4),
-                              //                     ),
-                              //                     child: Column(
-                              //
-                              //                       children: [
-                              //                         SizedBox(
-                              //                           height: 14,
-                              //                         ),
-                              //                         Container(
-                              //                           // color: Colors.redAccent,
-                              //                           alignment: Alignment.center,
-                              //                           width: MediaQuery.of(context).size.width-85,
-                              //                           child: Text(
-                              //                             '${examdetails['title'].toString()}',
-                              //                             style: TextStyle(color: primary,
-                              //                                 letterSpacing: 0.6,
-                              //                                 fontWeight: FontWeight.w500,
-                              //
-                              //                                 fontSize: 16),
-                              //                           ),
-                              //                         ),
-                              //                         SizedBox(
-                              //                           height: 14,
-                              //                         ),
-                              //                         Container(
-                              //                           decoration: BoxDecoration(
-                              //                             // color: Colors.red,
-                              //                             image: DecorationImage(
-                              //                                 image: AssetImage("assets/images/backwithout_color.png"),
-                              //                                 fit: BoxFit.cover
-                              //                             ),
-                              //                             borderRadius: BorderRadius.only(
-                              //                                 bottomLeft: Radius.circular(4),
-                              //                                 bottomRight: Radius.circular(4)),
-                              //                           ),
-                              //                           child: Padding(
-                              //                             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                              //                             child: Row(
-                              //                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              //                               children: [
-                              //                                 Row(
-                              //                                   children: [
-                              //                                     Icon(
-                              //                                       Icons.ballot_outlined,
-                              //                                       color: white,
-                              //                                       size: 16,
-                              //                                     ),
-                              //                                     Text(
-                              //                                       'MCQs ${examdetails['MCQs'].toString()}',
-                              //                                       style:
-                              //                                       TextStyle(color: white, fontSize: 12),
-                              //                                     ),
-                              //                                   ],
-                              //                                 ),
-                              //                                 // Text('${test['type']}',
-                              //                                 //     style:
-                              //                                 //         TextStyle(color: white, fontSize: 16)),
-                              //                                 Row(
-                              //                                   children: [
-                              //                                     Icon(
-                              //                                       Icons.watch_later_outlined,
-                              //                                       color: white,
-                              //                                       size: 16,
-                              //                                     ),
-                              //                                     Text(' ${examdetails['exam_duration'].toString()}Min',
-                              //                                         style: TextStyle(
-                              //                                             color: white, fontSize: 12)),
-                              //                                   ],
-                              //                                 ),
-                              //                               ],
-                              //                             ),
-                              //                           ),
-                              //                         ),
-                              //                       ],
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //             Positioned(
-                              //               top: 8,
-                              //               right: 5,
-                              //               child:  examdetails['fee_type'].toString()== "2"?Container(
-                              //               ):
-                              //               Container(
-                              //                 height: 25,
-                              //                 padding:  EdgeInsets.only(right: 5.0,top: 5.0),
-                              //                 child: Container(
-                              //                   padding: EdgeInsets.only(left: 7,right: 7,top: 3,bottom: 3),
-                              //                   decoration: BoxDecoration(
-                              //                       shape: BoxShape.rectangle,
-                              //                       borderRadius: BorderRadius.all(Radius.circular(5)),
-                              //                       border: Border.all(width: 0.5,color: Colors.grey)
-                              //                   ),
-                              //                   child: Text('Paid',
-                              //                       style:
-                              //                       TextStyle(fontSize: 11,color: Colors.grey.shade600)),
-                              //                 ),
-                              //               ),)
-                              //           ],
-                              //         );
-                              //       })
-                              //
-                              // ],
                             ),
                           ),
                         ),
@@ -591,158 +435,6 @@ if(widget.indexslected==3){
                               //   print('isExpanded....true.......${isExpanded}');
                               // },
                               trailing: Icon(Icons.arrow_forward_ios_outlined),
-                              // children: [
-                              //
-                              //
-                              //   // LIST VIEW BUILDER = = = = = = = = = =  =========>
-                              //
-                              //
-                              //   ListView.builder(
-                              //       itemCount: examController.get_data['data'][index1]['exam_details'].length,
-                              //       shrinkWrap: true,
-                              //       physics: NeverScrollableScrollPhysics(),
-                              //       itemBuilder: (BuildContext context, index2) {
-                              //         var examdetails= examController.get_data['data'][index1]['exam_details'][index2];
-                              //         return  Stack(
-                              //           children: [
-                              //             Container(
-                              //               color: lightPrimary,
-                              //               child:  Padding(
-                              //                 padding:
-                              //                 const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-                              //                 child: GestureDetector(
-                              //                   onTap: () async {
-                              //                     log("examdetails['last_attempt_result_id']>> "+examdetails['last_attempt_result_id'].toString());
-                              //                     if(examdetails['last_attempt_result_id']!=null){
-                              //                       Get.to(TestSeriesHistory(title: examdetails['title'],
-                              //                         header: "Year ${yeardata['exam_year']}",
-                              //                         attempquestion: examdetails['MCQs'],
-                              //                         checkstatus: 3,
-                              //                         completed_date: examdetails['last_attempt_result_date'],
-                              //                         examid:examdetails['id'] ,
-                              //                         lastexamid: examdetails['last_attempt_result_id'] ,
-                              //                         total_questions: examdetails['MCQs'],
-                              //                         total_questions_duration: int.parse(examdetails['exam_duration'].toString()), created_at: examdetails['last_attempt_result_date'],));
-                              //                     }else{
-                              //                       var exam_details_id = examdetails['id'];
-                              //                       var exam_duration = int.parse(examdetails['exam_duration'].toString());
-                              //                       var attemptExamUrl = "${apiUrls().Mock_exam_attempt_api}" "${exam_details_id}";
-                              //
-                              //                       await examController.MockAttemptExamData(attemptExamUrl,exam_duration);
-                              //                       print("attemptExamUrl......"+attemptExamUrl.toString());
-                              //
-                              //                     }
-                              //
-                              //                     print("examdetails......"+examdetails.toString());
-                              //                   },
-                              //                   child: Container(
-                              //                     decoration: BoxDecoration(
-                              //                       color: white,
-                              //                       // color: lightPrimary,
-                              //                       borderRadius: BorderRadius.circular(4),
-                              //                     ),
-                              //                     child: Column(
-                              //
-                              //                       children: [
-                              //                         SizedBox(
-                              //                           height: 14,
-                              //                         ),
-                              //                         Container(
-                              //                           // color: Colors.redAccent,
-                              //                           alignment: Alignment.center,
-                              //                           width: MediaQuery.of(context).size.width-85,
-                              //                           child: Text(
-                              //                             '${examdetails['title'].toString()}',
-                              //                             style: TextStyle(color: primary,
-                              //                                 letterSpacing: 0.6,
-                              //                                 fontWeight: FontWeight.w500,
-                              //
-                              //                                 fontSize: 16),
-                              //                           ),
-                              //                         ),
-                              //                         SizedBox(
-                              //                           height: 14,
-                              //                         ),
-                              //                         Container(
-                              //                           decoration: BoxDecoration(
-                              //                             // color: Colors.red,
-                              //                             image: DecorationImage(
-                              //                                 image: AssetImage("assets/images/backwithout_color.png"),
-                              //                                 fit: BoxFit.cover
-                              //                             ),
-                              //                             borderRadius: BorderRadius.only(
-                              //                                 bottomLeft: Radius.circular(4),
-                              //                                 bottomRight: Radius.circular(4)),
-                              //                           ),
-                              //                           child: Padding(
-                              //                             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                              //                             child: Row(
-                              //                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              //                               children: [
-                              //                                 Row(
-                              //                                   children: [
-                              //                                     Icon(
-                              //                                       Icons.ballot_outlined,
-                              //                                       color: white,
-                              //                                       size: 16,
-                              //                                     ),
-                              //                                     Text(
-                              //                                       'MCQs ${examdetails['MCQs'].toString()}',
-                              //                                       style:
-                              //                                       TextStyle(color: white, fontSize: 12),
-                              //                                     ),
-                              //                                   ],
-                              //                                 ),
-                              //                                 // Text('${test['type']}',
-                              //                                 //     style:
-                              //                                 //         TextStyle(color: white, fontSize: 16)),
-                              //                                 Row(
-                              //                                   children: [
-                              //                                     Icon(
-                              //                                       Icons.watch_later_outlined,
-                              //                                       color: white,
-                              //                                       size: 16,
-                              //                                     ),
-                              //                                     Text(' ${examdetails['exam_duration'].toString()}Min',
-                              //                                         style: TextStyle(
-                              //                                             color: white, fontSize: 12)),
-                              //                                   ],
-                              //                                 ),
-                              //                               ],
-                              //                             ),
-                              //                           ),
-                              //                         ),
-                              //                       ],
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //             Positioned(
-                              //               top: 8,
-                              //               right: 5,
-                              //               child:  examdetails['fee_type'].toString()== "2"?Container(
-                              //               ):
-                              //               Container(
-                              //                 height: 25,
-                              //                 padding:  EdgeInsets.only(right: 5.0,top: 5.0),
-                              //                 child: Container(
-                              //                   padding: EdgeInsets.only(left: 7,right: 7,top: 3,bottom: 3),
-                              //                   decoration: BoxDecoration(
-                              //                       shape: BoxShape.rectangle,
-                              //                       borderRadius: BorderRadius.all(Radius.circular(5)),
-                              //                       border: Border.all(width: 0.5,color: Colors.grey)
-                              //                   ),
-                              //                   child: Text('Paid',
-                              //                       style:
-                              //                       TextStyle(fontSize: 11,color: Colors.grey.shade600)),
-                              //                 ),
-                              //               ),)
-                              //           ],
-                              //         );
-                              //       })
-                              //
-                              // ],
                             ),
                           ),
                         ),
@@ -809,8 +501,8 @@ if(widget.indexslected==3){
                                           alignment: Alignment.center,
                                           child: Image.asset(
                                             "assets/nprep2_images/LOGO.png",
-                                            height: 20,
-                                            width: 20,
+                                            height: 50,
+                                            width: 50,
                                           ),
                                           // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
                                           //   color: Colors.grey.shade300,),

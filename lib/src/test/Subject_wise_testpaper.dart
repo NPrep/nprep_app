@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -48,7 +47,7 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
     var getExamUrl = apiUrls().exam_list_api + '?' + queryString;
     log('getExamUrl==>' + getExamUrl.toString());
     // getExamUrl = apiUrls().exam_list_api;
-    await examController.GetExamData(getExamUrl);
+    await examController.GetExamData3(getExamUrl);
     setState(() {});
     log('getExamTypeData(Pyq,mock,sub)==>' +examController.get_data.toString());
     log('length==>' + examController.get_data['data'].length.toString());
@@ -76,7 +75,7 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
           ),
           elevation: 0,
           toolbarHeight: 50,
-          title:AutoSizeText('${widget.subjectName}',
+          title:Text('${widget.subjectName}',
               style: TextStyle(color: white,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 20,
@@ -85,7 +84,9 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
 
 
         ),
-        body: SubjectListscroll());
+        body: examController.getELoader == true || examController.get_data['data'].length == 0 || examController.get_data['data'][0]['id']==null ? Center(
+          child: CircularProgressIndicator(),
+        ) : SubjectListscroll());
   }
 
   Widget SubjectListscroll() {
@@ -102,123 +103,6 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Padding(
-              //   padding: EdgeInsets.all(10),
-              //   child: Card(
-              //     elevation: 2.8,
-              //     child: Container(
-              //       width:Get.width,
-              //       child: Column(
-              //         children: [
-              //           Container(
-              //             padding: EdgeInsets.only(top: 10,left: 10,bottom: 5),
-              //             alignment: Alignment.centerLeft,
-              //             child: Text("Subject",
-              //                 style: TextStyle(
-              //                     fontWeight: FontWeight.w400,
-              //                     color: textColor,
-              //                     fontSize: 18,
-              //                     letterSpacing: 0.5)
-              //             ),
-              //           ),
-              //           Padding(
-              //             padding: EdgeInsets.only(left: 10,right: 10),
-              //             child: Row(
-              //               children: [
-              //                 Expanded(
-              //                   flex: 1,
-              //                   child: Divider(
-              //                     color:  primary,
-              //                     height: 12,
-              //                     thickness: 2.5,
-              //                     indent: 0,
-              //                     endIndent: 0,
-              //                   ),
-              //                 ),
-              //                 Expanded(
-              //                   flex: 5,
-              //                   child: Divider(
-              //                     color:  white,
-              //                     height: 12,
-              //                     thickness: 2.5,
-              //                     indent: 0,
-              //                     endIndent: 0,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //           GestureDetector(
-              //             onTap: () async {
-              //               // await Get.to(VideoDetailScreen(CatId: int.parse(Environment.videoCatId)));
-              //             },
-              //             child: Container(
-              //               // color: Colors.red,
-              //               child: Padding(
-              //                 padding: EdgeInsets.all(10),
-              //                 child:  Container(
-              //                   // color: Colors.red,
-              //                   child: Row(
-              //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //                     children: [
-              //                       // Container(
-              //                       //   child: Row(
-              //                       //     children: [
-              //                       //       Text("Continue Watching",
-              //                       //         maxLines: 2,
-              //                       //         overflow: TextOverflow.ellipsis,
-              //                       //         style: TextStyle(
-              //                       //             fontWeight: FontWeight.w400,
-              //                       //             color: textColor,
-              //                       //             fontSize: 14,
-              //                       //             letterSpacing: 0.5),
-              //                       //       ),
-              //                       //       Container(
-              //                       //         // color: Colors.red,
-              //                       //         child: Text(
-              //                       //           " ${Environment.videoTitle}",
-              //                       //           maxLines: 2,
-              //                       //           overflow: TextOverflow.ellipsis,
-              //                       //           style: TextStyle(color: primary,
-              //                       //               fontWeight: FontWeight.w500,
-              //                       //               fontSize: 13,
-              //                       //               letterSpacing: 0.5),
-              //                       //         ),
-              //                       //       )
-              //                       //     ],
-              //                       //   ),
-              //                       // ),
-              //                       Container(
-              //                         width: 280,
-              //                         child: RichText(text: TextSpan(children: [
-              //
-              //                           // TextSpan(text: "Continue Watching",
-              //                           //   style: TextStyle(
-              //                           //       fontWeight: FontWeight.w400,
-              //                           //       color: textColor,
-              //                           //       fontSize: 14,
-              //                           //       letterSpacing: 0.5),),
-              //                           TextSpan(text: " ${widget.subjectName}", style: TextStyle(color: primary,
-              //                               fontWeight: FontWeight.w500,
-              //                               fontSize: 13,
-              //                               letterSpacing: 0.5),),
-              //                         ])),
-              //                       ),
-              //                       // Icon(Icons.arrow_forward_ios,color: primary,),
-              //                     ],
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //
-              //
-              //           SizedBox(height: 5,)
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
               examController.get_data['data'].length == 0
                   ? Container(
                   height: MediaQuery.of(context).size.height-50,

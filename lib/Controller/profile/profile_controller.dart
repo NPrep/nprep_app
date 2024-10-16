@@ -74,13 +74,31 @@ imagenull(){
   var profileUrl = "${apiUrls().profile_api}";
 
 List MyProfileData=[];
+
   GetProfile(url)async{
     profileLoader(true);
+    getdata(url);
+
+    String jsonData = sprefs.getString('profile_data');
+
+    if(jsonData == null){
+      await getdata(url);
+    }else{
+      MyProfileData.add(jsonDecode(jsonData));
+      profileLoader(false);
+      await getdata(url);
+      update();
+      refresh();
+    }
+  }
+
+  getdata(url)async{
     try{
       var result = await apiCallingHelper().getAPICall(url, true);
       if(result != null){
         if(result.statusCode == 200){
           profileData =jsonDecode(result.body);
+          await sprefs.setString('profile_data', result.body);
           MyProfileData.clear();
           MyProfileData.add(profileData);
           log('MyProfileData==>'+MyProfileData.toString());

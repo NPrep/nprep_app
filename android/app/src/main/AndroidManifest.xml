@@ -75,5 +75,8 @@
        <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="android:requestLegacyExternalStorage"
+            android:value="true" />
     </application>
 </manifest>

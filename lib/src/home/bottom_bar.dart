@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:n_prep/Demo.dart';
 import 'package:n_prep/Internet_Connection/internetcontroller.dart';
 import 'package:n_prep/constants/images.dart';
 import 'package:n_prep/src/Nphase2/VideoScreens/video_search_screen.dart';
@@ -46,7 +47,7 @@ class _BottomBarState extends State<BottomBar> {
       YWTestPaper(indexslected:yearwiseTabindex),
       // Profile(),
       VideoSubjectScreen(),
-      SubscriptionPlan(pagenav: true,)
+      SubscriptionPlan(pagenav: true,),
     ];
   }
   @override

@@ -39,6 +39,101 @@ class SettingController extends GetxController {
     super.onClose();
   }
 
+  getdata()async{
+    settingLoader(true);
+    String jsonData = sprefs.getString('setting_data');
+    if(jsonData != null){
+      settingData = jsonDecode(jsonData);
+
+      log("response settingData :$settingData ");
+      sprefs.setString("ios_payment_show",settingData['data']['general_settings']
+      ['ios_payment_button'].toString());
+      log("check sprefs ios_payment_show>> "+sprefs.getString("ios_payment_show"));
+      sprefs.setString("razorpay_payment_show",settingData['data']['general_settings']
+      ['razorpay_payment_button'].toString());
+      log("check sprefs razorpay_payment_show>> "+sprefs.getString("razorpay_payment_show"));
+
+      _get_interval = settingData['data']['general_settings']
+      ['category_question_interval'];
+      sprefs.setString(
+          "rezorpay_key",
+          settingData['data']['general_settings']['razorpay_keyid']
+              .toString());
+      sprefs.setString(
+          "test_time",
+          settingData['data']['general_settings']
+          ['category_question_interval']
+              .toString());
+      sprefs.setString(
+          "sharelink",
+          settingData['data']['general_settings']['playstore_full_url']
+              .toString());
+      sprefs.setString(
+          "sharelinkios",
+          settingData['data']['general_settings']['iosstore_full_url']
+              .toString());
+      sprefs.setString(
+          "sharemsg",
+          settingData['data']['general_settings']['share_msg_text']
+              .toString());
+
+      sprefs.setString("quotes",
+          settingData['data']['general_settings']['quotes'].toString());
+      sprefs.setString("applogo",
+          settingData['data']['general_settings']['logo'].toString());
+      sprefs.setString(
+          "appname",
+          settingData['data']['general_settings']['application_name']
+              .toString());
+      sprefs.setString(
+          "appurl",
+          settingData['data']['general_settings']['playstore_link']
+              .toString());
+      if (Platform.isAndroid) {
+        App_version_server = settingData['data']['general_settings']
+        ['android_version']
+            .toString();
+        App_app_url_server =settingData['data']['general_settings']['playstore_link'];
+      } else {
+        App_version_server = settingData['data']['general_settings']
+        ['ios_version']
+            .toString();
+        App_app_url_server =
+        settingData['data']['general_settings']['iosstore_link'];
+      }
+
+
+      Force_update =
+      settingData['data']['general_settings']['android_force_update'];
+      Maitaince =
+      settingData['data']['general_settings']['maintainance_update'];
+      App_update_text_server =
+      settingData['data']['general_settings']['app_update_text'];
+      Maitaince_text =
+      settingData['data']['general_settings']['maintainance_text'];
+
+      print("version...." + App_version_server);
+      print("version....." + Maitaince.toString());
+      print("get_interval envarment......" +
+          sprefs
+              .getString(
+            "test_time",
+          )
+              .toString());
+      print("get_interval......" + _get_interval.toString());
+      print("sharelink......" + _get_interval.toString());
+      print("get_interval......" + _get_interval.toString());
+
+
+      settingLoader(false);
+      await SettingData(apiUrls().setting_api);
+      update();
+      refresh();
+    }else{
+      await SettingData(apiUrls().setting_api);
+    }
+  }
+
   SettingData(url) async {
     settingLoader(true);
     log("setting url :$url ");
@@ -50,6 +145,7 @@ class SettingController extends GetxController {
       if (result != null) {
         if (result.statusCode == 200) {
           settingData = jsonDecode(result.body);
+          await sprefs.setString('setting_data', result.body);
 
           log("response settingData :$settingData ");
           sprefs.setString("ios_payment_show",settingData['data']['general_settings']

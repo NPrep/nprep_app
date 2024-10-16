@@ -1,4 +1,3 @@
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +29,6 @@ class _OTPProfileState extends State<OTPProfile> {
   AuthController authController =Get.put(AuthController());
   TextEditingController pinController = TextEditingController();
   TextEditingController mobileControllerset = TextEditingController();
-  CountDownController countDownController = CountDownController();
 
   var email;
   bool isResend = false;

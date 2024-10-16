@@ -14,8 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/App_update/App_Mentaintion_Mood.dart';
 import 'package:n_prep/Controller/Category_Controller.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
@@ -29,6 +27,7 @@ import 'package:n_prep/src/Nphase2/Constant/Video_questions_qbank.dart';
 import 'package:n_prep/src/Nphase2/Controller/VideoDetailController.dart';
 import 'package:n_prep/src/Nphase2/Controller/custom_controls_widget.dart';
 import 'package:n_prep/src/Nphase2/VideoScreens/DatabaseSqflite.dart';
+import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/src/q_bank/detail.dart';
 import 'package:n_prep/src/q_bank/new_questionbank/questions_qbank.dart';
 import 'package:n_prep/utils/colors.dart';
@@ -70,18 +69,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      getdata();
+      getvideoFlag();
 
-    ]);
-    getdata();
-    getvideoFlag();
-
-    tabController = TabController(length: 3, vsync: this);
-    log('pages==>'+videoDetailcontroller.pages.toString());
+      tabController = TabController(length: 3, vsync: this);
+      log('pages==>'+videoDetailcontroller.pages.toString());
   }
 
   @override
@@ -93,18 +85,16 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     super.dispose();
   }
 
-  getdata() {
-    videoDetailcontroller.Videoplayloader.value=false;
-    videoDetailcontroller.Animation_controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
-    videoDetailcontroller.DurationMessage.value = "";
+  getdata()async {
+        videoDetailcontroller.Videoplayloader.value=false;
+        videoDetailcontroller.Animation_controller = AnimationController(
+          vsync: this,
+          duration: Duration(milliseconds: 500),
+        );
+        videoDetailcontroller.DurationMessage.value = "";
 
-    videoDetailcontroller.updatecatid(widget.CatId);
-    videoDetailcontroller.FetchVideoDetailData(widget.VideoDuration);
-
-
+        videoDetailcontroller.updatecatid(widget.CatId);
+        videoDetailcontroller.FetchVideoDetailData(widget.VideoDuration);
   }
 
   getvideoFlag() async {
@@ -133,17 +123,14 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
   var currentVideoWidth = 200.0;
 
   categoryImage(imagess) {
-    return ImagePixels.container(
-      imageProvider: NetworkImage(imagess),
-      child: ClipRRect(
+    return ClipRRect(
         borderRadius: BorderRadius.circular(5.0),
         child: Image(
           image: NetworkImage(imagess),
           fit: BoxFit.contain,
           height: 80,
           width: 100,
-        ),
-      ),
+        )
     );
   }
 

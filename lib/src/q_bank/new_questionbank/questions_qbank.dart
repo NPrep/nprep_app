@@ -20,7 +20,6 @@ import 'package:n_prep/src/q_bank/review.dart';
 import 'package:n_prep/src/q_bank/subcat_qbank.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:pinput/pinput.dart';
 import 'package:vibration/vibration.dart';

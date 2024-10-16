@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/indicator_position.dart';
 import 'package:get/get.dart';
-import 'package:image_fade/image_fade.dart';
 import 'package:intl/intl.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/utils/colors.dart';

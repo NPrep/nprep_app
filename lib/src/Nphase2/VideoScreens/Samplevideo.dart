@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_pixels/image_pixels.dart';
 import 'package:n_prep/src/Nphase2/Constant/nprep_2_custom_timeline.dart';
 import 'package:n_prep/src/Nphase2/Constant/textstyles_constants.dart';
 import 'package:n_prep/src/Nphase2/VideoScreens/video_detail_screen.dart';
@@ -20,18 +19,7 @@ class Samplevideo extends StatefulWidget {
 }
 
 class _SamplevideoState extends State<Samplevideo> {
-  categoryImage(imagess){
-    return  ImagePixels.container(
 
-      imageProvider: NetworkImage(imagess),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child: Image(image:NetworkImage(imagess),fit: BoxFit.cover,height: 80,
-          width: 100,
-        ),
-      ),
-    );
-  }
   @override
   void initState() {
     // TODO: implement initState
