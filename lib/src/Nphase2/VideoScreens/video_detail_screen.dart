@@ -848,7 +848,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
 
                                                       ///------------------///
 
-
                                                       videoDetailcontroller.downloadButtonPressed(
                                                         videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
                                                         videoDetailcontroller.VideoDetaildata[0]['id'],
@@ -1442,7 +1441,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                           return Tablist2data['category_type'] == 1
                                               ? GestureDetector(
                                               onTap: () async {
-                                                videoDetailcontroller.betterPlayerController.pause();
                                                 // videoDetailcontroller.dispose();
                                                 await attempt_test_api(
                                                     Tablist2data['mcq_category']['id'] .toString(),

@@ -1,4 +1,5 @@
 
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -19,7 +20,10 @@ import 'package:n_prep/utils/colors.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
 
+
 import '../../../main.dart';
+
+
 
 
 class HiveSavedVideoDetailScreen extends StatefulWidget {
@@ -27,11 +31,13 @@ class HiveSavedVideoDetailScreen extends StatefulWidget {
   var title;
   HiveSavedVideoDetailScreen({this.index, this.title});
 
+
   @override
   State<StatefulWidget> createState() {
     return _HiveSavedVideoDetailScreenState();
   }
 }
+
 
 class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen> with  TickerProviderStateMixin  {
   TabController tabController;
@@ -86,39 +92,50 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
   // ];
   File file;
 
+
   @override
   void initState() {
     super.initState();
     getdata();
-    // getvideoFlag();
+    getvideoFlag();
   }
+
 
   getdata() async {
     tabController = TabController(length: 2, vsync: this);
 
 
+
+
     log("videonotes before> "+videodatatasks[widget.index].videonotes.toString());
     log("videonotes before> "+videodatatasks[widget.index].videopath.toString());
-    var temp = json.decode(videodatatasks[widget.index].videostamps);
-    var time = temp[0]['time'].split(':');
+    log("videonotes before> "+videodatatasks[widget.index].videostamps);
+
+
 
     // log("model after> "+model.);
 
-   HivevideoPlayer(videodatatasks[widget.index].videopath, videodatatasks[widget.index].videokey);
+
+    HivevideoPlayer(videodatatasks[widget.index].videopath, videodatatasks[widget.index].videokey);
     setState(() {});
+
 
     // VideoStamps = HivevideoData.videoStamps;
 
+
   }
+
 
   getvideoFlag() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     // _controller.play();
   }
 
+
   HivevideoPlayer(videourl, videoid) async {
     VideoDetailloader = true;
     setState(() {
+
 
     });
     // if(Environment.videoduration!=null){
@@ -146,6 +163,7 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
         log("Video Initialization Error: $e");
       }
 
+
       Hive_betterPlayerController = ChewieController(
           videoPlayerController: Hive_betterPlayerController_videoplayer,
           autoPlay: false,
@@ -155,9 +173,12 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
           showControls: false
       );
 
+
       VideoDetailloader=false;
 
+
       setState(() {
+
 
       });
     }
@@ -165,10 +186,12 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
       VideoDetailloader=false;
       setState(() {
 
+
       });
       log("HivevideoPlayer Exception>> "+e.toString());
     }
   }
+
 
   Duration _parseTime(String timeString) {
     List<String> parts = timeString.split(':');
@@ -179,11 +202,15 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
     );
   }
 
+
   bool Savevideo_showColorLabels(time,end_time) {
     // Duration currentPosition = event.parameters['duration'];
 
+  print("hello ${time.runtimeType}");
+
 
     Duration currentPosition = _parseTime(Hive_betterPlayerController_videoplayer.value.position.toString().split(".")[0]);
+
 
     Duration startTime = _parseTime(time);
     Duration endTime = _parseTime(end_time);
@@ -194,19 +221,25 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
       // Display label
 
 
+
+
       // update();
       return true;
+
 
     }
   }
 
-@override
+
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     Hive_betterPlayerController_videoplayer.dispose();
     Hive_betterPlayerController.dispose();
   }
+
+
 
 
   @override
@@ -236,8 +269,8 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
               children: [
                 Center(
                     child: CircularProgressIndicator(
-                  color: primary,
-                )),
+                      color: primary,
+                    )),
                 SizedBox(
                   height: 5,
                 ),
@@ -302,634 +335,656 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
             //         ],
             //       )
             //     :
-           return videoDetailcontroller.isInSmallMode == true
-               ? Stack(
-             children: [
-               PDFView(
-                 // fitEachPage: true,
-                 filePath: videodatatasks[widget.index].videonotes,
-                 enableSwipe: true,
-                 fitEachPage: true,
-                 swipeHorizontal: false,
-                 autoSpacing: false,
-                 pageFling: false,
-                 pageSnap: false,
-                 defaultPage: videoDetailcontroller.currentPage,
-                 // fitPolicy: FitPolicy.BOTH,
-                 preventLinkNavigation:
-                 false,
-                 onRender: (_pages) {
-                   setState(() {
-                     videoDetailcontroller.pages = _pages;
-                     videoDetailcontroller.isReady = true;
-
-                   });
-                 },
-                 onError: (error) {
-                   setState(() {
-                     videoDetailcontroller.errorMessage =
-                         error.toString();
-                   });
-                   print("Check pdf path>> " + error.toString());
-                 },
-                 onPageError: (page, error) {
-                   setState(() {
-                     videoDetailcontroller.errorMessage =
-                     '$page: ${error.toString()}';
-                   });
-                   print(
-                       'Check >> Error PDF > $page: ${error.toString()}');
-                 },
-                 onViewCreated:
-                     (PDFViewController pdfViewController) {
-                   // videoDetailcontroller.controllerpdfview
-                   //     .complete(pdfViewController);
-                 },
-                 onLinkHandler: (String uri) {
-                   print('goto uri: $uri');
-                 },
-                 onPageChanged: (int page, int total) {
-                   print('page change: $page/$total');
-                   setState(() {
-                     videoDetailcontroller.currentPage = page;
-                     videoDetailcontroller.TotalPage = total;
-                   });
-                 },
-               ),
-               Positioned(
-                   top: 75,
-                   right: 10,
-                   child: GestureDetector(
-                     onTap: () {
-                       // Get.to(FullPage());
-                       videoDetailcontroller.updatevideoscreen();
-                     },
-                     child: Container(
-                       height: 30,
-                       width: 30,
-                       decoration: BoxDecoration(
-                           color: Colors.white
-                               .withOpacity(0.2),
-                           borderRadius:
-                           BorderRadius
-                               .circular(50),
-                           border: Border.all(
-                               color: primary)),
-                       child: Container(
-                         height: 30,
-                         width: 30,
-                         decoration: BoxDecoration(
-                             color: Colors.white
-                                 .withOpacity(0.2),
-                             borderRadius:
-                             BorderRadius
-                                 .circular(50),
-                             border: Border.all(
-                                 color: primary)),
-                         child: Image.asset("assets/nprep2_images/zoom_out.png",scale: 35,),
-                         // child: Icon(
-                         //   Icons.code,
-                         //   size: 25,
-                         //   color: Colors.black,
-                         // ),
-                       ),
-                     ),
-                   )),
-               GestureDetector(
-                 onPanUpdate: (details) {
+            return videoDetailcontroller.isInSmallMode == true
+                ? Stack(
+              children: [
+                PDFView(
+                  // fitEachPage: true,
+                  filePath: videodatatasks[widget.index].videonotes,
+                  enableSwipe: true,
+                  fitEachPage: true,
+                  swipeHorizontal: false,
+                  autoSpacing: false,
+                  pageFling: false,
+                  pageSnap: false,
+                  defaultPage: videoDetailcontroller.currentPage,
+                  // fitPolicy: FitPolicy.BOTH,
+                  preventLinkNavigation:
+                  false,
+                  onRender: (_pages) {
+                    setState(() {
+                      videoDetailcontroller.pages = _pages;
+                      videoDetailcontroller.isReady = true;
 
 
-                   setState(() {
-                     videoDetailcontroller.dragAlignment += Alignment(
-                       details.delta.dx / (swidth / 2),
-                       details.delta.dy / (sheight / 2),
-                     );
-                     // Ensure the position stays within the bounds of the screen
-                     videoDetailcontroller.dragAlignment =
-                         Alignment(
-                           videoDetailcontroller.dragAlignment.x
-                               .clamp(-1.0, 1.0),
-                           videoDetailcontroller.dragAlignment.y
-                               .clamp(-1.0, 1.0),
-                         );
-                   });
-                 },
-                 onPanEnd: (details) =>
-                     videoDetailcontroller.runAnimation(
-                         details.velocity.pixelsPerSecond, size),
-                 child: Align(
-                   alignment: videoDetailcontroller.dragAlignment,
-                   child: Container(
-                     height: size.height * 0.2-50,
-                     width: size.width * 0.5,
-                     // color: Colors.pink,
-                     padding: EdgeInsets.all(0.0),
-                     child: Stack(
-                       children: [
-                         CustomControlsWidget(controller:Hive_betterPlayerController ,videocontroller: Hive_betterPlayerController_videoplayer,hiveornot: true),
-                         Positioned(
-                             top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
-                             right: double.parse(videoDetailcontroller.right_post_small.value.toString()),
-                             child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)))
-                       ],
-                     ),
-                   ),
-                 ),
-               ),
-               Positioned(
-                 top: double.parse(videoDetailcontroller.top_post.value.toString()),
-                 right: double.parse(videoDetailcontroller.right_post.value.toString()),
-
-                 child: Container(
-                   // height: 35,
-                   // width: 35,
-
-                   child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
-                 ),
-               ),
-             ],
-           ):
-           Column(
-                    children: [
-                      SizedBox(
-                        height: statusBarHeight,
-                      ),
-                      Container(
-                        // height: size.height*0.5,
-                        padding: EdgeInsets.all(0.0),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: CustomControlsWidget(controller:Hive_betterPlayerController ,videocontroller: Hive_betterPlayerController_videoplayer,hiveornot: true),
-                        ),
-                      ),
-                      sizebox_height_15,
-                      Container(
-                        padding: EdgeInsets.only(left: 10),
-                        alignment: Alignment.centerLeft,
-                        child: ReadMoreText(
-                          widget.title,
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: black54,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15),
-                          trimLines: 1,
-                          trimMode: TrimMode.Line,
-                          trimCollapsedText: 'Read More',
-                          trimExpandedText: ' || Show Less',
-                          moreStyle: TextStyle(
-                              color: black54,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15),
-                          lessStyle: TextStyle(
-                              color: black54,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15),
-                        ),
-                      ),
-                      Divider(
-                        thickness: 1,
+                    });
+                  },
+                  onError: (error) {
+                    setState(() {
+                      videoDetailcontroller.errorMessage =
+                          error.toString();
+                    });
+                    print("Check pdf path>> " + error.toString());
+                  },
+                  onPageError: (page, error) {
+                    setState(() {
+                      videoDetailcontroller.errorMessage =
+                      '$page: ${error.toString()}';
+                    });
+                    print(
+                        'Check >> Error PDF > $page: ${error.toString()}');
+                  },
+                  onViewCreated:
+                      (PDFViewController pdfViewController) {
+                    // videoDetailcontroller.controllerpdfview
+                    //     .complete(pdfViewController);
+                  },
+                  onLinkHandler: (String uri) {
+                    print('goto uri: $uri');
+                  },
+                  onPageChanged: (int page, int total) {
+                    print('page change: $page/$total');
+                    setState(() {
+                      videoDetailcontroller.currentPage = page;
+                      videoDetailcontroller.TotalPage = total;
+                    });
+                  },
+                ),
+                Positioned(
+                    top: 75,
+                    right: 10,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Get.to(FullPage());
+                        videoDetailcontroller.updatevideoscreen();
+                      },
+                      child: Container(
                         height: 30,
-                        color: grey,
-                        indent: 0,
-                        endIndent: 0,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.white
+                                .withOpacity(0.2),
+                            borderRadius:
+                            BorderRadius
+                                .circular(50),
+                            border: Border.all(
+                                color: primary)),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white
+                                  .withOpacity(0.2),
+                              borderRadius:
+                              BorderRadius
+                                  .circular(50),
+                              border: Border.all(
+                                  color: primary)),
+                          child: Image.asset("assets/nprep2_images/zoom_out.png",scale: 35,),
+                          // child: Icon(
+                          //   Icons.code,
+                          //   size: 25,
+                          //   color: Colors.black,
+                          // ),
+                        ),
                       ),
-                      TabBar(
-                        indicatorColor: primary,
-                        indicatorWeight: 2,
-                        unselectedLabelColor: grey,
-                        labelColor: primary,
+                    )),
+                GestureDetector(
+                  onPanUpdate: (details) {
 
-                        // dragStartBehavior: DragStartBehavior.start,
-                        controller: tabController,
-                        tabs: [
-                          Tab(
-                            child: Text(
-                              'Stamps',
-                              style: TextStyle(
-                                color: black54,
-                                fontSize: 15,
-                                // fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ),
-                          Tab(
-                            child: Text(
-                              'Notes (${videoDetailcontroller.pages})',
-                              style: TextStyle(
-                                color: black54,
-                                fontSize: 15,
-                                // fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ),
 
+
+
+                    setState(() {
+                      videoDetailcontroller.dragAlignment += Alignment(
+                        details.delta.dx / (swidth / 2),
+                        details.delta.dy / (sheight / 2),
+                      );
+                      // Ensure the position stays within the bounds of the screen
+                      videoDetailcontroller.dragAlignment =
+                          Alignment(
+                            videoDetailcontroller.dragAlignment.x
+                                .clamp(-1.0, 1.0),
+                            videoDetailcontroller.dragAlignment.y
+                                .clamp(-1.0, 1.0),
+                          );
+                    });
+                  },
+                  onPanEnd: (details) =>
+                      videoDetailcontroller.runAnimation(
+                          details.velocity.pixelsPerSecond, size),
+                  child: Align(
+                    alignment: videoDetailcontroller.dragAlignment,
+                    child: Container(
+                      height: size.height * 0.2-50,
+                      width: size.width * 0.5,
+                      // color: Colors.pink,
+                      padding: EdgeInsets.all(0.0),
+                      child: Stack(
+                        children: [
+                          CustomControlsWidget(controller:Hive_betterPlayerController ,videocontroller: Hive_betterPlayerController_videoplayer,hiveornot: true),
+                          Positioned(
+                              top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
+                              right: double.parse(videoDetailcontroller.right_post_small.value.toString()),
+                              child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)))
                         ],
                       ),
-                      Expanded(
-                        child: TabBarView(
-                          controller: tabController,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            Column(
-                              children: [
-                                jsonDecode(videodatatasks[widget.index].videostamps).length==0?
-                                Container(
-                                    margin: EdgeInsets.only(top: 200),
-                                    child: Text("No Stamps Found")):
-                                ListView.builder(
-                                    itemCount: jsonDecode(videodatatasks[widget.index].videostamps).length,
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    itemBuilder: (BuildContext context, index) {
-                                      var Tablistdata =  jsonDecode(videodatatasks[widget.index].videostamps)[index];
-                                      return GestureDetector(
-                                        onTap: (){
-                                          Hive_betterPlayerController.seekTo(Duration(
-                                              hours:int.parse(Tablistdata['time'].toString().split(":")[0]) ,
-                                              minutes: int.parse(Tablistdata['time'].toString().split(":")[1]),
-                                              seconds:int.parse(Tablistdata['time'].toString().split(":")[2]) ));
-                                          Savevideo_showColorLabels(Tablistdata['time'].toString()
-                                              ,jsonDecode(videodatatasks[widget.index].videostamps).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(videodatatasks[widget.index].videostamps)[index+1]['time']);
-setState(() {
-
-});
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.only(top: 10),
-                                          margin: EdgeInsets.all(0.8),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                    size.width *
-                                                        0.10,
-                                                    child:
-                                                    Savevideo_showColorLabels(Tablistdata['time'].toString()
-                                                        ,jsonDecode(videodatatasks[widget.index].videostamps).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(videodatatasks[widget.index].videostamps)[index+1]['time'])==true?Icon(Icons.pause):
-                                                    Image.asset(
-                                                      "assets/nprep2_images/timer.png",
-                                                      height: 20,
-                                                      width: 20,
-                                                    ),
-                                                  ),
-                                                  sizebox_width_5,
-                                                  Text(
-                                                    Tablistdata['time'].toString(),
-                                                    style: TextStyle(
-                                                        color:Savevideo_showColorLabels(Tablistdata['time'].toString(),
-                                                            jsonDecode(videodatatasks[widget.index].videostamps).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(videodatatasks[widget.index].videostamps)[index+1]['time'])==true?primary:black54,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w700,
-                                                        fontSize: 15),
-                                                  ),
-                                                  sizebox_width_10,
-                                                  Container(
-                                                    // color: Colors.red,
-                                                    width: size.width*0.8-50,
-                                                    child: Text(
-                                                      Tablistdata['title'].toString(),
-                                                      style: TextStyle(
-                                                          color:black54,
-                                                          fontWeight:
-                                                          FontWeight.w400,
-                                                          fontSize: 15),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Divider(
-
-                                                thickness: 1,
-                                                height: 20,
-                                                color: grey,
-                                                indent: 10,
-                                                endIndent: 10,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            videodatatasks[widget.index].videonotes==""?   Container(
-                                margin: EdgeInsets.only(top: 80),
-                                child: Center(child: Text("No PDF Found"))):
-                            Stack(
-                              children: [
-                                PDFView(
-
-                                  filePath: videodatatasks[widget.index].videonotes,
-                                  enableSwipe: true,
-
-                                  swipeHorizontal: false,
-                                  autoSpacing: true,
-                                  pageFling: true,
-                                  pageSnap: true,
-                                  defaultPage: videoDetailcontroller.currentPage,
-                                  fitPolicy: FitPolicy.WIDTH,
-
-                                  preventLinkNavigation:false, // if set to true the link is handled in flutter
-                                  onRender: (_pages) {
-                                    setState(() {
-                                      videoDetailcontroller.pages = _pages;
-                                      videoDetailcontroller.isReady = true;
-                                    });
-                                  },
-                                  onError: (error) {
-                                    setState(() {
-                                      videoDetailcontroller.errorMessage = error.toString();
-                                    });
-                                    print("Check pdf path>> "+error.toString());
-                                  },
-                                  onPageError: (page, error) {
-                                    setState(() {
-                                      videoDetailcontroller.errorMessage = '$page: ${error.toString()}';
-                                    });
-                                    print('Check >> Error PDF > $page: ${error.toString()}');
-                                  },
-                                  onViewCreated: (PDFViewController pdfViewController) {
-                                    // videoDetailcontroller.controllerpdfview.complete(pdfViewController);
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: double.parse(videoDetailcontroller.top_post.value.toString()),
+                  right: double.parse(videoDetailcontroller.right_post.value.toString()),
 
 
-                                  },
-                                  onLinkHandler: (String uri) {
-                                    print('goto uri: $uri');
-                                  },
-                                  onPageChanged: (int page, int total) {
-                                    print('page change: $page/$total');
-                                    setState(() {
-                                      videoDetailcontroller.currentPage = page;
-                                    });
-                                  },
-                                ),
-                                Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Get.to(FullPage());
-                                        videoDetailcontroller.updatevideoscreen();
-                                      },
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white
-                                                .withOpacity(0.2),
-                                            borderRadius:
-                                            BorderRadius
-                                                .circular(50),
-                                            border: Border.all(
-                                                color: primary)),
-                                        child: Image.asset("assets/nprep2_images/zoom_in.png",scale: 35,),
-                                        // child: Icon(
-                                        //   Icons.code,
-                                        //   size: 25,
-                                        //   color: Colors.black,
-                                        // ),
-                                      ),
-                                    )),
-                                Positioned(
-                                  top: double.parse(videoDetailcontroller.top_post.value.toString()),
-                                  right: double.parse(videoDetailcontroller.right_post.value.toString()),
-
-                                  child: Container(
-                                    // height: 35,
-                                    // width: 35,
-
-                                    child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
-                                  ),
-                                ),
-                              ],
-                            ),
+                  child: Container(
+                    // height: 35,
+                    // width: 35,
 
 
+                    child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
+                  ),
+                ),
+              ],
+            ):
+            Column(
+              children: [
+                SizedBox(
+                  height: statusBarHeight,
+                ),
+                Container(
+                  // height: size.height*0.5,
+                  padding: EdgeInsets.all(0.0),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: CustomControlsWidget(controller:Hive_betterPlayerController ,videocontroller: Hive_betterPlayerController_videoplayer,hiveornot: true),
+                  ),
+                ),
+                sizebox_height_15,
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  alignment: Alignment.centerLeft,
+                  child: ReadMoreText(
+                    widget.title,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: black54,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15),
+                    trimLines: 1,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Read More',
+                    trimExpandedText: ' || Show Less',
+                    moreStyle: TextStyle(
+                        color: black54,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15),
+                    lessStyle: TextStyle(
+                        color: black54,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15),
+                  ),
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 30,
+                  color: grey,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+                TabBar(
+                  indicatorColor: primary,
+                  indicatorWeight: 2,
+                  unselectedLabelColor: grey,
+                  labelColor: primary,
 
-                          ],
+
+                  // dragStartBehavior: DragStartBehavior.start,
+                  controller: tabController,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        'Stamps',
+                        style: TextStyle(
+                          color: black54,
+                          fontSize: 15,
+                          // fontWeight: FontWeight.bold
                         ),
                       ),
-                      // Row(
-                      //   children: [
-                      //     GestureDetector(
-                      //       onTap: () {
-                      //         buttonpress = false;
-                      //         setState(() {});
-                      //       },
-                      //       child: Container(
-                      //         width: 100,
-                      //         height: 40,
-                      //         child: Padding(
-                      //           padding: EdgeInsets.all(1),
-                      //           child: DecoratedBox(
-                      //             child: Center(
-                      //               child: Text(
-                      //                 'Stamps',
-                      //                 style: TextStyle(
-                      //                   color: buttonpress == false
-                      //                       ? Colors.white
-                      //                       : primary,
-                      //                 ),
-                      //                 textAlign: TextAlign.center,
-                      //               ),
-                      //             ),
-                      //             decoration: ShapeDecoration(
-                      //               shape: RoundedRectangleBorder(
-                      //                 borderRadius: BorderRadius.circular(10),
-                      //               ),
-                      //               color: buttonpress == false
-                      //                   ? primary
-                      //                   : lightPrimary,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     SizedBox(
-                      //       width: 5,
-                      //     ),
-                      //     GestureDetector(
-                      //       onTap: () {
-                      //         buttonpress = true;
-                      //         setState(() {});
-                      //       },
-                      //       child: Container(
-                      //         width: 100,
-                      //         height: 40,
-                      //         child: Padding(
-                      //           padding: EdgeInsets.all(1),
-                      //           child: DecoratedBox(
-                      //             child: Center(
-                      //               child: Text(
-                      //                 'Notes',
-                      //                 style: TextStyle(
-                      //                   color: buttonpress == true
-                      //                       ? Colors.white
-                      //                       : primary,
-                      //                 ),
-                      //                 textAlign: TextAlign.center,
-                      //               ),
-                      //             ),
-                      //             decoration: ShapeDecoration(
-                      //               shape: RoundedRectangleBorder(
-                      //                 borderRadius: BorderRadius.circular(10),
-                      //               ),
-                      //               color: buttonpress == true
-                      //                   ? primary
-                      //                   : lightPrimary,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      // sizebox_height_10,
-                      // buttonpress == false
-                      //     ? HivevideoData['video_Stamps'].toString() == "[]"
-                      //         ? Container(
-                      //             margin: EdgeInsets.only(top: 150),
-                      //             child: Text("No Stamps Found"))
-                      //         : Container(
-                      //             height: size.height,
-                      //             child: ListView.builder(
-                      //                 itemCount:HivevideoData['video_Stamps'].length,
-                      //                     // HivevideoData['video_Stamps'].length,
-                      //                 scrollDirection: Axis.vertical,
-                      //                 shrinkWrap: true,
-                      //                 physics: AlwaysScrollableScrollPhysics(),
-                      //                 itemBuilder: (BuildContext context, index) {
-                      //                   var Tablistdata = HivevideoData['video_Stamps'][index];
-                      //                   log("Tablistdata>> $Tablistdata");
-                      //                   return GestureDetector(
-                      //                     onTap: () {
-                      //                       videoDetailcontroller
-                      //                           .betterPlayerController
-                      //                           .seekTo(Duration(
-                      //                               hours: int.parse(
-                      //                                   Tablistdata['time']
-                      //                                       .toString()
-                      //                                       .split(":")[0]),
-                      //                               minutes: int.parse(
-                      //                                   Tablistdata['time']
-                      //                                       .toString()
-                      //                                       .split(":")[1]),
-                      //                               seconds: int.parse(
-                      //                                   Tablistdata['time']
-                      //                                       .toString()
-                      //                                       .split(":")[2])));
-                      //                     },
-                      //                     child: Container(
-                      //                       margin: EdgeInsets.all(0.8),
-                      //                       child: Column(
-                      //                         children: [
-                      //                           Row(
-                      //                             children: [
-                      //                               Container(
-                      //                                 width: size.width * 0.10,
-                      //                                 child: Image.asset(
-                      //                                   "assets/nprep2_images/timer.png",
-                      //                                   height: 20,
-                      //                                   width: 20,
-                      //                                 ),
-                      //                               ),
-                      //                               sizebox_width_5,
-                      //                               Text(
-                      //                                 Tablistdata['time']
-                      //                                     .toString(),
-                      //                                 style: TextStyle(
-                      //                                     color: black54,
-                      //                                     fontWeight:
-                      //                                         FontWeight.w700,
-                      //                                     fontSize: 15),
-                      //                               ),
-                      //                               sizebox_width_10,
-                      //                               Text(
-                      //                                 Tablistdata['title']
-                      //                                     .toString(),
-                      //                                 style: TextStyle(
-                      //                                     color: black54,
-                      //                                     fontWeight:
-                      //                                         FontWeight.w400,
-                      //                                     fontSize: 15),
-                      //                               ),
-                      //                             ],
-                      //                           ),
-                      //                           Divider(
-                      //                             thickness: 1,
-                      //                             height: 20,
-                      //                             color: grey,
-                      //                             indent: 10,
-                      //                             endIndent: 10,
-                      //                           ),
-                      //                         ],
-                      //                       ),
-                      //                     ),
-                      //                   );
-                      //                 }),
-                      //           )
-                      //     : Container(
-                      //         height: size.height,
-                      //         child: PDFView(
-                      //           // fitEachPage: true,
-                      //           filePath: HivevideoData['video_Notes'],
-                      //           enableSwipe: true,
-                      //
-                      //           swipeHorizontal: false,
-                      //           autoSpacing: true,
-                      //           pageFling: true,
-                      //           pageSnap: true,
-                      //           defaultPage: videoDetailcontroller.currentPage,
-                      //           fitPolicy: FitPolicy.WIDTH,
-                      //
-                      //           preventLinkNavigation:
-                      //               false, // if set to true the link is handled in flutter
-                      //           onRender: (_pages) {
-                      //             setState(() {
-                      //               videoDetailcontroller.pages = _pages;
-                      //               videoDetailcontroller.isReady = true;
-                      //             });
-                      //           },
-                      //           onError: (error) {
-                      //             setState(() {
-                      //               videoDetailcontroller.errorMessage =
-                      //                   error.toString();
-                      //             });
-                      //             print("Check pdf path>> $error");
-                      //           },
-                      //           onPageError: (page, error) {
-                      //             setState(() {
-                      //               videoDetailcontroller.errorMessage =
-                      //                   '$page: ${error.toString()}';
-                      //             });
-                      //             print('$page: ${error.toString()}');
-                      //           },
-                      //           onViewCreated:
-                      //               (PDFViewController pdfViewController) {
-                      //             videoDetailcontroller.controllerpdfview
-                      //                 .complete(pdfViewController);
-                      //           },
-                      //           onLinkHandler: (String uri) {
-                      //             print('goto uri: $uri');
-                      //           },
-                      //           onPageChanged: (int page, int total) {
-                      //             print('page change: $page/$total');
-                      //             setState(() {
-                      //               videoDetailcontroller.currentPage = page;
-                      //             });
-                      //           },
-                      //         ),
-                      //       ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Notes (${videoDetailcontroller.pages})',
+                        style: TextStyle(
+                          color: black54,
+                          fontSize: 15,
+                          // fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+
+
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      Column(
+                        children: [
+                          jsonDecode(videodatatasks[widget.index].videostamps).length==0?
+                          Container(
+                              margin: EdgeInsets.only(top: 200),
+                              child: Text("No Stamps Found")):
+                          ListView.builder(
+                              itemCount: jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps)).length,
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (BuildContext context, index) {
+                                var Tablistdata =  jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps))[index];
+                                return GestureDetector(
+                                  onTap: (){
+                                    Hive_betterPlayerController.seekTo(Duration(
+                                        hours:int.parse(Tablistdata['time'].toString().split(":")[0]) ,
+                                        minutes: int.parse(Tablistdata['time'].toString().split(":")[1]),
+                                        seconds:int.parse(Tablistdata['time'].toString().split(":")[2]) ));
+                                    Savevideo_showColorLabels(Tablistdata['time']
+                                        ,jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps)).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps))[index+1]['time']);
+                                    setState(() {
+
+
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 10),
+                                    margin: EdgeInsets.all(0.8),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width:
+                                              size.width *
+                                                  0.10,
+                                              child:
+                                              Savevideo_showColorLabels(Tablistdata['time']
+                                                  ,jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps)).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps))[index+1]['time'])==true?Icon(Icons.pause):
+                                              Image.asset(
+                                                "assets/nprep2_images/timer.png",
+                                                height: 20,
+                                                width: 20,
+                                              ),
+                                            ),
+                                            sizebox_width_5,
+                                            Text(
+                                              Tablistdata['time'].toString(),
+                                              style: TextStyle(
+                                                  color:Savevideo_showColorLabels(Tablistdata['time'],
+                                                      jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps)).length==(index+1)?videoDetailcontroller.videoduration.toString().split(".")[0]:jsonDecode(jsonDecode(videodatatasks[widget.index].videostamps))[index+1]['time'])==true?primary:black54,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .w700,
+                                                  fontSize: 15),
+                                            ),
+                                            sizebox_width_10,
+                                            Container(
+                                              // color: Colors.red,
+                                              width: size.width*0.8-50,
+                                              child: Text(
+                                                Tablistdata['title'].toString(),
+                                                style: TextStyle(
+                                                    color:black54,
+                                                    fontWeight:
+                                                    FontWeight.w400,
+                                                    fontSize: 15),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Divider(
+
+
+                                          thickness: 1,
+                                          height: 20,
+                                          color: grey,
+                                          indent: 10,
+                                          endIndent: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ],
+                      ),
+                      videodatatasks[widget.index].videonotes==""?   Container(
+                          margin: EdgeInsets.only(top: 80),
+                          child: Center(child: Text("No PDF Found"))):
+                      Stack(
+                        children: [
+                          PDFView(
+
+
+                            filePath: videodatatasks[widget.index].videonotes,
+                            enableSwipe: true,
+
+
+                            swipeHorizontal: false,
+                            autoSpacing: true,
+                            pageFling: true,
+                            pageSnap: true,
+                            defaultPage: videoDetailcontroller.currentPage,
+                            fitPolicy: FitPolicy.WIDTH,
+
+
+                            preventLinkNavigation:false, // if set to true the link is handled in flutter
+                            onRender: (_pages) {
+                              setState(() {
+                                videoDetailcontroller.pages = _pages;
+                                videoDetailcontroller.isReady = true;
+                              });
+                            },
+                            onError: (error) {
+                              setState(() {
+                                videoDetailcontroller.errorMessage = error.toString();
+                              });
+                              print("Check pdf path>> "+error.toString());
+                            },
+                            onPageError: (page, error) {
+                              setState(() {
+                                videoDetailcontroller.errorMessage = '$page: ${error.toString()}';
+                              });
+                              print('Check >> Error PDF > $page: ${error.toString()}');
+                            },
+                            onViewCreated: (PDFViewController pdfViewController) {
+                              // videoDetailcontroller.controllerpdfview.complete(pdfViewController);
+
+
+
+
+                            },
+                            onLinkHandler: (String uri) {
+                              print('goto uri: $uri');
+                            },
+                            onPageChanged: (int page, int total) {
+                              print('page change: $page/$total');
+                              setState(() {
+                                videoDetailcontroller.currentPage = page;
+                              });
+                            },
+                          ),
+                          Positioned(
+                              top: 10,
+                              right: 10,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Get.to(FullPage());
+                                  videoDetailcontroller.updatevideoscreen();
+                                },
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white
+                                          .withOpacity(0.2),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(50),
+                                      border: Border.all(
+                                          color: primary)),
+                                  child: Image.asset("assets/nprep2_images/zoom_in.png",scale: 35,),
+                                  // child: Icon(
+                                  //   Icons.code,
+                                  //   size: 25,
+                                  //   color: Colors.black,
+                                  // ),
+                                ),
+                              )),
+                          Positioned(
+                            top: double.parse(videoDetailcontroller.top_post.value.toString()),
+                            right: double.parse(videoDetailcontroller.right_post.value.toString()),
+
+
+                            child: Container(
+                              // height: 35,
+                              // width: 35,
+
+
+                              child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
+                            ),
+                          ),
+                        ],
+                      ),
+
+
+
+
+
+
                     ],
-                  );
+                  ),
+                ),
+                // Row(
+                //   children: [
+                //     GestureDetector(
+                //       onTap: () {
+                //         buttonpress = false;
+                //         setState(() {});
+                //       },
+                //       child: Container(
+                //         width: 100,
+                //         height: 40,
+                //         child: Padding(
+                //           padding: EdgeInsets.all(1),
+                //           child: DecoratedBox(
+                //             child: Center(
+                //               child: Text(
+                //                 'Stamps',
+                //                 style: TextStyle(
+                //                   color: buttonpress == false
+                //                       ? Colors.white
+                //                       : primary,
+                //                 ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ),
+                //             decoration: ShapeDecoration(
+                //               shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(10),
+                //               ),
+                //               color: buttonpress == false
+                //                   ? primary
+                //                   : lightPrimary,
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     SizedBox(
+                //       width: 5,
+                //     ),
+                //     GestureDetector(
+                //       onTap: () {
+                //         buttonpress = true;
+                //         setState(() {});
+                //       },
+                //       child: Container(
+                //         width: 100,
+                //         height: 40,
+                //         child: Padding(
+                //           padding: EdgeInsets.all(1),
+                //           child: DecoratedBox(
+                //             child: Center(
+                //               child: Text(
+                //                 'Notes',
+                //                 style: TextStyle(
+                //                   color: buttonpress == true
+                //                       ? Colors.white
+                //                       : primary,
+                //                 ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ),
+                //             decoration: ShapeDecoration(
+                //               shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(10),
+                //               ),
+                //               color: buttonpress == true
+                //                   ? primary
+                //                   : lightPrimary,
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // sizebox_height_10,
+                // buttonpress == false
+                //     ? HivevideoData['video_Stamps'].toString() == "[]"
+                //         ? Container(
+                //             margin: EdgeInsets.only(top: 150),
+                //             child: Text("No Stamps Found"))
+                //         : Container(
+                //             height: size.height,
+                //             child: ListView.builder(
+                //                 itemCount:HivevideoData['video_Stamps'].length,
+                //                     // HivevideoData['video_Stamps'].length,
+                //                 scrollDirection: Axis.vertical,
+                //                 shrinkWrap: true,
+                //                 physics: AlwaysScrollableScrollPhysics(),
+                //                 itemBuilder: (BuildContext context, index) {
+                //                   var Tablistdata = HivevideoData['video_Stamps'][index];
+                //                   log("Tablistdata>> $Tablistdata");
+                //                   return GestureDetector(
+                //                     onTap: () {
+                //                       videoDetailcontroller
+                //                           .betterPlayerController
+                //                           .seekTo(Duration(
+                //                               hours: int.parse(
+                //                                   Tablistdata['time']
+                //                                       .toString()
+                //                                       .split(":")[0]),
+                //                               minutes: int.parse(
+                //                                   Tablistdata['time']
+                //                                       .toString()
+                //                                       .split(":")[1]),
+                //                               seconds: int.parse(
+                //                                   Tablistdata['time']
+                //                                       .toString()
+                //                                       .split(":")[2])));
+                //                     },
+                //                     child: Container(
+                //                       margin: EdgeInsets.all(0.8),
+                //                       child: Column(
+                //                         children: [
+                //                           Row(
+                //                             children: [
+                //                               Container(
+                //                                 width: size.width * 0.10,
+                //                                 child: Image.asset(
+                //                                   "assets/nprep2_images/timer.png",
+                //                                   height: 20,
+                //                                   width: 20,
+                //                                 ),
+                //                               ),
+                //                               sizebox_width_5,
+                //                               Text(
+                //                                 Tablistdata['time']
+                //                                     .toString(),
+                //                                 style: TextStyle(
+                //                                     color: black54,
+                //                                     fontWeight:
+                //                                         FontWeight.w700,
+                //                                     fontSize: 15),
+                //                               ),
+                //                               sizebox_width_10,
+                //                               Text(
+                //                                 Tablistdata['title']
+                //                                     .toString(),
+                //                                 style: TextStyle(
+                //                                     color: black54,
+                //                                     fontWeight:
+                //                                         FontWeight.w400,
+                //                                     fontSize: 15),
+                //                               ),
+                //                             ],
+                //                           ),
+                //                           Divider(
+                //                             thickness: 1,
+                //                             height: 20,
+                //                             color: grey,
+                //                             indent: 10,
+                //                             endIndent: 10,
+                //                           ),
+                //                         ],
+                //                       ),
+                //                     ),
+                //                   );
+                //                 }),
+                //           )
+                //     : Container(
+                //         height: size.height,
+                //         child: PDFView(
+                //           // fitEachPage: true,
+                //           filePath: HivevideoData['video_Notes'],
+                //           enableSwipe: true,
+                //
+                //           swipeHorizontal: false,
+                //           autoSpacing: true,
+                //           pageFling: true,
+                //           pageSnap: true,
+                //           defaultPage: videoDetailcontroller.currentPage,
+                //           fitPolicy: FitPolicy.WIDTH,
+                //
+                //           preventLinkNavigation:
+                //               false, // if set to true the link is handled in flutter
+                //           onRender: (_pages) {
+                //             setState(() {
+                //               videoDetailcontroller.pages = _pages;
+                //               videoDetailcontroller.isReady = true;
+                //             });
+                //           },
+                //           onError: (error) {
+                //             setState(() {
+                //               videoDetailcontroller.errorMessage =
+                //                   error.toString();
+                //             });
+                //             print("Check pdf path>> $error");
+                //           },
+                //           onPageError: (page, error) {
+                //             setState(() {
+                //               videoDetailcontroller.errorMessage =
+                //                   '$page: ${error.toString()}';
+                //             });
+                //             print('$page: ${error.toString()}');
+                //           },
+                //           onViewCreated:
+                //               (PDFViewController pdfViewController) {
+                //             videoDetailcontroller.controllerpdfview
+                //                 .complete(pdfViewController);
+                //           },
+                //           onLinkHandler: (String uri) {
+                //             print('goto uri: $uri');
+                //           },
+                //           onPageChanged: (int page, int total) {
+                //             print('page change: $page/$total');
+                //             setState(() {
+                //               videoDetailcontroller.currentPage = page;
+                //             });
+                //           },
+                //         ),
+                //       ),
+              ],
+            );
           }
         }),
       ),
     );
   }
 }
+
+
+
