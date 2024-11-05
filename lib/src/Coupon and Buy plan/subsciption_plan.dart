@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -15,8 +16,10 @@ import 'package:n_prep/src/Coupon%20and%20Buy%20plan/plan_detail.dart';
 import 'package:n_prep/utils/colors.dart';
 // import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+
 import 'dart:async';
 import 'dart:io';
+
 
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
@@ -25,10 +28,12 @@ import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 import '../home/bottom_bar.dart';
 // Auto-consume must be true on iOS.
 // To try without auto-consume on another platform, change `true` to `false` here.
 final bool _kAutoConsume = Platform.isIOS || true;
+
 
 const String _kConsumableId = 'Nprep App Purchase';
 const String _kUpgradeId = 'upgrade';
@@ -41,22 +46,28 @@ const List<String> _kProductIds = <String>[
   _kGoldSubscriptionId,
 ];
 
+
 class SubscriptionPlan extends StatefulWidget {
-   bool pagenav;
-   SubscriptionPlan({Key key,this.pagenav});
+  bool pagenav;
+  SubscriptionPlan({Key key,this.pagenav});
+
 
   @override
   State<SubscriptionPlan> createState() => _SubscriptionPlanState();
 }
 
+
 class _SubscriptionPlanState extends State<SubscriptionPlan> {
+
 
   SubscriptionController subscriptionController = Get.put(
       SubscriptionController());
   var subscriptions_apiUrl;
 
+
   // Razorpay _razorpay;
   var selectedIndex;
+
 
   @override
   void initState() {
@@ -85,6 +96,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
           // centerTitle: center,
           elevation: 0,
 
+
           title: widget.pagenav==true?Container(): Row(
             mainAxisAlignment:
             MainAxisAlignment.start,
@@ -93,9 +105,11 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                 onTap: () {
                   Get.offAll(BottomBar(bottomindex: 0,));
 
+
                 },
                 child: Icon(Icons.arrow_back_ios, color: Colors.white),
               ),
+
 
               Container(
                 width: MediaQuery.of(context).size.width-60,
@@ -107,12 +121,15 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
             ],
           ),
 
+
         ),
         body: WillPopScope(
+
 
           onWillPop: () async {
             Get.offAll(BottomBar(bottomindex: 0,));
             return true;
+
 
           },
           child: GetBuilder<SubscriptionController>  (
@@ -198,6 +215,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                 child: Html(
                                                   data:subscription_datas['description'],
 
+
                                                   style: {
                                                     "table": Style( ),
                                                     // some other granular customizations are also possible
@@ -211,6 +229,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                     ),
                                                     "p": Style(
                                                       fontSize: FontSize.xxSmall,
+
 
                                                     ),
                                                     "th": Style(
@@ -325,6 +344,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                                             color: white),
                                                       )
 
+
                                                   ),
                                                 ),
                                                 data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
@@ -338,6 +358,8 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                             );
                           },
                         ),
+
+
 
 
                         SizedBox(height: 15,),
@@ -365,7 +387,9 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                 text: 'for assistance. ',
                                 style: TextStyles.loginB1Style,
 
+
                               ),
+
 
                             ],
                           ),
@@ -381,6 +405,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
     );
   }
 
+
   void openWhatsApp(String phoneNumber) async {
     print(" oo $phoneNumber");
     String url = "https://wa.me/$phoneNumber";
@@ -391,3 +416,6 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
     }
   }
 }
+
+
+

@@ -53,52 +53,53 @@ class _LiveclassesState extends State<Liveclasses>  with SingleTickerProviderSta
     var size=MediaQuery.of(context).size;
 
     var mediaquary=MediaQuery.of(context);
-    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.20);
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            onPressed: (){
-              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                statusBarColor: Color(0xFF64C4DA), // status bar color
-              ));
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BottomBar(
-                      bottomindex: 3,
-                    )),
-              );
-            },
-            icon: Icon(Icons.chevron_left,size: 30,color: white,),
-          ),
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            leading: IconButton(
+              onPressed: (){
+                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                  systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+                  statusBarColor: Color(0xFF64C4DA), // status bar color
+                ));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BottomBar(
+                        bottomindex: 3,
+                      )),
+                );
+              },
+              icon: Icon(Icons.chevron_left,size: 30,color: white,),
+            ),
 
-          centerTitle: true,
-          title: Text("Live Classes ",style: AppbarTitleTextyle,),
-          backgroundColor: primary,
-          bottom: TabBar(
-            labelColor: white,
-            controller: _controller,
-            //labelPadding: EdgeInsets.only(right: 20),
-            physics: const NeverScrollableScrollPhysics(),
-            // onTap: tabbarotap(),
-            isScrollable: false,
-            labelStyle: AppbarTabLableTextyle,
-            dragStartBehavior: DragStartBehavior.start,
-            indicatorColor: white,
-            tabs: [
+            centerTitle: true,
+            title: Text("Live Classes ",style: AppbarTitleTextyle,),
+            backgroundColor: primary,
+            bottom: TabBar(
+              labelColor: white,
+              controller: _controller,
+              //labelPadding: EdgeInsets.only(right: 20),
+              physics: const NeverScrollableScrollPhysics(),
+              // onTap: tabbarotap(),
+              isScrollable: false,
+              labelStyle: AppbarTabLableTextyle,
+              dragStartBehavior: DragStartBehavior.start,
+              indicatorColor: white,
+              tabs: [
 
-              Tab(text: 'Live',),
-              Tab(text: 'Upcoming'),
-              Tab(text: 'Completed'),
-            ],
+                Tab(text: 'Live',),
+                Tab(text: 'Upcoming'),
+                Tab(text: 'Completed'),
+              ],
+            ),
           ),
-        ),
-        body: MediaQuery(
-          child:  TabBarView(
+          body: TabBarView(
             controller: _controller,
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -110,8 +111,6 @@ class _LiveclassesState extends State<Liveclasses>  with SingleTickerProviderSta
 
             ],
           ),
-          data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-
         ),
       ),
     );

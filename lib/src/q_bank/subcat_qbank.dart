@@ -142,6 +142,8 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    var mediaquary=MediaQuery.of(context);
+    var  scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
     return DefaultTabController(
       length: 3,
       child: WillPopScope(
@@ -163,214 +165,216 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
           }else{
             return true;
           }
-
-          return false;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              widget.categoryName.toString() == "null" ? "" :
-              widget.categoryName.toString(),
-              style: TextStyle(color: white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'PublicSans',
-                  letterSpacing: 0.8),
-            ),
-            centerTitle: true,
-            leading: GestureDetector(
-              onTap: () {
-                if(widget.categorytype==1){
-                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                    systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                    statusBarColor: Color(0xFF64C4DA), // status bar color
-                  ));
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BottomBar(
-                          bottomindex: 1,
-                        )),
-                  );
-                }else{
-                      Get.back();
-                }
-              },
-              child: Icon(Icons.arrow_back_ios, color: Colors.white),
-            ),
-            actions: [
-
-              GetBuilder<CategoryController>(
-                  builder: (categoryContro) {
-                    if (categoryContro.childLoader.value) {
-                      return CircularProgressIndicator();
-                    }
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () async {
-                          // final RelativeRect position = buttonMenuPosition(context);
-                          showMenu(context: context,
-                                constraints:  BoxConstraints.expand(
-                                    width: 200, height: categoryContro.second_levelCount==1?60:categoryContro.second_levelCount==2?110:200),
-                              position: RelativeRect.fromLTRB(10, 80, 2, 0),
-                              items:
-                          List.generate( categoryContro.childdata[0]['second_level'].length, (index1){
-                           return PopupMenuItem<int>(
-                              value: index1,
-                              onTap: (){
-                                scrolledddd(index1);
-                              },
-                              child:  Column(
-                                         crossAxisAlignment: CrossAxisAlignment
-                                             .start,
-                                         children: [
-                                           Text(
-                                             categoryContro
-                                                 .childdata[0]['second_level'][index1]['category_name']
-                                                 .toString(),
-                                             style: TextStyle(
-                                               fontSize: 15,
-                                               fontWeight: FontWeight.bold,
-                                               fontFamily: 'Roboto',
-                                             ),
-                                           ),
-
-                                           Text(
-                                             "${categoryContro
-                                                 .childdata[0]['second_level']
-                                             [index1]['total_categories']
-                                                 .toString()} blocks",
-                                             style: TextStyle(
-                                               fontSize: 13,
-                                               fontWeight: FontWeight.w500,
-                                               color: grey,
-                                               fontFamily: 'Roboto',
-                                             ),
-                                           ),
-                                           sizebox_height_10,
-                                         ],
-                                       ),
-                            );
-                          })
-
-                          );
-
-
-
-                          // await showMenu(
-                          //   context: context,
-                          //
-                          //   constraints: const BoxConstraints.expand(
-                          //       width: 200, height: 200),
-                          //   position: RelativeRect.fromLTRB(10, 80, 2, 0),
-                          //   shape: RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.all(
-                          //           Radius.circular(10.0))
-                          //   ),
-                          //
-                          //   items: List.generate(
-                          //     categoryContro.childdata[0]['second_level'].length, (index1) =>
-                          //       PopupMenuItem(
-                          //         value: index1,
-                          //
-                          //         child: GestureDetector(
-                          //           onTap: scrolledddd(index1),
-                          //           child: Column(
-                          //             crossAxisAlignment: CrossAxisAlignment
-                          //                 .start,
-                          //             children: [
-                          //               Text(
-                          //                 categoryContro
-                          //                     .childdata[0]['second_level'][index1]['category_name']
-                          //                     .toString(),
-                          //                 style: TextStyle(
-                          //                   fontSize: 15,
-                          //                   fontWeight: FontWeight.bold,
-                          //                   fontFamily: 'Roboto',
-                          //                 ),
-                          //               ),
-                          //
-                          //               Text(
-                          //                 "${categoryContro
-                          //                     .childdata[0]['second_level']
-                          //                 [index1]['total_categories']
-                          //                     .toString()} modules",
-                          //                 style: TextStyle(
-                          //                   fontSize: 13,
-                          //                   fontWeight: FontWeight.w500,
-                          //                   color: grey,
-                          //                   fontFamily: 'Roboto',
-                          //                 ),
-                          //               ),
-                          //               sizebox_height_10,
-                          //             ],
-                          //           ),
-                          //         ),
-                          //       ),
-                          //   ),
-                          //   elevation: 8.0,
-                          // ).then((value) {
-                          //   if (value != null) print(value);
-                          // });
-
-
-
-                        },
-                        child: Row(
-                          children: [
-                            Container(height: 30,width: 50,color: primary,),
-                            Icon(
-                              Icons.format_list_bulleted,
-                              color: white,
-                            ),
-                          ],
-                        ),
-                      ),
+            return false;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                widget.categoryName.toString() == "null" ? "" :
+                widget.categoryName.toString(),
+                style: TextStyle(color: white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'PublicSans',
+                    letterSpacing: 0.8),
+              ),
+              centerTitle: true,
+              leading: GestureDetector(
+                onTap: () {
+                  if(widget.categorytype==1){
+                    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                      systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+                      statusBarColor: Color(0xFF64C4DA), // status bar color
+                    ));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomBar(
+                            bottomindex: 1,
+                          )),
                     );
+                  }else{
+                        Get.back();
                   }
+                },
+                child: Icon(Icons.arrow_back_ios, color: Colors.white),
+              ),
+              actions: [
+
+                GetBuilder<CategoryController>(
+                    builder: (categoryContro) {
+                      if (categoryContro.childLoader.value) {
+                        return CircularProgressIndicator();
+                      }
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: GestureDetector(
+                          onTap: () async {
+                            // final RelativeRect position = buttonMenuPosition(context);
+                            showMenu(context: context,
+                                  constraints:  BoxConstraints.expand(
+                                      width: 200, height: categoryContro.second_levelCount==1?60:categoryContro.second_levelCount==2?110:200),
+                                position: RelativeRect.fromLTRB(10, 80, 2, 0),
+                                items:
+                            List.generate( categoryContro.childdata[0]['second_level'].length, (index1){
+                             return PopupMenuItem<int>(
+                                value: index1,
+                                onTap: (){
+                                  scrolledddd(index1);
+                                },
+                                child:  MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+                                  child: Column(
+                                             crossAxisAlignment: CrossAxisAlignment
+                                                 .start,
+                                             children: [
+                                               Text(
+                                                 categoryContro
+                                                     .childdata[0]['second_level'][index1]['category_name']
+                                                     .toString(),
+                                                 style: TextStyle(
+                                                   fontSize: 15,
+                                                   fontWeight: FontWeight.bold,
+                                                   fontFamily: 'Roboto',
+                                                 ),
+                                               ),
+
+                                               Text(
+                                                 "${categoryContro
+                                                     .childdata[0]['second_level']
+                                                 [index1]['total_categories']
+                                                     .toString()} blocks",
+                                                 style: TextStyle(
+                                                   fontSize: 13,
+                                                   fontWeight: FontWeight.w500,
+                                                   color: grey,
+                                                   fontFamily: 'Roboto',
+                                                 ),
+                                               ),
+                                               sizebox_height_10,
+                                             ],
+                                           ),
+                                ),
+                              );
+                            })
+
+                            );
+
+
+
+                            // await showMenu(
+                            //   context: context,
+                            //
+                            //   constraints: const BoxConstraints.expand(
+                            //       width: 200, height: 200),
+                            //   position: RelativeRect.fromLTRB(10, 80, 2, 0),
+                            //   shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.all(
+                            //           Radius.circular(10.0))
+                            //   ),
+                            //
+                            //   items: List.generate(
+                            //     categoryContro.childdata[0]['second_level'].length, (index1) =>
+                            //       PopupMenuItem(
+                            //         value: index1,
+                            //
+                            //         child: GestureDetector(
+                            //           onTap: scrolledddd(index1),
+                            //           child: Column(
+                            //             crossAxisAlignment: CrossAxisAlignment
+                            //                 .start,
+                            //             children: [
+                            //               Text(
+                            //                 categoryContro
+                            //                     .childdata[0]['second_level'][index1]['category_name']
+                            //                     .toString(),
+                            //                 style: TextStyle(
+                            //                   fontSize: 15,
+                            //                   fontWeight: FontWeight.bold,
+                            //                   fontFamily: 'Roboto',
+                            //                 ),
+                            //               ),
+                            //
+                            //               Text(
+                            //                 "${categoryContro
+                            //                     .childdata[0]['second_level']
+                            //                 [index1]['total_categories']
+                            //                     .toString()} modules",
+                            //                 style: TextStyle(
+                            //                   fontSize: 13,
+                            //                   fontWeight: FontWeight.w500,
+                            //                   color: grey,
+                            //                   fontFamily: 'Roboto',
+                            //                 ),
+                            //               ),
+                            //               sizebox_height_10,
+                            //             ],
+                            //           ),
+                            //         ),
+                            //       ),
+                            //   ),
+                            //   elevation: 8.0,
+                            // ).then((value) {
+                            //   if (value != null) print(value);
+                            // });
+
+
+
+                          },
+                          child: Row(
+                            children: [
+                              Container(height: 30,width: 50,color: primary,),
+                              Icon(
+                                Icons.format_list_bulleted,
+                                color: white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                )
+
+              ],
+              bottom: TabBar(
+
+                controller: _controller,
+                labelColor: white,
+                // labelPadding: EdgeInsets.zero,
+                labelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),
+                // dragStartBehavior: DragStartBehavior.start,
+
+                // physics: ScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
+                // onTap: tabbarotap(),
+                isScrollable: false,
+
+                labelPadding: EdgeInsets.only(left: 10, right: 5),
+                tabs: _tabs
+                    .map((label) => Padding(
+                  padding:
+                  const EdgeInsets.only(right: 10),
+                  child: Tab(text: "$label"),
+                ))
+                    .toList(),
               )
+              ),
 
-            ],
-            bottom: TabBar(
-
+            body: TabBarView(
               controller: _controller,
-              labelColor: white,
-              // labelPadding: EdgeInsets.zero,
-              labelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),
-              // dragStartBehavior: DragStartBehavior.start,
-
-              // physics: ScrollPhysics(),
               physics: const NeverScrollableScrollPhysics(),
-              // onTap: tabbarotap(),
-              isScrollable: false,
+              children: [
+                // AllListscrollDemo(),
+                AllListscroll(),
+                AllPausedList(),
+                // AllCompletedList(),
+                // AllNewList(),
 
-              labelPadding: EdgeInsets.only(left: 10, right: 5),
-              tabs: _tabs
-                  .map((label) => Padding(
-                padding:
-                const EdgeInsets.only(right: 10),
-                child: Tab(text: "$label"),
-              ))
-                  .toList(),
-            )
+              ],
             ),
 
-          body: TabBarView(
-            controller: _controller,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              // AllListscrollDemo(),
-              AllListscroll(),
-              AllPausedList(),
-              // AllCompletedList(),
-              // AllNewList(),
-
-            ],
           ),
-
         ),
-      ),
     );
   }
 

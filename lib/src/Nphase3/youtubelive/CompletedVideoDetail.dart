@@ -72,7 +72,7 @@ class _CompletedVideoDetailState extends State<CompletedVideoDetail> with Single
     var size=MediaQuery.of(context).size;
 
     var mediaquary=MediaQuery.of(context);
-    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.20);
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
     return OrientationBuilder(
         builder: (context, orientation) {
           if(orientation == Orientation.landscape){
@@ -91,85 +91,88 @@ class _CompletedVideoDetailState extends State<CompletedVideoDetail> with Single
             );
           }
           else{
-            return DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                appBar: AppBar(
-                  elevation: 0,
-                  leading: IconButton(
-                    onPressed: (){
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    leading: IconButton(
+                      onPressed: (){
 
-                      Get.back();
-                      // Navigator.pop(context);
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => BottomBar(
-                      //         bottomindex: 3,
-                      //       )),
-                      // );
-                    },
-                    icon: Icon(Icons.chevron_left,size: 30,color: white,),
+                        Get.back();
+                        // Navigator.pop(context);
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => BottomBar(
+                        //         bottomindex: 3,
+                        //       )),
+                        // );
+                      },
+                      icon: Icon(Icons.chevron_left,size: 30,color: white,),
+                    ),
+
+                    centerTitle: true,
+                    title: Text("Completed",style: AppbarTitleTextyle,),
+                    backgroundColor: primary,
+
                   ),
+                  body: Column(
+                    children: [
 
-                  centerTitle: true,
-                  title: Text("Completed",style: AppbarTitleTextyle,),
-                  backgroundColor: primary,
+                        YoutubePlayerBuilder (
 
-                ),
-                body: Column(
-                  children: [
+                          player: YoutubePlayer(
+                            controller: liveclasscontroller.detailyoutubeplayerController,
+                            liveUIColor: primary,
 
-                      YoutubePlayerBuilder (
-
-                        player: YoutubePlayer(
-                          controller: liveclasscontroller.detailyoutubeplayerController,
-                          liveUIColor: primary,
-
+                          ),
+                          builder: (context,player) => player,
                         ),
-                        builder: (context,player) => player,
-                      ),
-                      TabBar(
-                        indicatorColor: primary,
-                        indicatorWeight: 3,
-                        unselectedLabelColor: grey,
+                        TabBar(
+                          indicatorColor: primary,
+                          indicatorWeight: 3,
+                          unselectedLabelColor: grey,
 
-                        labelColor: primary,
-                        controller: _ccontroller,
-                        //labelPadding: EdgeInsets.only(right: 20),
-                        physics: const NeverScrollableScrollPhysics(),
-                        // onTap: tabbarotap(),
-                        isScrollable: false,
-                        labelStyle: AppbarTabLableTextyle,
-                        dragStartBehavior: DragStartBehavior.start,
-
-                        tabs: [
-
-                          Tab(text: 'Chat',),
-                          Tab(text: 'Notes'),
-                        ],
-                      ),
-
-                      Expanded(
-                        child: TabBarView(
+                          labelColor: primary,
                           controller: _ccontroller,
-
+                          //labelPadding: EdgeInsets.only(right: 20),
                           physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            CompletedChat(),
-                            Notes(),
+                          // onTap: tabbarotap(),
+                          isScrollable: false,
+                          labelStyle: AppbarTabLableTextyle,
+                          dragStartBehavior: DragStartBehavior.start,
 
+                          tabs: [
+
+                            Tab(text: 'Chat',),
+                            Tab(text: 'Notes'),
                           ],
-                         ),
-                      ),
+                        ),
 
-                      SizedBox(height: 10,),
-                      // Container(
-                      //   color: Colors.white,
-                      //   alignment: Alignment.centerLeft,
-                      //   child: _sendMessageArea(),
-                      // ),
-                  ],
+                        Expanded(
+                          child: TabBarView(
+                            controller: _ccontroller,
+
+                            physics: const NeverScrollableScrollPhysics(),
+                            children: [
+                              CompletedChat(),
+                              Notes(),
+
+                            ],
+                           ),
+                        ),
+
+                        SizedBox(height: 10,),
+                        // Container(
+                        //   color: Colors.white,
+                        //   alignment: Alignment.centerLeft,
+                        //   child: _sendMessageArea(),
+                        // ),
+                    ],
+                  ),
                 ),
               ),
             );

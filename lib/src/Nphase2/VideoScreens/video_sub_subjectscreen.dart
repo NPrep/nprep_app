@@ -81,153 +81,158 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
     var size=MediaQuery.of(context).size;
     var width=size.width;
     var height=size.height;
+    var mediaquary=MediaQuery.of(context);
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
       statusBarColor: Color(0xFF64C4DA), // status bar color
     ));
-    return WillPopScope(
-      onWillPop: () async {
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-          statusBarColor: Color(0xFF64C4DA), // status bar color
-        ));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomBar(
-                bottomindex: 3,
-              )),
-        );
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: WillPopScope(
+        onWillPop: () async {
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+            systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+            statusBarColor: Color(0xFF64C4DA), // status bar color
+          ));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BottomBar(
+                  bottomindex: 3,
+                )),
+          );
 
-        return true;
-      },
-      child: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            leading: IconButton(
-              onPressed: (){
-                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                  systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                  statusBarColor: Color(0xFF64C4DA), // status bar color
-                ));
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BottomBar(
-                        bottomindex: 3,
-                      )),
-                );
-              },
-              icon: Icon(Icons.chevron_left,size: 30,color: white,),
-            ),
-            actions: [
-              GetBuilder<VideoSubsubjectcontroller>(
-                  builder: (videosubsubjectcontroller) {
-                    if (videosubsubjectcontroller.VideoSubsubjectloader.value) {
-                      return CircularProgressIndicator();
-                    }
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () async {
-                          // final RelativeRect position = buttonMenuPosition(context);
-                          showMenu(context: context,
-                              constraints:  BoxConstraints.expand(
-                                  width: 200, height: videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length==1?60:videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length==2?110:200),
-                              position: RelativeRect.fromLTRB(10, 80, 2, 0),
-                              items:
-                              List.generate( videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length, (index1){
-                                return PopupMenuItem<int>(
-                                  value: index1,
-                                  onTap: (){
-                                    scrolledddd(index1);
-                                  },
-                                  child:  Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Text(
-                                        videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level']
-                                        [index1]['category_name']
-                                            .toString(),
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Roboto',
+          return true;
+        },
+        child: DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              leading: IconButton(
+                onPressed: (){
+                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                    systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+                    statusBarColor: Color(0xFF64C4DA), // status bar color
+                  ));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BottomBar(
+                          bottomindex: 3,
+                        )),
+                  );
+                },
+                icon: Icon(Icons.chevron_left,size: 30,color: white,),
+              ),
+              actions: [
+                GetBuilder<VideoSubsubjectcontroller>(
+                    builder: (videosubsubjectcontroller) {
+                      if (videosubsubjectcontroller.VideoSubsubjectloader.value) {
+                        return CircularProgressIndicator();
+                      }
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: GestureDetector(
+                          onTap: () async {
+                            // final RelativeRect position = buttonMenuPosition(context);
+                            showMenu(context: context,
+                                constraints:  BoxConstraints.expand(
+                                    width: 200, height: videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length==1?60:videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length==2?110:200),
+                                position: RelativeRect.fromLTRB(10, 80, 2, 0),
+                                items:
+                                List.generate( videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level'].length, (index1){
+                                  return PopupMenuItem<int>(
+                                    value: index1,
+                                    onTap: (){
+                                      scrolledddd(index1);
+                                    },
+                                    child:  Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        Text(
+                                          videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level']
+                                          [index1]['category_name']
+                                              .toString(),
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
                                         ),
-                                      ),
 
-                                      Text(
-                                        "${videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level']
-                                        [index1]['total_categories'].toString()} videos",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500,
-                                          color: grey,
-                                          fontFamily: 'Roboto',
+                                        Text(
+                                          "${videosubsubjectcontroller.VideoSubsubjectdata[0]['second_level']
+                                          [index1]['total_categories'].toString()} videos",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            color: grey,
+                                            fontFamily: 'Roboto',
+                                          ),
                                         ),
-                                      ),
-                                      sizebox_height_10,
-                                    ],
-                                  ),
-                                );
-                              })
+                                        sizebox_height_10,
+                                      ],
+                                    ),
+                                  );
+                                })
 
-                          );
-
+                            );
 
 
 
 
 
-                        },
-                        child: Row(
-                          children: [
-                            Container(height: 30,width: 50,color: primary,),
-                            Icon(
-                              Icons.format_list_bulleted,
-                              color: white,
-                            ),
-                          ],
+
+                          },
+                          child: Row(
+                            children: [
+                              Container(height: 30,width: 50,color: primary,),
+                              Icon(
+                                Icons.format_list_bulleted,
+                                color: white,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
-              )
-            ],
-            centerTitle: true,
-            title: Text("${widget.Catname} ",style: AppbarTitleTextyle,),
-            backgroundColor: primary,
-            bottom: TabBar(
-              labelColor: white,
+                      );
+                    }
+                )
+              ],
+              centerTitle: true,
+              title: Text("${widget.Catname} ",style: AppbarTitleTextyle,),
+              backgroundColor: primary,
+              bottom: TabBar(
+                labelColor: white,
+                controller: tabController,
+                //labelPadding: EdgeInsets.only(right: 20),
+                physics: const NeverScrollableScrollPhysics(),
+                // onTap: tabbarotap(),
+                isScrollable: false,
+                labelStyle: AppbarTabLableTextyle,
+                dragStartBehavior: DragStartBehavior.start,
+                indicatorColor: white,
+                tabs: [
+                  Tab(text: 'All'),
+                  Tab(text: 'Paused'),
+                  Tab(text: 'Unattempted'),
+                ],
+              ),
+            ),
+            body: TabBarView(
               controller: tabController,
-              //labelPadding: EdgeInsets.only(right: 20),
               physics: const NeverScrollableScrollPhysics(),
-              // onTap: tabbarotap(),
-              isScrollable: false,
-              labelStyle: AppbarTabLableTextyle,
-              dragStartBehavior: DragStartBehavior.start,
-              indicatorColor: white,
-              tabs: [
-                Tab(text: 'All'),
-                Tab(text: 'Paused'),
-                Tab(text: 'Unattempted'),
+              children: [
+                AllListscroll(height,size),
+                AllAttemptedList(height,size),
+                AllUnAttemptedList(height,size),
               ],
             ),
           ),
-          body: TabBarView(
-            controller: tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              AllListscroll(height,size),
-              AllAttemptedList(height,size),
-              AllUnAttemptedList(height,size),
-            ],
-          ),
-        ),
 
+        ),
       ),
     );
 

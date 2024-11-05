@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+
 import 'dart:math' as math;
+
 
 import 'package:background_downloader/background_downloader.dart';
 // import 'package:better_player/better_player.dart';
@@ -33,20 +35,26 @@ import 'package:n_prep/src/q_bank/new_questionbank/questions_qbank.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+
 
 import '../Constant/VideoMcqdetail.dart';
 import 'package:screen_protector/screen_protector.dart';
 
+
 import '../Constant/download_file.dart';
+
 
 class VideoDetailScreen extends StatefulWidget {
   var CatId;
   var VideoDuration;
 
+
   VideoDetailScreen({
     this.CatId,
     this.VideoDuration,
   });
+
 
   @override
   State<StatefulWidget> createState() {
@@ -54,30 +62,37 @@ class VideoDetailScreen extends StatefulWidget {
   }
 }
 
+
 class _VideoDetailScreenState extends State<VideoDetailScreen>
     with TickerProviderStateMixin {
   TabController tabController;
+
 
   // SimplePip pip=SimplePip();
   SettingController settingController = Get.put(SettingController());
   VideoDetailcontroller videoDetailcontroller = Get.put(VideoDetailcontroller());
 
+
   bool _showForwardAnimation = false;
   bool _showBackwardAnimation = false;
   bool isPlaying = false;
 
+
   @override
   void initState() {
     super.initState();
-      getdata();
-      // getvideoFlag();
+    getdata();
+    getvideoFlag();
 
-      tabController = TabController(length: 3, vsync: this);
-      log('pages==>'+videoDetailcontroller.pages.toString());
+
+    tabController = TabController(length: 3, vsync: this);
+    log('pages==>'+videoDetailcontroller.pages.toString());
   }
+
 
   @override
   void dispose() {
+
 
     videoDetailcontroller.betterPlayerController.dispose();
     videoDetailcontroller.betterPlayerController_videoplayer.dispose();
@@ -85,42 +100,57 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     super.dispose();
   }
 
-  getdata()async {
-        videoDetailcontroller.videothumbImgUrl2="";
-        videoDetailcontroller.Videoplayloader.value=false;
-        videoDetailcontroller.Animation_controller = AnimationController(
-          vsync: this,
-          duration: Duration(milliseconds: 500),
-        );
-        videoDetailcontroller.DurationMessage.value = "";
 
-        videoDetailcontroller.updatecatid(widget.CatId);
-        videoDetailcontroller.FetchVideoDetailData(widget.VideoDuration);
+  getdata()async {
+    videoDetailcontroller.videothumbImgUrl2="";
+    videoDetailcontroller.Videoplayloader.value=false;
+    videoDetailcontroller.Animation_controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    videoDetailcontroller.DurationMessage.value = "";
+
+
+    videoDetailcontroller.updatecatid(widget.CatId);
+    videoDetailcontroller.FetchVideoDetailData(widget.VideoDuration);
   }
+
 
   getvideoFlag() async {
-    if(Platform.isAndroid){
-      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-    }else{
-      await ScreenProtector.protectDataLeakageWithBlur();
-      await ScreenProtector.preventScreenshotOn();
+    try {
+      WakelockPlus.toggle(enable: true);
+      if (Platform.isAndroid) {
+        await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+      } else {
+        await ScreenProtector.protectDataLeakageWithBlur();
+        await ScreenProtector.preventScreenshotOn();
+      }
+      // _controller.play();
+    } catch (e) {
+      print("Error: $e");
     }
-
-    // _controller.play();
   }
 
+
+
+
   var currentAlignment = Alignment.topCenter;
+
 
   var minVideoHeight = 100.0;
   var minVideoWidth = 150.0;
 
+
   var maxVideoHeight = 200.0;
+
 
 // This is an arbitrary value and will be changed when layout is built.
   var maxVideoWidth = 250.0;
 
+
   var currentVideoHeight = 200.0;
   var currentVideoWidth = 200.0;
+
 
   categoryImage(imagess) {
     return ClipRRect(
@@ -133,6 +163,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
         )
     );
   }
+
 
   CategoryController categoryController = Get.put(CategoryController());
   attempt_test_api(sab_cat_id, perentId, cat_name) async {
@@ -149,10 +180,10 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
         var result=  await apiCallingHelper().getAPICall(attempUrl,true);
         if (result != null) {
           if(result.statusCode == 200){
-          var  attempTestData =jsonDecode(result.body);
-          var  _checkexamid = attempTestData['data']['id'];
-          var  _checkstatus = attempTestData['data']['exam_status'];
-           var   _totalattempt_que = attempTestData['data']['attempt_questions'];
+            var  attempTestData =jsonDecode(result.body);
+            var  _checkexamid = attempTestData['data']['id'];
+            var  _checkstatus = attempTestData['data']['exam_status'];
+            var   _totalattempt_que = attempTestData['data']['attempt_questions'];
             var total_que = attempTestData['data']['total_questions'];
             var completed_date = attempTestData['data']['completed_date'];
             var created_at = attempTestData['data']['created_at'];
@@ -270,11 +301,14 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
             toastMsg(attempTestData['message'], true);
 
 
+
+
           }
           else  if(result.statusCode == 401){
             var   attempTestData =jsonDecode(result.body);
             toastMsg(attempTestData['message'], true);
           }
+
 
         } else {
           toastMsg("Not Verified", true);
@@ -283,11 +317,13 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
       on SocketException {
         throw FetchDataException('No Internet connection');
 
+
       } on TimeoutException {
         throw FetchDataException('Something went wrong, try again later');
       }
     }
   }
+
 
   Widget uicall(){
     beforevideodatatasks.forEach((e){
@@ -330,7 +366,9 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
           color: Colors.green,);
       }
 
+
     });
+
 
   }
   @override
@@ -362,28 +400,31 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
             // ));
             if(orientation == Orientation.landscape){
 
+
               return   GetBuilder<VideoDetailcontroller>(
                   builder: (videoDetailcontroller) {
-                  return SafeArea(
-                    child: Scaffold(
+                    return SafeArea(
+                      child: Scaffold(
 
-                      body: Container(
-                        height: size.height,
-                        width: size.width,
-                        // aspectRatio: 16 / 9,
-                        // child: Container(
-                        //   color: Colors.red,
-                        // ),
-                        child:videoDetailcontroller.VideoAvailableloader.value==true?Container(
-                          alignment: Alignment.center,
-                          child: Text("No Video Available"),
-                        ):
-                        CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,)
 
+                        body: Container(
+                            height: size.height,
+                            width: size.width,
+                            // aspectRatio: 16 / 9,
+                            // child: Container(
+                            //   color: Colors.red,
+                            // ),
+                            child:videoDetailcontroller.VideoAvailableloader.value==true?Container(
+                              alignment: Alignment.center,
+                              child: Text("No Video Available"),
+                            ):
+                            CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,)
+
+
+                        ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
               );
             }
             else{
@@ -393,6 +434,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                   appBar: PreferredSize(
                     preferredSize: Size.fromHeight(0.0),
                     child: AppBar(
+
 
                       backgroundColor: Color(0xFF020202),
                       iconTheme: IconThemeData(color: Colors.white),
@@ -410,9 +452,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                     color: primary,
                                   )),
 
+
                               SizedBox(
                                 height: 5,
                               ),
+
 
                               settingController.settingData['data']['general_settings']['quotes'].length == 0
                                   ? Text("")
@@ -423,6 +467,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                       color: primary,
                                       letterSpacing: 0.5,
                                       fontWeight: FontWeight.w600)),
+
 
                             ],
                           );
@@ -465,165 +510,176 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                               :
                           videoDetailcontroller.isInSmallMode == true
                               ? Stack(
-                                  children: [
-                                    PDFView(
+                            children: [
+                              PDFView(
 
-                                      filePath: videoDetailcontroller.remotePDFpath,
-                                      enableSwipe: true,
 
-                                      swipeHorizontal: false,
-                                      autoSpacing: true,
-                                      pageFling: false,
-                                      pageSnap: true,
-                                      defaultPage: videoDetailcontroller
-                                          .currentPage,
-                                      fitPolicy: FitPolicy.WIDTH,
-                                      fitEachPage: true,
-                                      // fitPolicy: FitPolicy.BOTH,
-                                      preventLinkNavigation:
-                                      false,
-                                      onRender: (_pages) {
-                                        setState(() {
-                                          videoDetailcontroller.pages = _pages;
-                                          videoDetailcontroller.isReady = true;
+                                filePath: videoDetailcontroller.remotePDFpath,
+                                enableSwipe: true,
 
-                                        });
-                                      },
-                                      onError: (error) {
-                                        setState(() {
-                                          videoDetailcontroller.errorMessage =
-                                              error.toString();
-                                        });
-                                        print("Check pdf path>> " + error.toString());
-                                      },
-                                      onPageError: (page, error) {
-                                        setState(() {
-                                          videoDetailcontroller.errorMessage =
-                                          '$page: ${error.toString()}';
-                                        });
-                                        print(
-                                            'Check >> Error PDF > $page: ${error.toString()}');
-                                      },
-                                      onViewCreated:
-                                          (PDFViewController pdfViewController) {
-                                        // videoDetailcontroller.controllerpdfview
-                                        //     .complete(pdfViewController);
-                                      },
-                                      onLinkHandler: (String uri) {
-                                        print('goto uri: $uri');
-                                      },
-                                      onPageChanged: (int page, int total) {
-                                        print('page change: $page/$total');
-                                        setState(() {
-                                          videoDetailcontroller.currentPage = page;
-                                          videoDetailcontroller.TotalPage = total;
-                                        });
-                                      },
+
+                                swipeHorizontal: false,
+                                autoSpacing: true,
+                                pageFling: false,
+                                pageSnap: true,
+                                defaultPage: videoDetailcontroller
+                                    .currentPage,
+                                fitPolicy: FitPolicy.WIDTH,
+                                fitEachPage: true,
+                                // fitPolicy: FitPolicy.BOTH,
+                                preventLinkNavigation:
+                                false,
+                                onRender: (_pages) {
+                                  setState(() {
+                                    videoDetailcontroller.pages = _pages;
+                                    videoDetailcontroller.isReady = true;
+
+
+                                  });
+                                },
+                                onError: (error) {
+                                  setState(() {
+                                    videoDetailcontroller.errorMessage =
+                                        error.toString();
+                                  });
+                                  print("Check pdf path>> " + error.toString());
+                                },
+                                onPageError: (page, error) {
+                                  setState(() {
+                                    videoDetailcontroller.errorMessage =
+                                    '$page: ${error.toString()}';
+                                  });
+                                  print(
+                                      'Check >> Error PDF > $page: ${error.toString()}');
+                                },
+                                onViewCreated:
+                                    (PDFViewController pdfViewController) {
+                                  // videoDetailcontroller.controllerpdfview
+                                  //     .complete(pdfViewController);
+                                },
+                                onLinkHandler: (String uri) {
+                                  print('goto uri: $uri');
+                                },
+                                onPageChanged: (int page, int total) {
+                                  print('page change: $page/$total');
+                                  setState(() {
+                                    videoDetailcontroller.currentPage = page;
+                                    videoDetailcontroller.TotalPage = total;
+                                  });
+                                },
+                              ),
+                              Positioned(
+                                  top: 75,
+                                  right: 10,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      // Get.to(FullPage());
+                                      videoDetailcontroller.updatevideoscreen();
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white
+                                              .withOpacity(0.2),
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(50),
+                                          border: Border.all(
+                                              color: primary)),
+                                      child: Transform.rotate(
+                                          angle:
+                                          180 * math.pi / 100,
+                                          child: Icon(
+                                            Icons.code,
+                                            size: 25,
+                                            color: Colors.black,
+                                          )),
                                     ),
-                                    Positioned(
-                                        top: 75,
-                                        right: 10,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            // Get.to(FullPage());
-                                            videoDetailcontroller.updatevideoscreen();
-                                          },
-                                          child: Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white
-                                                    .withOpacity(0.2),
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(50),
-                                                border: Border.all(
-                                                    color: primary)),
-                                            child: Transform.rotate(
-                                                angle:
-                                                180 * math.pi / 100,
-                                                child: Icon(
-                                                  Icons.code,
-                                                  size: 25,
-                                                  color: Colors.black,
-                                                )),
-                                          ),
-                                        )),
-                                    GestureDetector(
-                                      onPanUpdate: (details) {
+                                  )),
+                              GestureDetector(
+                                onPanUpdate: (details) {
 
 
-                                        setState(() {
-                                          videoDetailcontroller.dragAlignment += Alignment(
-                                            details.delta.dx / (swidth / 2),
-                                            details.delta.dy / (sheight / 2),
-                                          );
-                                          // Ensure the position stays within the bounds of the screen
-                                          videoDetailcontroller.dragAlignment =
-                                              Alignment(
-                                                videoDetailcontroller.dragAlignment.x
-                                                    .clamp(-1.0, 1.0),
-                                                videoDetailcontroller.dragAlignment.y
-                                                    .clamp(-1.0, 1.0),
-                                              );
-                                        });
-                                      },
-                                      onPanEnd: (details) =>
-                                          videoDetailcontroller.runAnimation(
-                                              details.velocity.pixelsPerSecond, size),
-                                      child: Align(
-                                        alignment: videoDetailcontroller.dragAlignment,
-                                        child: Container(
-                                          height: size.height * 0.2-50,
-                                          width: size.width * 0.5,
-                                          // color: Colors.pink,
-                                          padding: EdgeInsets.all(0.0),
-                                          child: Stack(
-                                            children: [
 
-                                              CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,),
 
-                                              Positioned(
-                                                  top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
-                                                  right: double.parse(videoDetailcontroller.right_post_small.value.toString()),
-                                                  child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8))),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                  setState(() {
+                                    videoDetailcontroller.dragAlignment += Alignment(
+                                      details.delta.dx / (swidth / 2),
+                                      details.delta.dy / (sheight / 2),
+                                    );
+                                    // Ensure the position stays within the bounds of the screen
+                                    videoDetailcontroller.dragAlignment =
+                                        Alignment(
+                                          videoDetailcontroller.dragAlignment.x
+                                              .clamp(-1.0, 1.0),
+                                          videoDetailcontroller.dragAlignment.y
+                                              .clamp(-1.0, 1.0),
+                                        );
+                                  });
+                                },
+                                onPanEnd: (details) =>
+                                    videoDetailcontroller.runAnimation(
+                                        details.velocity.pixelsPerSecond, size),
+                                child: Align(
+                                  alignment: videoDetailcontroller.dragAlignment,
+                                  child: Container(
+                                    height: size.height * 0.2-50,
+                                    width: size.width * 0.5,
+                                    // color: Colors.pink,
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Stack(
+                                      children: [
+
+
+                                        CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,),
+
+
+                                        Positioned(
+                                            top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
+                                            right: double.parse(videoDetailcontroller.right_post_small.value.toString()),
+                                            child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8))),
+                                      ],
                                     ),
+                                  ),
+                                ),
+                              ),
 
-                                    Positioned(
-                                      top: 10,
-                                        left: 20,
-                                        child: IconButton(
-                                          onPressed: (){
-                                            videoDetailcontroller.betterPlayerController.play();
-                                          },
-                                          icon: Icon(Icons.play_arrow,size: 100,color: Colors.grey,),
-                                        )),
 
-                                    Positioned(
-                                      top: double.parse(videoDetailcontroller.top_post.value.toString()),
-                                      right: double.parse(videoDetailcontroller.right_post.value.toString()),
+                              Positioned(
+                                  top: 10,
+                                  left: 20,
+                                  child: IconButton(
+                                    onPressed: (){
+                                      videoDetailcontroller.betterPlayerController.play();
+                                    },
+                                    icon: Icon(Icons.play_arrow,size: 100,color: Colors.grey,),
+                                  )),
 
-                                      child: Container(
-                                        // height: 35,
-                                        // width: 35,
 
-                                        child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
-                                      ),
-                                    ),
-                                  ],
-                              )
+                              Positioned(
+                                top: double.parse(videoDetailcontroller.top_post.value.toString()),
+                                right: double.parse(videoDetailcontroller.right_post.value.toString()),
+
+
+                                child: Container(
+                                  // height: 35,
+                                  // width: 35,
+
+
+                                  child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
+                                ),
+                              ),
+                            ],
+                          )
                               : Column(
                             children: [
                               // SizedBox(
                               //   height: statusBarHeight,
                               // ),
                               ///Video Player
-                                            // Text("Videoplayloader "+videoDetailcontroller.Videoplayloader.value.toString()),
-                                            // Text("VideoAvailableloader "+videoDetailcontroller.VideoAvailableloader.value.toString()),
+                              // Text("Videoplayloader "+videoDetailcontroller.Videoplayloader.value.toString()),
+                              // Text("VideoAvailableloader "+videoDetailcontroller.VideoAvailableloader.value.toString()),
                               AspectRatio(
                                 aspectRatio: 16 / 9,
                                 child: videoDetailcontroller.Videoplayloader.value == false
@@ -666,13 +722,52 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                           ? Center(
                                         child: CircularProgressIndicator(strokeWidth: 1.5),
                                       )
-                                          : Center(
-                                        child: Icon(
-                                          Icons.play_arrow,
-                                          color: Colors.white,
-                                          size: 100,
-                                        ),
-                                      ),
+                                          : Stack(
+                                        children: [
+                                          Positioned(
+                                            top: 10,
+                                            left: 10,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+                                                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+                                                SystemChrome.setSystemUIOverlayStyle(
+                                                    SystemUiOverlayStyle(
+                                                      systemNavigationBarColor: Color(
+                                                          0xFFFFFFFF), // navigation bar color
+                                                      statusBarColor: Color(
+                                                          0xFF64C4DA), // status bar color
+                                                    ));
+                                                Get.back();
+                                              },
+                                              child: Container(
+                                                height: 35,
+                                                width: 35,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                    Colors.black45.withOpacity(0.2),
+                                                    borderRadius: BorderRadius.all(
+                                                        Radius.circular(50))),
+                                                child: Icon(
+                                                  Icons.chevron_left,
+                                                  color: white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+
+                                          Center(
+                                            child: Icon(
+                                              Icons.play_arrow,
+                                              color: Colors.white,
+                                              size: 100,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+
+
                                     ],
                                   ),
                                 )
@@ -688,332 +783,355 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                               ),
 
 
+
+
                               ///Readmore
                               sizebox_height_10,
                               GetBuilder<VideoDetailcontroller>(
-                                builder: (videoDetailcontroller) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      sizebox_width_10,
-                                      Expanded(
-                                        flex: 10,
-                                        child: ReadMoreText(
-                                          videoDetailcontroller.VideoDetaildata[0]['title'],
-                                          textAlign: TextAlign.justify,
-                                          style: TextStyle(
-                                              color: black54,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14),
-                                          trimLines: 1,
-                                          trimMode: TrimMode.Line,
-                                          trimCollapsedText: 'Read More',
-                                          trimExpandedText: ' || Show Less',
-                                          moreStyle: TextStyle(
-                                              color: primary,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14),
-                                          lessStyle: TextStyle(
-                                              color: primary,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14),
+                                  builder: (videoDetailcontroller) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        sizebox_width_10,
+                                        Expanded(
+                                          flex: 10,
+                                          child: ReadMoreText(
+                                            videoDetailcontroller.VideoDetaildata[0]['title'],
+                                            textAlign: TextAlign.justify,
+                                            style: TextStyle(
+                                                color: black54,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                            trimLines: 1,
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: 'Read More',
+                                            trimExpandedText: ' || Show Less',
+                                            moreStyle: TextStyle(
+                                                color: primary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                            lessStyle: TextStyle(
+                                                color: primary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
                                         ),
-                                      ),
-                                      ///Old Download
-                                      Expanded(
-                                        flex: 5,
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
-                                            // videoItems.length
-                                            final DatabaseService dbHelper = DatabaseService.instance;
+                                        ///Old Download
+                                        Expanded(
+                                          flex: 5,
+                                          child: GestureDetector(
+                                              onTap: () async {
+                                                log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
+                                                // videoItems.length
+                                                final DatabaseService dbHelper = DatabaseService.instance;
 
-                                           await dbHelper.getTasks();
 
-                                            // log("tasks.length> "+videodatatasks.length.toString());
-                                            if (videodatatasks==null|| videodatatasks.length<=10) {
-                                              if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
-                                                toastMsg('Already Downloaded', false);
-                                              } else {
-                                                if (videoDetailcontroller.progressStatus ==false ) {
-                                                  videoDetailcontroller.downloadButtonPressed(
-                                                      videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                                      videoDetailcontroller.VideoDetaildata[0]['id'],
-                                                      videoDetailcontroller .VideoDetaildata[0]['title'],
-                                                       videoDetailcontroller .VideoDetaildata[0]['video_time'],
-                                                       videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
-                                                       videoDetailcontroller .remotePDFpath,
-                                                       videoDetailcontroller .Thumbimg_remotePDFpath,
-                                                      videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-                                                    );
+                                                await dbHelper.getTasks();
+
+
+                                                // log("tasks.length> "+videodatatasks.length.toString());
+                                                if (videodatatasks==null|| videodatatasks.length<=10) {
+                                                  if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
+                                                    toastMsg('Already Downloaded', false);
+                                                  } else {
+                                                    if (videoDetailcontroller.progressStatus ==false ) {
+                                                      //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                                      //                videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                                      //                videoDetailcontroller .VideoDetaildata[0]['title'],
+                                                      //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                                      //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                                      //                videoDetailcontroller .remotePDFpath,
+                                                      //                videoDetailcontroller .Thumbimg_remotePDFpath,
+                                                      //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+
+
+                                                      ///------------------///
+
+
+                                                      videoDetailcontroller.downloadButtonPressed(
+                                                        videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                                        videoDetailcontroller.VideoDetaildata[0]['id'],
+                                                        videoDetailcontroller .VideoDetaildata[0]['title'],
+                                                        videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                                        videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                                        videoDetailcontroller .remotePDFpath,
+                                                        videoDetailcontroller .Thumbimg_remotePDFpath,
+                                                        videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                                      );
+                                                    }
+                                                    else {
+                                                      log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
+                                                      log(">>>>>>>>>>"+ButtonState.download.toString());
+                                                      if( videoDetailcontroller.buttonState==ButtonState.pause){
+                                                        FileDownloader().pause(videoDetailcontroller.task);
+                                                      }else if(videoDetailcontroller.buttonState==ButtonState.resume){
+                                                        FileDownloader().resume(videoDetailcontroller.task);
+                                                      }else if(videoDetailcontroller.buttonState==ButtonState.download){
+                                                        FileDownloader().pause(videoDetailcontroller.task);
+                                                      }
+                                                      toastMsg('Please Wait video is downloading', false);
+
+
+
+
+                                                    }
+                                                  }
                                                 }
                                                 else {
-                                                    log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
-                                                    log(">>>>>>>>>>"+ButtonState.download.toString());
-                                                    if( videoDetailcontroller.buttonState==ButtonState.pause){
-                                                      FileDownloader().pause(videoDetailcontroller.task);
-                                                    }else if(videoDetailcontroller.buttonState==ButtonState.resume){
-                                                      FileDownloader().resume(videoDetailcontroller.task);
-                                                    }else if(videoDetailcontroller.buttonState==ButtonState.download){
-                                                      FileDownloader().pause(videoDetailcontroller.task);
-                                                    }
-                                                    toastMsg('Please Wait video is downloading', false);
-
-
+                                                  toastMsg('Not allow more than 10 videos ',false);
                                                 }
-                                              }
-                                            }
-                                            else {
-                                              toastMsg('Not allow more than 10 videos ',false);
-                                            }
-                                          },
-                                          child: videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
-                                          Icon(
-                                            Icons.check_circle_rounded,
-                                            color: primary,
-                                            size: 25,
-                                          ):videoDetailcontroller.progressdownloadStatus == false?
-                                          videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1? Icon(
-                                            Icons.check_circle_rounded,
-                                            color: primary,
-                                            size: 25,
-                                          ):
-                                          // Container( height: 20,
-                                          //   width: 20,
-                                          //   color: Colors.green,)
-                                          Image.asset(
-                                            "assets/nprep2_images/download.png",
-                                            color: primary,
-                                            height: 15,
-                                            width: 15,
-                                          )
-                                              :
-                                          CircularPercentIndicator(
-                                            radius: 15.0,
-                                            lineWidth: 5.0,
-                                            percent:
-                                            videoDetailcontroller.progress,
-                                            center: videoDetailcontroller.buttonState==ButtonState.resume ?
-                                            Icon(
-                                              Icons.play_arrow,
-                                              color: primary,
-                                              size: 12,
-                                            ):
-                                            Icon(
-                                              Icons.pause,
-                                              color: primary,
-                                              size: 12,
-                                            ),
-                                            progressColor: primary,
-                                          )
-                                          // videoDetailcontroller.progressStatus == false?
-                                          // videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
-                                          // Icon(
-                                          //   Icons.check_circle_rounded,
-                                          //   color: primary,
-                                          //   size: 25,
-                                          // ):
-                                          // videoDetailcontroller.progressdownloadStatus == false ?
-                                          // Image.asset(
-                                          //   "assets/nprep2_images/download.png",
-                                          //   color: primary,
-                                          //   height: 15,
-                                          //   width: 15,
-                                          // ):
-                                          // CircularPercentIndicator(
-                                          //   radius: 15.0,
-                                          //   lineWidth: 5.0,
-                                          //   percent:
-                                          //   videoDetailcontroller.progress,
-                                          //   center: videoDetailcontroller.buttonState==ButtonState.resume ?
-                                          //   Icon(
-                                          //     Icons.play_arrow,
-                                          //     color: primary,
-                                          //     size: 12,
-                                          //   ):
-                                          //   Icon(
-                                          //     Icons.pause,
-                                          //     color: primary,
-                                          //     size: 12,
-                                          //   ),
-                                          //   progressColor: primary,
-                                          // )
-                                          // : videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
-                                          // Icon(
-                                          //   Icons.check_circle_rounded,
-                                          //   color: primary,
-                                          //   size: 25,
-                                          // ):
-                                          //
-                                          // CircularPercentIndicator(
-                                          //   radius: 15.0,
-                                          //   lineWidth: 5.0,
-                                          //   percent:
-                                          //   videoDetailcontroller.progress,
-                                          //   center: videoDetailcontroller.buttonState.value==ButtonState.resume ?Icon(
-                                          //     Icons.play_arrow,
-                                          //     color: primary,
-                                          //     size: 12,
-                                          //   ):videoDetailcontroller.buttonState.value==ButtonState.complete?Icon(Icons.refresh,color: primary,
-                                          //     size: 12,):Icon(
-                                          //     Icons.pause,
-                                          //     color: primary,
-                                          //     size: 12,
-                                          //   ),
-                                          //   progressColor: primary,
-                                          // ),
-                                        ),
-                                      )
-                                      ///New Download
-                                      // Container(
-                                      //     // height: 20,
-                                      //     width: 20,
-                                      //     margin: EdgeInsets.only(right: 25),
-                                      //     child: GestureDetector(
-                                      //           onTap: () async {
-                                      //        log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
-                                      //        // videoItems.length
-                                      //        final DatabaseService _databaseService = DatabaseService.instance;
-                                      //
-                                      //        await _databaseService.getDatabase();
-                                      //        var getTasksdata =_databaseService.getTasks();
-                                      //        var beforegetTasksdata =_databaseService.beforegetTasks();
-                                      //
-                                      //        log("beforevideodatatasks.length> "+beforevideodatatasks.toString());
-                                      //        if (videodatatasks==null|| videodatatasks.length<=10) {
-                                      //          if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
-                                      //                 toastMsg('Already Downloaded', false);
-                                      //          }
-                                      //          else {
-                                      //            if(beforevideodatatasks==null){
-                                      //              downloadfile().downloadHiveButtonPressed
-                                      //                (
-                                      //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                      //                videoDetailcontroller.VideoDetaildata[0] ['id'],
-                                      //                videoDetailcontroller .VideoDetaildata[0]['title'],
-                                      //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
-                                      //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
-                                      //                videoDetailcontroller .remotePDFpath,
-                                      //                videoDetailcontroller .Thumbimg_remotePDFpath,
-                                      //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-                                      //              );
-                                      //            }else{
-                                      //              beforevideodatatasks.forEach((e){
-                                      //                log("beforevideodatatasks>>>>>"+e.toString());
-                                      //                if(e.videokey==videoDetailcontroller.VideoDetaildata[0]['id']){
-                                      //                  log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
-                                      //                  log(">>>>>>>>>>"+ButtonState.download.toString());
-                                      //                  // if( videoDetailcontroller.buttonState==ButtonState.pause){
-                                      //                  //   FileDownloader().pause(videoDetailcontroller.task);
-                                      //                  // }else if(videoDetailcontroller.buttonState==ButtonState.resume){
-                                      //                  //   FileDownloader().resume(videoDetailcontroller.task);
-                                      //                  // }else if(videoDetailcontroller.buttonState==ButtonState.download){
-                                      //                  //   FileDownloader().pause(videoDetailcontroller.task);
-                                      //                  // }
-                                      //                  toastMsg('Please Wait video is downloading', false);
-                                      //                }
-                                      //                else{
-                                      //                  downloadfile().downloadHiveButtonPressed
-                                      //                    (
-                                      //                    videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                      //                    videoDetailcontroller.VideoDetaildata[0] ['id'],
-                                      //                    videoDetailcontroller .VideoDetaildata[0]['title'],
-                                      //                    videoDetailcontroller .VideoDetaildata[0]['video_time'],
-                                      //                    videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
-                                      //                    videoDetailcontroller .remotePDFpath,
-                                      //                    videoDetailcontroller .Thumbimg_remotePDFpath,
-                                      //                    videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-                                      //                  );
-                                      //                }
-                                      //              });
-                                      //            }
-                                      //
-                                      //
-                                      //
-                                      //             // if (videoDetailcontroller .progressStatus ==false) {
-                                      //             //   downloadfile().downloadHiveButtonPressed
-                                      //             //       (
-                                      //             //         videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                      //             //         videoDetailcontroller.VideoDetaildata[0] ['id'],
-                                      //             //         videoDetailcontroller .VideoDetaildata[0]['title'],
-                                      //             //         videoDetailcontroller .VideoDetaildata[0]['video_time'],
-                                      //             //         videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
-                                      //             //         videoDetailcontroller .remotePDFpath,
-                                      //             //         videoDetailcontroller .Thumbimg_remotePDFpath,
-                                      //             //         videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-                                      //             //       );
-                                      //             //  }
-                                      //             // else {
-                                      //             //   log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
-                                      //             //   log(">>>>>>>>>>"+ButtonState.download.toString());
-                                      //             //   if( videoDetailcontroller.buttonState==ButtonState.pause){
-                                      //             //     FileDownloader().pause(videoDetailcontroller.task);
-                                      //             //   }else if(videoDetailcontroller.buttonState==ButtonState.resume){
-                                      //             //     FileDownloader().resume(videoDetailcontroller.task);
-                                      //             //   }else if(videoDetailcontroller.buttonState==ButtonState.download){
-                                      //             //     FileDownloader().pause(videoDetailcontroller.task);
-                                      //             //   }
-                                      //             //   toastMsg('Please Wait video is downloading', false);
-                                      //             //
-                                      //             //
-                                      //             // }
-                                      //          }
-                                      //       }
-                                      //       else {
-                                      //         toastMsg('Not allow more than 10 videos ',false);
-                                      //       }
-                                      //     },
-                                      //           child:
-                                      //           videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
-                                      //                    Icon(
-                                      //                     Icons.check_circle_rounded,
-                                      //                     color: primary,
-                                      //                     size: 25,
-                                      //                   )
-                                      //                   // Container(color: Colors.yellow,height: 20,width: 20,)
-                                      //                    :beforevideodatatasks==null?
-                                      //                    Image.asset(
-                                      //                      "assets/nprep2_images/download.png",
-                                      //                      color: primary,
-                                      //                      height: 15,
-                                      //                      width: 15,
-                                      //                    )
-                                      //                   // Container(color: Colors.yellow,height: 20,width: 20,)
-                                      //                    :
-                                      //                   CircularPercentIndicator(
-                                      //                     radius: 15.0,
-                                      //                     lineWidth: 5.0,
-                                      //                     percent: videoDetailcontroller.progress,
-                                      //                     center:videoDetailcontroller.buttonState==ButtonState.resume ?
-                                      //                       Icon(
-                                      //                         Icons.play_arrow,
-                                      //                         color: primary,
-                                      //                         size: 8,
-                                      //                       ):
-                                      //                       Icon(
-                                      //                       Icons.pause,
-                                      //                       color: primary,
-                                      //                       size: 8,
-                                      //                     ),
-                                      //                     progressColor: primary,
-                                      //                   )
-                                      //
-                                      //     ),
-                                      // ),
+                                              },
+                                              child: videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                              Icon(
+                                                Icons.check_circle_rounded,
+                                                color: primary,
+                                                size: 25,
+                                              ):videoDetailcontroller.progressdownloadStatus == false?
+                                              videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1? Icon(
+                                                Icons.check_circle_rounded,
+                                                color: primary,
+                                                size: 25,
+                                              ):
+                                              // Container( height: 20,
+                                              //   width: 20,
+                                              //   color: Colors.green,)
+                                              Image.asset(
+                                                "assets/nprep2_images/download.png",
+                                                color: primary,
+                                                height: 15,
+                                                width: 15,
+                                              )
+                                                  :
+                                              CircularPercentIndicator(
+                                                radius: 15.0,
+                                                lineWidth: 5.0,
+                                                percent:
+                                                videoDetailcontroller.progress,
+                                                center: videoDetailcontroller.buttonState==ButtonState.resume ?
+                                                Icon(
+                                                  Icons.play_arrow,
+                                                  color: primary,
+                                                  size: 12,
+                                                ):
+                                                Icon(
+                                                  Icons.pause,
+                                                  color: primary,
+                                                  size: 12,
+                                                ),
+                                                progressColor: primary,
+                                              )
+                                            // videoDetailcontroller.progressStatus == false?
+                                            // videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                            // Icon(
+                                            //   Icons.check_circle_rounded,
+                                            //   color: primary,
+                                            //   size: 25,
+                                            // ):
+                                            // videoDetailcontroller.progressdownloadStatus == false ?
+                                            // Image.asset(
+                                            //   "assets/nprep2_images/download.png",
+                                            //   color: primary,
+                                            //   height: 15,
+                                            //   width: 15,
+                                            // ):
+                                            // CircularPercentIndicator(
+                                            //   radius: 15.0,
+                                            //   lineWidth: 5.0,
+                                            //   percent:
+                                            //   videoDetailcontroller.progress,
+                                            //   center: videoDetailcontroller.buttonState==ButtonState.resume ?
+                                            //   Icon(
+                                            //     Icons.play_arrow,
+                                            //     color: primary,
+                                            //     size: 12,
+                                            //   ):
+                                            //   Icon(
+                                            //     Icons.pause,
+                                            //     color: primary,
+                                            //     size: 12,
+                                            //   ),
+                                            //   progressColor: primary,
+                                            // )
+                                            // : videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                            // Icon(
+                                            //   Icons.check_circle_rounded,
+                                            //   color: primary,
+                                            //   size: 25,
+                                            // ):
+                                            //
+                                            // CircularPercentIndicator(
+                                            //   radius: 15.0,
+                                            //   lineWidth: 5.0,
+                                            //   percent:
+                                            //   videoDetailcontroller.progress,
+                                            //   center: videoDetailcontroller.buttonState.value==ButtonState.resume ?Icon(
+                                            //     Icons.play_arrow,
+                                            //     color: primary,
+                                            //     size: 12,
+                                            //   ):videoDetailcontroller.buttonState.value==ButtonState.complete?Icon(Icons.refresh,color: primary,
+                                            //     size: 12,):Icon(
+                                            //     Icons.pause,
+                                            //     color: primary,
+                                            //     size: 12,
+                                            //   ),
+                                            //   progressColor: primary,
+                                            // ),
+                                          ),
+                                        )
+                                        ///New Download
+                                        // Container(
+                                        //     // height: 20,
+                                        //     width: 20,
+                                        //     margin: EdgeInsets.only(right: 25),
+                                        //     child: GestureDetector(
+                                        //           onTap: () async {
+                                        //        log("is_download>> " +videoDetailcontroller .VideoDetaildata[0]['is_download'].toString()); ///1 downladed///0 Download pending
+                                        //        // videoItems.length
+                                        //        final DatabaseService _databaseService = DatabaseService.instance;
+                                        //
+                                        //        await _databaseService.getDatabase();
+                                        //        var getTasksdata =_databaseService.getTasks();
+                                        //        var beforegetTasksdata =_databaseService.beforegetTasks();
+                                        //
+                                        //        log("beforevideodatatasks.length> "+beforevideodatatasks.toString());
+                                        //        if (videodatatasks==null|| videodatatasks.length<=10) {
+                                        //          if (videoDetailcontroller.VideoDetaildata[0]['is_download'] ==1) {
+                                        //                 toastMsg('Already Downloaded', false);
+                                        //          }
+                                        //          else {
+                                        //            if(beforevideodatatasks==null){
+                                        //              downloadfile().downloadHiveButtonPressed
+                                        //                (
+                                        //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                        //                videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                        //                videoDetailcontroller .VideoDetaildata[0]['title'],
+                                        //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                        //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                        //                videoDetailcontroller .remotePDFpath,
+                                        //                videoDetailcontroller .Thumbimg_remotePDFpath,
+                                        //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                        //              );
+                                        //            }else{
+                                        //              beforevideodatatasks.forEach((e){
+                                        //                log("beforevideodatatasks>>>>>"+e.toString());
+                                        //                if(e.videokey==videoDetailcontroller.VideoDetaildata[0]['id']){
+                                        //                  log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
+                                        //                  log(">>>>>>>>>>"+ButtonState.download.toString());
+                                        //                  // if( videoDetailcontroller.buttonState==ButtonState.pause){
+                                        //                  //   FileDownloader().pause(videoDetailcontroller.task);
+                                        //                  // }else if(videoDetailcontroller.buttonState==ButtonState.resume){
+                                        //                  //   FileDownloader().resume(videoDetailcontroller.task);
+                                        //                  // }else if(videoDetailcontroller.buttonState==ButtonState.download){
+                                        //                  //   FileDownloader().pause(videoDetailcontroller.task);
+                                        //                  // }
+                                        //                  toastMsg('Please Wait video is downloading', false);
+                                        //                }
+                                        //                else{
+                                        //                  downloadfile().downloadHiveButtonPressed
+                                        //                    (
+                                        //                    videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                        //                    videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                        //                    videoDetailcontroller .VideoDetaildata[0]['title'],
+                                        //                    videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                        //                    videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                        //                    videoDetailcontroller .remotePDFpath,
+                                        //                    videoDetailcontroller .Thumbimg_remotePDFpath,
+                                        //                    videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                        //                  );
+                                        //                }
+                                        //              });
+                                        //            }
+                                        //
+                                        //
+                                        //
+                                        //             // if (videoDetailcontroller .progressStatus ==false) {
+                                        //             //   downloadfile().downloadHiveButtonPressed
+                                        //             //       (
+                                        //             //         videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
+                                        //             //         videoDetailcontroller.VideoDetaildata[0] ['id'],
+                                        //             //         videoDetailcontroller .VideoDetaildata[0]['title'],
+                                        //             //         videoDetailcontroller .VideoDetaildata[0]['video_time'],
+                                        //             //         videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
+                                        //             //         videoDetailcontroller .remotePDFpath,
+                                        //             //         videoDetailcontroller .Thumbimg_remotePDFpath,
+                                        //             //         videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
+                                        //             //       );
+                                        //             //  }
+                                        //             // else {
+                                        //             //   log(">>>>>>>>>>"+videoDetailcontroller.buttonState.toString());
+                                        //             //   log(">>>>>>>>>>"+ButtonState.download.toString());
+                                        //             //   if( videoDetailcontroller.buttonState==ButtonState.pause){
+                                        //             //     FileDownloader().pause(videoDetailcontroller.task);
+                                        //             //   }else if(videoDetailcontroller.buttonState==ButtonState.resume){
+                                        //             //     FileDownloader().resume(videoDetailcontroller.task);
+                                        //             //   }else if(videoDetailcontroller.buttonState==ButtonState.download){
+                                        //             //     FileDownloader().pause(videoDetailcontroller.task);
+                                        //             //   }
+                                        //             //   toastMsg('Please Wait video is downloading', false);
+                                        //             //
+                                        //             //
+                                        //             // }
+                                        //          }
+                                        //       }
+                                        //       else {
+                                        //         toastMsg('Not allow more than 10 videos ',false);
+                                        //       }
+                                        //     },
+                                        //           child:
+                                        //           videoDetailcontroller.VideoDetaildata[0]['is_download'] == 1?
+                                        //                    Icon(
+                                        //                     Icons.check_circle_rounded,
+                                        //                     color: primary,
+                                        //                     size: 25,
+                                        //                   )
+                                        //                   // Container(color: Colors.yellow,height: 20,width: 20,)
+                                        //                    :beforevideodatatasks==null?
+                                        //                    Image.asset(
+                                        //                      "assets/nprep2_images/download.png",
+                                        //                      color: primary,
+                                        //                      height: 15,
+                                        //                      width: 15,
+                                        //                    )
+                                        //                   // Container(color: Colors.yellow,height: 20,width: 20,)
+                                        //                    :
+                                        //                   CircularPercentIndicator(
+                                        //                     radius: 15.0,
+                                        //                     lineWidth: 5.0,
+                                        //                     percent: videoDetailcontroller.progress,
+                                        //                     center:videoDetailcontroller.buttonState==ButtonState.resume ?
+                                        //                       Icon(
+                                        //                         Icons.play_arrow,
+                                        //                         color: primary,
+                                        //                         size: 8,
+                                        //                       ):
+                                        //                       Icon(
+                                        //                       Icons.pause,
+                                        //                       color: primary,
+                                        //                       size: 8,
+                                        //                     ),
+                                        //                     progressColor: primary,
+                                        //                   )
+                                        //
+                                        //     ),
+                                        // ),
 
 
-                                    ],
-                                  );
-                                }
+
+
+                                      ],
+                                    );
+                                  }
                               ),
 
-                             // GestureDetector(
-                             //    onTap: (){
-                             //
-                             //      videoDetailcontroller.adddata();
-                             //    },
-                             //    child: Text("Add Data")),
+
+                              // GestureDetector(
+                              //    onTap: (){
+                              //
+                              //      videoDetailcontroller.adddata();
+                              //    },
+                              //    child: Text("Add Data")),
+
 
                               Divider(
                                 thickness: 1,
@@ -1023,12 +1141,14 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                 endIndent: 0,
                               ),
 
+
                               ///TabBar
                               TabBar(
                                 indicatorColor: primary,
                                 indicatorWeight: 3,
                                 unselectedLabelColor: grey,
                                 labelColor: primary,
+
 
                                 // dragStartBehavior: DragStartBehavior.start,
                                 controller: tabController,
@@ -1046,8 +1166,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                   Tab(
                                     child: Text(
                                       'Notes ${videoDetailcontroller.pages==0?"": '(${
-                                            videoDetailcontroller.pages
-                                          })'}',
+                                          videoDetailcontroller.pages
+                                      })'}',
                                       style: TextStyle(
                                         color: black54,
                                         fontSize: 15,
@@ -1068,6 +1188,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                 ],
                               ),
                               SizedBox(height: 15,),
+
 
                               ///TabBar View
                               Expanded(
@@ -1093,6 +1214,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                         AlwaysScrollableScrollPhysics(),
                                         itemBuilder: (BuildContext context,index) {
                                           var Tablistdata =videoDetailcontroller.VideoDetaildata[0]['video_stamps'][index];
+
 
                                           return GestureDetector(
                                             onTap: () {
@@ -1168,6 +1290,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                                   ),
                                                   Divider(
 
+
                                                     thickness: 1,
                                                     height: 20,
                                                     color: grey,
@@ -1180,6 +1303,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                           );
                                         }),
 
+
                                     /// Video PDF
                                     videoDetailcontroller.VideoDetaildata[0]
                                     ['pdf_attachment'] ==
@@ -1189,107 +1313,113 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                         child: Center(
                                             child: Text("No PDF Found")))
                                         : Stack(
-                                            children: [
-                                              PDFView(
+                                      children: [
+                                        PDFView(
 
-                                                filePath: videoDetailcontroller.remotePDFpath,
-                                                enableSwipe: true,
 
-                                                swipeHorizontal: false,
-                                                autoSpacing: true,
-                                                pageFling: false,
-                                                pageSnap: true,
-                                                defaultPage: videoDetailcontroller.currentPage,
-                                                fitPolicy: FitPolicy.WIDTH,
-                                                fitEachPage: true,
-                                                preventLinkNavigation:false, // if set to true the link is handled in flutter
-                                                onRender: (_pages) {
-                                                  setState(() {
-                                                    videoDetailcontroller.pages = _pages;
-                                                    videoDetailcontroller
-                                                        .isReady = true;
-                                                  });
-                                                },
-                                                onError: (error) {
-                                                  setState(() {
-                                                    videoDetailcontroller
-                                                        .errorMessage =
-                                                        error.toString();
-                                                  });
-                                                  print("Check pdf path>> " +
-                                                      error.toString());
-                                                },
-                                                onPageError: (page, error) {
-                                                  setState(() {
-                                                    videoDetailcontroller
-                                                        .errorMessage =
-                                                    '$page: ${error.toString()}';
-                                                  });
-                                                  print(
-                                                      'Check >> Error PDF > $page: ${error.toString()}');
-                                                },
-                                                onViewCreated: (PDFViewController pdfViewController) {
-                                                  // videoDetailcontroller
-                                                  //     .controllerpdfview
-                                                  //     .complete(
-                                                  //     pdfViewController);
-                                                },
-                                                onLinkHandler: (String uri) {
-                                                  print('goto uri: $uri');
-                                                },
-                                                onPageChanged:
-                                                    (int page, int total) {
-                                                  print(
-                                                      'page change: $page/$total');
-                                                  setState(() {
-                                                    videoDetailcontroller.currentPage = page;
-                                                    videoDetailcontroller.TotalPage = total;
-                                                  });
-                                                },
+                                          filePath: videoDetailcontroller.remotePDFpath,
+                                          enableSwipe: true,
+
+
+                                          swipeHorizontal: false,
+                                          autoSpacing: true,
+                                          pageFling: false,
+                                          pageSnap: true,
+                                          defaultPage: videoDetailcontroller.currentPage,
+                                          fitPolicy: FitPolicy.WIDTH,
+                                          fitEachPage: true,
+                                          preventLinkNavigation:false, // if set to true the link is handled in flutter
+                                          onRender: (_pages) {
+                                            setState(() {
+                                              videoDetailcontroller.pages = _pages;
+                                              videoDetailcontroller
+                                                  .isReady = true;
+                                            });
+                                          },
+                                          onError: (error) {
+                                            setState(() {
+                                              videoDetailcontroller
+                                                  .errorMessage =
+                                                  error.toString();
+                                            });
+                                            print("Check pdf path>> " +
+                                                error.toString());
+                                          },
+                                          onPageError: (page, error) {
+                                            setState(() {
+                                              videoDetailcontroller
+                                                  .errorMessage =
+                                              '$page: ${error.toString()}';
+                                            });
+                                            print(
+                                                'Check >> Error PDF > $page: ${error.toString()}');
+                                          },
+                                          onViewCreated: (PDFViewController pdfViewController) {
+                                            // videoDetailcontroller
+                                            //     .controllerpdfview
+                                            //     .complete(
+                                            //     pdfViewController);
+                                          },
+                                          onLinkHandler: (String uri) {
+                                            print('goto uri: $uri');
+                                          },
+                                          onPageChanged:
+                                              (int page, int total) {
+                                            print(
+                                                'page change: $page/$total');
+                                            setState(() {
+                                              videoDetailcontroller.currentPage = page;
+                                              videoDetailcontroller.TotalPage = total;
+                                            });
+                                          },
+                                        ),
+
+
+                                        Positioned(
+                                            top: 10,
+                                            right: 10,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                // Get.to(FullPage());
+                                                videoDetailcontroller.updatevideoscreen();
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 30,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withOpacity(0.2),
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(50),
+                                                    border: Border.all(
+                                                        color: primary)),
+                                                child: Transform.rotate(
+                                                    angle:
+                                                    180 * math.pi / 100,
+                                                    child: Icon(
+                                                      Icons.code,
+                                                      size: 25,
+                                                      color: Colors.black,
+                                                    )),
                                               ),
+                                            )),
+                                        Positioned(
+                                          top: double.parse(videoDetailcontroller.top_post.value.toString()),
+                                          right: double.parse(videoDetailcontroller.right_post.value.toString()),
 
-                                              Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      // Get.to(FullPage());
-                                                      videoDetailcontroller.updatevideoscreen();
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.white
-                                                              .withOpacity(0.2),
-                                                          borderRadius:
-                                                          BorderRadius
-                                                              .circular(50),
-                                                          border: Border.all(
-                                                              color: primary)),
-                                                      child: Transform.rotate(
-                                                          angle:
-                                                          180 * math.pi / 100,
-                                                          child: Icon(
-                                                            Icons.code,
-                                                            size: 25,
-                                                            color: Colors.black,
-                                                          )),
-                                                    ),
-                                                  )),
-                                              Positioned(
-                                                top: double.parse(videoDetailcontroller.top_post.value.toString()),
-                                                right: double.parse(videoDetailcontroller.right_post.value.toString()),
 
-                                                child: Container(
-                                                  // height: 35,
-                                                  // width: 35,
+                                          child: Container(
+                                            // height: 35,
+                                            // width: 35,
 
-                                                  child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
-                                                ),
-                                              ),
-                                            ],
+
+                                            child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)),
                                           ),
+                                        ),
+                                      ],
+                                    ),
+
 
                                     /// Video Blocks
                                     videoDetailcontroller.VideoDetaildata[0]['video_relates'].length ==
@@ -1306,329 +1436,338 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                         physics:AlwaysScrollableScrollPhysics(),
                                         itemBuilder:(BuildContext context, index) {
                                           var Tablist2data = videoDetailcontroller.VideoDetaildata[0]
-                                                            ['video_relates'][index];
+                                          ['video_relates'][index];
+
 
                                           return Tablist2data['category_type'] == 1
                                               ? GestureDetector(
-                                                  onTap: () async {
-                                                    // videoDetailcontroller.dispose();
-                                                    await attempt_test_api(
-                                                        Tablist2data['mcq_category']['id'] .toString(),
-                                                        Tablist2data['mcq_category']['name'].toString(),
-                                                        Tablist2data['mcq_category']['name'].toString());
-                                                  },
-                                                  child: Stack(
-                                                    children: [
-                                                      // Text("MCQ"),
-                                                      Card(
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:BorderRadius.circular(10)),
-                                                        // height: sheight * .1,
-                                                        // decoration: BoxDecoration(
-                                                        //     borderRadius: BorderRadius.circular(10),
-                                                        //     color: white,
-                                                        //     boxShadow: [
-                                                        //       BoxShadow(
-                                                        //         color: Colors.grey.shade300,
-                                                        //         spreadRadius: 1,
-                                                        //         blurRadius: 0.5,
-                                                        //       )
-                                                        //     ]),
-                                                        // padding: EdgeInsets.all(5),
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                          children: [
-                                                            Container(
-                                                              margin:
-                                                              EdgeInsets.only(
-                                                                left: 5,
-                                                              ),
-                                                              decoration:
-                                                              BoxDecoration(
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                    10),
-                                                              ),
-                                                              child: ClipRRect(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(5.0),
-                                                                  child: categoryImage(Environment
-                                                                      .imgapibaseurl +Tablist2data['mcq_category']
-                                                                      ['image'])),
-                                                              height:
-                                                              sheight * 0.08,
-                                                              width: swidth * 0.18,
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Container(
-                                                                  width:
-                                                                  swidth -
-                                                                      120,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                      10,
-                                                                      vertical:
-                                                                      10),
-                                                                  // color: primary,
-
-                                                                  child: Text(
-                                                                    Tablist2data['mcq_category']
-                                                                    ['name']
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        fontSize: 14,
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontFamily: 'PublicSans',
-                                                                        color: black54,
-                                                                        // height: 1.1,
-                                                                        letterSpacing: 0.8),
-                                                                  ),
-                                                                ),
-                                                                // perentdata['attempt_percentage']==0?Container():
-
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .all(
-                                                                      10.0),
-                                                                  child: Text(
-                                                                    Tablist2data['mcq_category']['questions_count']
-                                                                        .toString() +
-                                                                        " MCQ",
-                                                                    style:
-                                                                    TextStyle(
-                                                                      color:
-                                                                      black54,
-                                                                      fontWeight:
-                                                                      FontWeight.w400,
-                                                                      fontFamily:
-                                                                      'Poppins-Regular',
-                                                                      fontSize:
-                                                                      12,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Tablist2data["mcq_category"]['fee_type'] == 2
-                                                          ? Container()
-                                                          : Positioned(
-                                                        right: 10,
-                                                        top: 5,
-                                                        child:
+                                              onTap: () async {
+                                                videoDetailcontroller.betterPlayerController.pause();
+                                                // videoDetailcontroller.dispose();
+                                                await attempt_test_api(
+                                                    Tablist2data['mcq_category']['id'] .toString(),
+                                                    Tablist2data['mcq_category']['name'].toString(),
+                                                    Tablist2data['mcq_category']['name'].toString());
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  // Text("MCQ"),
+                                                  Card(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:BorderRadius.circular(10)),
+                                                    // height: sheight * .1,
+                                                    // decoration: BoxDecoration(
+                                                    //     borderRadius: BorderRadius.circular(10),
+                                                    //     color: white,
+                                                    //     boxShadow: [
+                                                    //       BoxShadow(
+                                                    //         color: Colors.grey.shade300,
+                                                    //         spreadRadius: 1,
+                                                    //         blurRadius: 0.5,
+                                                    //       )
+                                                    //     ]),
+                                                    // padding: EdgeInsets.all(5),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .center,
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .start,
+                                                      children: [
                                                         Container(
-                                                          height: 15,
-                                                          width: 30,
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                  todayTextColor),
-                                                              borderRadius:
-                                                              BorderRadius.circular(
-                                                                  4)),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Pro",
-                                                              textAlign:
-                                                              TextAlign
-                                                                  .center,
-                                                              style: TextStyle(
-                                                                  color:
-                                                                  todayTextColor,
-                                                                  fontSize:
-                                                                  10),
-                                                            ),
+                                                          margin:
+                                                          EdgeInsets.only(
+                                                            left: 5,
                                                           ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )
-                                              )
-                                              : GestureDetector(
-                                                  onTap: () async {
-
-                                                    videoDetailcontroller.betterPlayerController.pause();
-                                                    videoDetailcontroller.dispose();
-
-                                                    try {
-                                                      await Navigator.of(context).pushReplacement(
-                                                        MaterialPageRoute<void>(
-                                                          builder: (BuildContext
-                                                          context) =>
-                                                              VideoDetailScreen(
-                                                                  CatId: Tablist2data[
-                                                                  'category_id']),
-                                                        ),
-                                                      );
-
-                                                    } catch (e) {
-                                                      // log("Navigation >> "+e.toString());
-                                                    }
-                                                  },
-                                                  child: Stack(
-                                                    children: [
-                                                      Card(
-                                                        shape: RoundedRectangleBorder(
+                                                          decoration:
+                                                          BoxDecoration(
                                                             borderRadius:
                                                             BorderRadius
                                                                 .circular(
-                                                                10)),
-                                                        // height: sheight * .1,
-                                                        // decoration: BoxDecoration(
-                                                        //     borderRadius: BorderRadius.circular(10),
-                                                        //     color: white,
-                                                        //     boxShadow: [
-                                                        //       BoxShadow(
-                                                        //         color: Colors.grey.shade300,
-                                                        //         spreadRadius: 1,
-                                                        //         blurRadius: 0.5,
-                                                        //       )
-                                                        //     ]),
-                                                        // padding: EdgeInsets.all(5),
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                                10),
+                                                          ),
+                                                          child: ClipRRect(
+                                                              borderRadius:
+                                                              BorderRadius.circular(5.0),
+                                                              child: categoryImage(Environment
+                                                                  .imgapibaseurl +Tablist2data['mcq_category']
+                                                              ['image'])),
+                                                          height:
+                                                          sheight * 0.08,
+                                                          width: swidth * 0.18,
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Container(
-                                                              margin:
-                                                              EdgeInsets
-                                                                  .only(
-                                                                left: 5,
-                                                              ),
-                                                              decoration:
-                                                              BoxDecoration(
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                    10),
-                                                              ),
-                                                              child: ClipRRect(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      5.0),
-                                                                  child: categoryImage(
-                                                                      "assets/images/NPrep.jpeg")),
-                                                              height:
-                                                              sheight *
-                                                                  0.08,
-                                                              width: swidth *
-                                                                  0.18,
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                              children: [
-                                                                Container(
-                                                                  width:
-                                                                  swidth -
-                                                                      120,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                      10,
-                                                                      vertical:
-                                                                      10),
-                                                                  // color: primary,
-                                                                  child: Text(
-                                                                    Tablist2data['video_category']
-                                                                    ['name']
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        fontSize: 14,
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontFamily: 'PublicSans',
-                                                                        color: black54,
-                                                                        // height: 1.1,
-                                                                        letterSpacing: 0.8),
-                                                                  ),
-                                                                ),
-                                                                // perentdata['attempt_percentage']==0?Container():
+                                                              width:
+                                                              swidth -
+                                                                  120,
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                  10,
+                                                                  vertical:
+                                                                  10),
+                                                              // color: primary,
 
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .all(
-                                                                      10.0),
-                                                                  child: Text(
-                                                                    Tablist2data['video_category']['video_time']
-                                                                        .toString() +
-                                                                        " Video",
-                                                                    style:
-                                                                    TextStyle(
-                                                                      color:
-                                                                      black54,
-                                                                      fontWeight:
-                                                                      FontWeight.w400,
-                                                                      fontFamily:
-                                                                      'Poppins-Regular',
-                                                                      fontSize:
-                                                                      12,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
+
+                                                              child: Text(
+                                                                Tablist2data['mcq_category']
+                                                                ['name']
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w700,
+                                                                    fontFamily: 'PublicSans',
+                                                                    color: black54,
+                                                                    // height: 1.1,
+                                                                    letterSpacing: 0.8),
+                                                              ),
+                                                            ),
+                                                            // perentdata['attempt_percentage']==0?Container():
+
+
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .all(
+                                                                  10.0),
+                                                              child: Text(
+                                                                Tablist2data['mcq_category']['questions_count']
+                                                                    .toString() +
+                                                                    " MCQ",
+                                                                style:
+                                                                TextStyle(
+                                                                  color:
+                                                                  black54,
+                                                                  fontWeight:
+                                                                  FontWeight.w400,
+                                                                  fontFamily:
+                                                                  'Poppins-Regular',
+                                                                  fontSize:
+                                                                  12,
+                                                                ),
+                                                              ),
                                                             )
                                                           ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Tablist2data["mcq_category"]['fee_type'] == 2
+                                                      ? Container()
+                                                      : Positioned(
+                                                    right: 10,
+                                                    top: 5,
+                                                    child:
+                                                    Container(
+                                                      height: 15,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                              todayTextColor),
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                              4)),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Pro",
+                                                          textAlign:
+                                                          TextAlign
+                                                              .center,
+                                                          style: TextStyle(
+                                                              color:
+                                                              todayTextColor,
+                                                              fontSize:
+                                                              10),
                                                         ),
                                                       ),
-                                                      Tablist2data["video_category"]
-                                                      [
-                                                      'fee_type'] ==
-                                                          2
-                                                          ? Container()
-                                                          : Positioned(
-                                                        right: 10,
-                                                        top: 5,
-                                                        child:
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                          )
+                                              : GestureDetector(
+                                              onTap: () async {
+
+
+                                                videoDetailcontroller.betterPlayerController.pause();
+                                                videoDetailcontroller.dispose();
+
+
+                                                try {
+                                                  await Navigator.of(context).pushReplacement(
+                                                    MaterialPageRoute<void>(
+                                                      builder: (BuildContext
+                                                      context) =>
+                                                          VideoDetailScreen(
+                                                              CatId: Tablist2data[
+                                                              'category_id']),
+                                                    ),
+                                                  );
+
+
+                                                } catch (e) {
+                                                  // log("Navigation >> "+e.toString());
+                                                }
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  Card(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            10)),
+                                                    // height: sheight * .1,
+                                                    // decoration: BoxDecoration(
+                                                    //     borderRadius: BorderRadius.circular(10),
+                                                    //     color: white,
+                                                    //     boxShadow: [
+                                                    //       BoxShadow(
+                                                    //         color: Colors.grey.shade300,
+                                                    //         spreadRadius: 1,
+                                                    //         blurRadius: 0.5,
+                                                    //       )
+                                                    //     ]),
+                                                    // padding: EdgeInsets.all(5),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .center,
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .start,
+                                                      children: [
                                                         Container(
-                                                          height: 15,
-                                                          width: 30,
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                  todayTextColor),
+                                                          margin:
+                                                          EdgeInsets
+                                                              .only(
+                                                            left: 5,
+                                                          ),
+                                                          decoration:
+                                                          BoxDecoration(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                10),
+                                                          ),
+                                                          child: ClipRRect(
                                                               borderRadius:
                                                               BorderRadius.circular(
-                                                                  4)),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Pro",
-                                                              textAlign:
-                                                              TextAlign
-                                                                  .center,
-                                                              style: TextStyle(
-                                                                  color:
-                                                                  todayTextColor,
-                                                                  fontSize:
-                                                                  10),
-                                                            ),
-                                                          ),
+                                                                  5.0),
+                                                              child: categoryImage(
+                                                                  "assets/images/NPrep.jpeg")),
+                                                          height:
+                                                          sheight *
+                                                              0.08,
+                                                          width: swidth *
+                                                              0.18,
                                                         ),
-                                                      )
-                                                    ],
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                          children: [
+                                                            Container(
+                                                              width:
+                                                              swidth -
+                                                                  120,
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                  10,
+                                                                  vertical:
+                                                                  10),
+                                                              // color: primary,
+                                                              child: Text(
+                                                                Tablist2data['video_category']
+                                                                ['name']
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w700,
+                                                                    fontFamily: 'PublicSans',
+                                                                    color: black54,
+                                                                    // height: 1.1,
+                                                                    letterSpacing: 0.8),
+                                                              ),
+                                                            ),
+                                                            // perentdata['attempt_percentage']==0?Container():
+
+
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .all(
+                                                                  10.0),
+                                                              child: Text(
+                                                                Tablist2data['video_category']['video_time']
+                                                                    .toString() +
+                                                                    " Video",
+                                                                style:
+                                                                TextStyle(
+                                                                  color:
+                                                                  black54,
+                                                                  fontWeight:
+                                                                  FontWeight.w400,
+                                                                  fontFamily:
+                                                                  'Poppins-Regular',
+                                                                  fontSize:
+                                                                  12,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Tablist2data["video_category"]
+                                                  [
+                                                  'fee_type'] ==
+                                                      2
+                                                      ? Container()
+                                                      : Positioned(
+                                                    right: 10,
+                                                    top: 5,
+                                                    child:
+                                                    Container(
+                                                      height: 15,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                              todayTextColor),
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                              4)),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Pro",
+                                                          textAlign:
+                                                          TextAlign
+                                                              .center,
+                                                          style: TextStyle(
+                                                              color:
+                                                              todayTextColor,
+                                                              fontSize:
+                                                              10),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   )
-                                              );
+                                                ],
+                                              )
+                                          );
                                         }),
                                   ],
                                 ),
                               ),
+
 
                               ///Button
                               GestureDetector(
@@ -1652,6 +1791,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                         "${apiUrls().videos_unattempt_api}${videoDetailcontroller.VideoDetaildata[0]['id']}";
                                     var result = await apiCallingHelper()
                                         .getAPICall(videos_saved, true);
+
 
                                     videoDetailcontroller.VideoDetaildata[0]
                                     ['is_attempt'] = 0;
@@ -1707,9 +1847,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                 ),
               );
 
+
             }
-        }
+          }
       ),
     );
   }
 }
+

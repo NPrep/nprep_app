@@ -108,155 +108,159 @@ class _OTPProfileState extends State<OTPProfile> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      backgroundColor: primary,
-      body: SingleChildScrollView(
-          child: GetBuilder<AuthController>(
-            builder: (authController) {
-              return Stack(
-        // fit: StackFit.passthrough,
-        children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: size.height * .1,
-                  ),
-                  Image.asset(
-                    logo,
-                    color: white,
-                    scale:1.4,
-                  ),
-                  SizedBox(
-                    height: size.height *.1,
-                  ),
-                  Image.asset(background)
-                ],
-              ),
-              Positioned(
-                  top: 320,
-                  // height: MediaQuery.of(context).size.height*0.3,
-                  child: Container(
-                    height: size.height,
-                    width: size.width,
-                    // color: Colors.red,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text('Update Mobile'.toUpperCase(),
-                                          style: TextStyles.loginTStyle),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.03,
-                                  ),
-                                 authController. mobprofileLoading.value==true?Pinput(
-                                    validator: Validations.pinputOtp,
-                                    controller: pinController,
-                                    length: 6,
-
-                                    keyboardType: TextInputType.number,
-                                    // androidSmsAutofillMethod:
-                                    // AndroidSmsAutofillMethod
-                                    //     .smsUserConsentApi,
-                                    // listenForMultipleSmsOnAndroid: true,
-                                    pinputAutovalidateMode:
-                                    PinputAutovalidateMode.onSubmit,
-                                    defaultPinTheme: defaultPinTheme,
-                                    focusedPinTheme: defaultPinTheme.copyWith(
-                                      decoration:
-                                      defaultPinTheme.decoration.copyWith(
-                                        border: Border.all(color: primary),
-                                      ),
+    var mediaquary=MediaQuery.of(context);
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: Scaffold(
+        backgroundColor: primary,
+        body: SingleChildScrollView(
+            child: GetBuilder<AuthController>(
+              builder: (authController) {
+                return Stack(
+          // fit: StackFit.passthrough,
+          children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      height: size.height * .1,
+                    ),
+                    Image.asset(
+                      logo,
+                      color: white,
+                      scale:1.4,
+                    ),
+                    SizedBox(
+                      height: size.height *.1,
+                    ),
+                    Image.asset(background)
+                  ],
+                ),
+                Positioned(
+                    top: 320,
+                    // height: MediaQuery.of(context).size.height*0.3,
+                    child: Container(
+                      height: size.height,
+                      width: size.width,
+                      // color: Colors.red,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(12),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text('Update Mobile'.toUpperCase(),
+                                            style: TextStyles.loginTStyle),
+                                      ],
                                     ),
-                                    errorPinTheme: defaultPinTheme.copyWith(
-                                      decoration:
-                                      defaultPinTheme.decoration.copyWith(
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors
-                                                .red), // Set the error border color to red
-                                      ),
+                                    SizedBox(
+                                      height: size.height * 0.03,
                                     ),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                    isCursorAnimationEnabled: true,
-                                  ):Container(),
-                                  SizedBox(height: 15,),
-                                  CustomTextFormField(
-                                    controller: mobileControllerset,
-                                    validator: (String value) {
-                                      if (value.isEmpty) {
-                                        return 'Please enter the mobile number';
+                                   authController. mobprofileLoading.value==true?Pinput(
+                                      validator: Validations.pinputOtp,
+                                      controller: pinController,
+                                      length: 6,
+
+                                      keyboardType: TextInputType.number,
+                                      // androidSmsAutofillMethod:
+                                      // AndroidSmsAutofillMethod
+                                      //     .smsUserConsentApi,
+                                      // listenForMultipleSmsOnAndroid: true,
+                                      pinputAutovalidateMode:
+                                      PinputAutovalidateMode.onSubmit,
+                                      defaultPinTheme: defaultPinTheme,
+                                      focusedPinTheme: defaultPinTheme.copyWith(
+                                        decoration:
+                                        defaultPinTheme.decoration.copyWith(
+                                          border: Border.all(color: primary),
+                                        ),
+                                      ),
+                                      errorPinTheme: defaultPinTheme.copyWith(
+                                        decoration:
+                                        defaultPinTheme.decoration.copyWith(
+                                          borderRadius: BorderRadius.circular(5),
+                                          border: Border.all(
+                                              color: Colors
+                                                  .red), // Set the error border color to red
+                                        ),
+                                      ),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
+                                      isCursorAnimationEnabled: true,
+                                    ):Container(),
+                                    SizedBox(height: 15,),
+                                    CustomTextFormField(
+                                      controller: mobileControllerset,
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return 'Please enter the mobile number';
+                                        }
+                                        if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                                          return 'Please enter a valid 10-digit mobile number';
+                                        }
+                                        if (value==widget.mobileController) {
+                                          return 'This number is already is used';
+                                        }
+                                        return null; // Validation passed
+                                      },
+                                      maxLength: 25,
+                                      hintText: 'Mobile No.',
+                                      l_icon: Image.asset(profile_user,scale: 3.5,),
+                                      keyType: TextInputType.phone,
+                                      textInputAction: TextInputAction.done,
+                                      // suffix: IconButton(icon: Icon(Icons.send),onPressed:(){
+                                      //   sendotp();
+                                      // } ,),
+                                      formatter:  [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9]'))
+                                      ],
+                                    ),
+
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    onPressed:  authController.mobprofileLoading.value==true?authController.registerLoading.value==true?null:updatesaveno:(){
+                                      if(_formKey.currentState.validate()){
+                                        FocusScope.of(context).unfocus();
+
+                                        sendotp();
                                       }
-                                      if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-                                        return 'Please enter a valid 10-digit mobile number';
-                                      }
-                                      if (value==widget.mobileController) {
-                                        return 'This number is already is used';
-                                      }
-                                      return null; // Validation passed
+
                                     },
-                                    maxLength: 25,
-                                    hintText: 'Mobile No.',
-                                    l_icon: Image.asset(profile_user,scale: 3.5,),
-                                    keyType: TextInputType.phone,
-                                    textInputAction: TextInputAction.done,
-                                    // suffix: IconButton(icon: Icon(Icons.send),onPressed:(){
-                                    //   sendotp();
-                                    // } ,),
-                                    formatter:  [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9]'))
-                                    ],
-                                  ),
-
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                ],
+                                    child: Text(
+                                      authController.mobprofileLoading.value==true?authController.registerLoading.value==true?'Please Wait..':'Update': 'Send OTP'.toUpperCase(),
+                                      style: TextStyles.BtnStyle,
+                                    )
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                  onPressed:  authController.mobprofileLoading.value==true?authController.registerLoading.value==true?null:updatesaveno:(){
-                                    if(_formKey.currentState.validate()){
-                                      FocusScope.of(context).unfocus();
-
-                                      sendotp();
-                                    }
-
-                                  },
-                                  child: Text(
-                                    authController.mobprofileLoading.value==true?authController.registerLoading.value==true?'Please Wait..':'Update': 'Send OTP'.toUpperCase(),
-                                    style: TextStyles.BtnStyle,
-                                  )
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ))
-        ],
-      );
-            }
-          )),
+                    ))
+          ],
+        );
+              }
+            )),
+      ),
     );
   }
 }

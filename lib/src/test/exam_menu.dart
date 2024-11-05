@@ -216,12 +216,12 @@ class _Exam_MenuState extends State<Exam_Menu> {
 
                                                     });
                                                     var examansUrl;
-                                                    if(examController.type==4||examController.type==2) {
+                                                    if(examController.type==1||examController.type==2) {
                                                        examansUrl = apiUrls().Mock_Copy_exam_ans_attempt_api +widget.id.toString();
                                                     }else{
                                                       examansUrl = apiUrls().Copy_exam_ans_attempt_api +widget.id.toString();
                                                     }
-                                                    if((examController.sessionCount-1)==examController.dailysectionData['data'].length) {
+                                                    if((examController.sessionCount+1)==examController.dailysectionData['data'].length) {
                                                       var examBody = jsonEncode({
                                                         'answer_data': examController.Copy_get_que_list
                                                       });

@@ -69,6 +69,8 @@ class _QbankState extends State<Qbank> {
   Widget build(BuildContext context) {
     var sheight = MediaQuery.of(context).size.height;
     var swidth = MediaQuery.of(context).size.width;
+    var mediaquary=MediaQuery.of(context);
+  var  scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
     return Scaffold(
         body: GetBuilder<CategoryController>(builder: (categoryController) {
       if (categoryController.parentLoader.value) {
@@ -198,42 +200,43 @@ class _QbankState extends State<Qbank> {
                                   // height: 1.1,
                                   letterSpacing: 0.8),
                             ),
-                          ),
-                          // perentdata['attempt_percentage']==0?Container():
-                          LinearPercentIndicator(
-                            width: swidth>500?swidth * .820:swidth * .675,
-                            animation: true,
-                            animationDuration: 1000,
-                            lineHeight: 5.0,
-                            percent: double.parse(
-                                perentdata['attempt_percentage'].toString()),
-                            barRadius: Radius.circular(1),
-                            progressColor: primary,
-                            backgroundColor: Colors.grey[300],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              '${perentdata['attempt_categories'].toString()}/'
-                              '${perentdata['total_categories'].toString()} Blocks Completed',
-                              style: TextStyle(
-                                color: black54,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins-Regular',
-                                fontSize: 12,
-                              ),
                             ),
-                          )
-                        ],
-                      )
-                    ],
+                            // perentdata['attempt_percentage']==0?Container():
+                            LinearPercentIndicator(
+                              width: swidth>500?swidth * .820:swidth * .675,
+                              animation: true,
+                              animationDuration: 1000,
+                              lineHeight: 5.0,
+                              percent: double.parse(
+                                  perentdata['attempt_percentage'].toString()),
+                              barRadius: Radius.circular(1),
+                              progressColor: primary,
+                              backgroundColor: Colors.grey[300],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                '${perentdata['attempt_categories'].toString()}/'
+                                '${perentdata['total_categories'].toString()} Blocks Completed',
+                                style: TextStyle(
+                                  color: black54,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Poppins-Regular',
+                                  fontSize: 12,
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
       );
-    }));
+    }),
+        );
   }
 }

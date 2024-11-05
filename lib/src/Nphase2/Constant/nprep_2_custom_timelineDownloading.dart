@@ -9,6 +9,8 @@ import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+import '../VideoScreens/DatabaseSqflite.dart';
+
 class Nprep2CustomTimelineDownloading extends StatefulWidget {
 
 
@@ -88,6 +90,7 @@ class _Nprep2CustomTimelineDownloadingState extends State<Nprep2CustomTimelineDo
                   child: Row(
 
                     children: [
+
                       Padding(
 
                         padding: EdgeInsets.all(6),
@@ -192,6 +195,7 @@ class _Nprep2CustomTimelineDownloadingState extends State<Nprep2CustomTimelineDo
                           ],
                         ),
                       ),
+
                       GestureDetector(
                           onTap: () async {
                             log("DurationHIT>> onTap");
@@ -204,13 +208,15 @@ class _Nprep2CustomTimelineDownloadingState extends State<Nprep2CustomTimelineDo
                             });
                             log("DurationHIT>> cancel");
                             FileDownloader().cancelTasksWithIds([widget.videoid]);
+                            final DatabaseService _databaseService = DatabaseService.instance;
 
+                            await _databaseService.deleteDownloadSavevideo(widget.videoid.toString());
 
                             setState(() {
 
                             });
                           },
-                          child: Icon(Icons.delete,color: primary,))
+                          child: Icon(Icons.delete,color: primary,)),
 
                     ],
                   ),

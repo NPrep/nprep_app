@@ -304,34 +304,37 @@ class _ProfileState extends State<Profile> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Logout'),
-            content: Text('Are you sure you want to logout?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Future.delayed(Duration(milliseconds: 500), () async {
-                    sprefs.clear();
-                    sprefs.setBool(KEYLOGIN, false);
-                    apiCallingHelper().logoutinPref();
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.10, 1.10)),
+            child: AlertDialog(
+              title: Text('Logout'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Future.delayed(Duration(milliseconds: 500), () async {
+                      sprefs.clear();
+                      sprefs.setBool(KEYLOGIN, false);
+                      apiCallingHelper().logoutinPref();
 
 
-                    //
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => LoginPage()),
-                    // );
-                  }); // Perform logout operation
-                },
-                child: Text('Yes'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text('No'),
-              ),
-            ],
+                      //
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => LoginPage()),
+                      // );
+                    }); // Perform logout operation
+                  },
+                  child: Text('Yes'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Text('No'),
+                ),
+              ],
+            ),
           );
         });
   }
@@ -342,189 +345,193 @@ class _ProfileState extends State<Profile> {
     Size size = MediaQuery.of(context).size;
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-
-    return Scaffold(
-      body: GetBuilder<ProfileController>(builder: (profileContro) {
-        if (profileContro.profileLoader.value) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          return SingleChildScrollView(
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width * 1,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        // color: Colors.black,
+    var mediaquary=MediaQuery.of(context);
+    var scale = mediaquary.textScaleFactor.clamp(1.10, 1.10);
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: Scaffold(
+        body: GetBuilder<ProfileController>(builder: (profileContro) {
+          if (profileContro.profileLoader.value) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: MediaQuery.of(context).size.width * 1,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          // color: Colors.black,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Container(
-                      child: isEditMode == false
-                          ? ProfileMode(profileContro)
-                          : EditMode(profileContro),
-                    )
-                  ],
-                ),
-                Positioned(
-                  left: 30,
-                  right: 30,
-                  top: 90,
-                  child: Card(
-                    elevation: 0.3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Container(
-                      // height: MediaQuery.of(context).size.height * 0.18,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        // color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.0),
+                      SizedBox(
+                        height: 100,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                    onTap:
-                                        // isEditMode == false ?
-
-                                        edit,
-                                    // : getImageFromCamera(ImageSource.gallery,
-                                    child: Icon(
-                                      isEditMode == false
-                                          ? Icons.edit_calendar_outlined
-                                          : Icons.photo_library_outlined,
-                                      color: Colors.grey,
-                                    )),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width - 100,
-                                // padding:  EdgeInsets.only(bottom: 20,),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '${profileContro.profileData['data']['name'].toString().capitalize}',
-                                  style: TextStyle(
-                                      color: grey,
-                                      fontFamily: 'PublicSans',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 24),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                      Container(
+                        child: isEditMode == false
+                            ? ProfileMode(profileContro)
+                            : EditMode(profileContro),
+                      )
+                    ],
                   ),
-                ),
-                Positioned(
-                    left: size.width * .35,
-                    // right: 50,
-                    top: 50,
-                    // bottom: 50,
-                    child: GestureDetector(
-                        onTap: () {
-                          if (isEditMode == false) {
-                          } else {
-                            profileController.getFromGallery();
-                          }
-                        },
-                        child: Container(
-                          height: 120,
-                          width: 120,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            // color: const Color(0xff7c94b6),
-                            image: DecorationImage(
-                              image: profileContro.pickfile != null
-                                  ? FileImage(File(profileContro.pickfile.path))
-                                  : NetworkImage(profileContro
-                                      .profileData['data']['image']
-                                      .toString()),
-                              //fit: BoxFit.cover,
+                  Positioned(
+                    left: 30,
+                    right: 30,
+                    top: 90,
+                    child: Card(
+                      elevation: 0.3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Container(
+                        // height: MediaQuery.of(context).size.height * 0.18,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                      onTap:
+                                          // isEditMode == false ?
+
+                                          edit,
+                                      // : getImageFromCamera(ImageSource.gallery,
+                                      child: Icon(
+                                        isEditMode == false
+                                            ? Icons.edit_calendar_outlined
+                                            : Icons.photo_library_outlined,
+                                        color: Colors.grey,
+                                      )),
+                                )
+                              ],
                             ),
-                            border: Border.all(width: 1.5, color: Colors.white),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                        )
-                        // child:Container(
-                        //
-                        // decoration: BoxDecoration(
-                        // // image:  DecorationImage(
-                        // //   image: profileContro.pickfile != null
-                        // //       ? FileImage(File(profileContro.pickfile.path),scale: 2)
-                        // //       : NetworkImage(profileContro.profileData['data']['image'].toString() ),
-                        // //   fit: BoxFit.cover,
-                        // // ),
-                        // border: Border.all(
-                        // width: 1.5,
-                        // color: Colors.white
-                        // ),
-                        // borderRadius: BorderRadius.circular(100),
-                        // ),
-                        // child: CircleAvatar(
-                        // radius: 60,
-                        // backgroundImage: profileContro.pickfile != null
-                        // ? FileImage(File(profileContro.pickfile.path),)
-                        //     : NetworkImage(profileContro.profileData['data']['image'].toString()),
-                        // ),
-                        // )
-
-                        )),
-                Positioned(
-                  left: 10,
-                  top: 50,
-                  child: GestureDetector(
-                    onTap: () {
-                      SystemChrome.setSystemUIOverlayStyle(
-                          SystemUiOverlayStyle(
-                            systemNavigationBarColor: Color(
-                                0xFFFFFFFF), // navigation bar color
-                            statusBarColor: Color(
-                                0xFF64C4DA), // status bar color
-                          ));
-                      Get.back();
-                    },
-                    child: Container(
-                      height: 35,
-                      width: 35,
-                      decoration: BoxDecoration(
-                          color:
-                          Colors.black45.withOpacity(0.2),
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(50))),
-                      child: Icon(
-                        Icons.chevron_left,
-                        color: white,
+                            SizedBox(
+                              height: 50,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width - 100,
+                                  // padding:  EdgeInsets.only(bottom: 20,),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${profileContro.profileData['data']['name'].toString().capitalize}',
+                                    style: TextStyle(
+                                        color: grey,
+                                        fontFamily: 'PublicSans',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 24),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
-          );
-        }
-      }),
+                  Positioned(
+                      left: size.width * .35,
+                      // right: 50,
+                      top: 50,
+                      // bottom: 50,
+                      child: GestureDetector(
+                          onTap: () {
+                            if (isEditMode == false) {
+                            } else {
+                              profileController.getFromGallery();
+                            }
+                          },
+                          child: Container(
+                            height: 120,
+                            width: 120,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              // color: const Color(0xff7c94b6),
+                              image: DecorationImage(
+                                image: profileContro.pickfile != null
+                                    ? FileImage(File(profileContro.pickfile.path))
+                                    : NetworkImage(profileContro
+                                        .profileData['data']['image']
+                                        .toString()),
+                                //fit: BoxFit.cover,
+                              ),
+                              border: Border.all(width: 1.5, color: Colors.white),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          )
+                          // child:Container(
+                          //
+                          // decoration: BoxDecoration(
+                          // // image:  DecorationImage(
+                          // //   image: profileContro.pickfile != null
+                          // //       ? FileImage(File(profileContro.pickfile.path),scale: 2)
+                          // //       : NetworkImage(profileContro.profileData['data']['image'].toString() ),
+                          // //   fit: BoxFit.cover,
+                          // // ),
+                          // border: Border.all(
+                          // width: 1.5,
+                          // color: Colors.white
+                          // ),
+                          // borderRadius: BorderRadius.circular(100),
+                          // ),
+                          // child: CircleAvatar(
+                          // radius: 60,
+                          // backgroundImage: profileContro.pickfile != null
+                          // ? FileImage(File(profileContro.pickfile.path),)
+                          //     : NetworkImage(profileContro.profileData['data']['image'].toString()),
+                          // ),
+                          // )
+
+                          )),
+                  Positioned(
+                    left: 10,
+                    top: 50,
+                    child: GestureDetector(
+                      onTap: () {
+                        SystemChrome.setSystemUIOverlayStyle(
+                            SystemUiOverlayStyle(
+                              systemNavigationBarColor: Color(
+                                  0xFFFFFFFF), // navigation bar color
+                              statusBarColor: Color(
+                                  0xFF64C4DA), // status bar color
+                            ));
+                        Get.back();
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                            color:
+                            Colors.black45.withOpacity(0.2),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(50))),
+                        child: Icon(
+                          Icons.chevron_left,
+                          color: white,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+        }),
+      ),
     );
   }
 
@@ -730,48 +737,52 @@ class _ProfileState extends State<Profile> {
                sizebox_height_10,
                GestureDetector(
                 onTap: () {
-                  showDialog(context: context, builder: (_)=> AlertDialog(
-                    title: Text('Delete?'),
-                    content: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('Are you sure you want to delete account?'),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () async{
-                        String AuthorizationKey = "Bearer ${Environment.apibasetoken}";
-                        var headers = {
-                          apiUrls().Authorization: AuthorizationKey.toString(),
-                          apiUrls().XAPIKEY: apiUrls().XAPIVALUE,
-                          //'Content-Type': 'multipart/form-data'
-                        };
-                        log("headers delete : "+headers.toString());
-                        log("url delete : "+apiUrls().destroy_api.toString());
-                        var _response = await http.delete(
-                          Uri.parse(apiUrls().destroy_api),
-                          headers: headers,
+                  showDialog(context: context, builder: (_)=> MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.10, 1.10)),
 
-                        ).timeout(Duration(seconds: 10));
-                        log("response delete : "+_response.body.toString());
+                    child: AlertDialog(
+                      title: Text('Delete?'),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Are you sure you want to delete account?'),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async{
+                          String AuthorizationKey = "Bearer ${Environment.apibasetoken}";
+                          var headers = {
+                            apiUrls().Authorization: AuthorizationKey.toString(),
+                            apiUrls().XAPIKEY: apiUrls().XAPIVALUE,
+                            //'Content-Type': 'multipart/form-data'
+                          };
+                          log("headers delete : "+headers.toString());
+                          log("url delete : "+apiUrls().destroy_api.toString());
+                          var _response = await http.delete(
+                            Uri.parse(apiUrls().destroy_api),
+                            headers: headers,
 
-                        if(_response.statusCode==200){
-                          setState((){
-                            apiCallingHelper().logoutinPref();
-                            Fluttertoast.showToast(msg: jsonDecode(_response.body)['message']);
-                          });
-                        }else{
+                          ).timeout(Duration(seconds: 10));
+                          log("response delete : "+_response.body.toString());
+
+                          if(_response.statusCode==200){
+                            setState((){
+                              apiCallingHelper().logoutinPref();
+                              Fluttertoast.showToast(msg: jsonDecode(_response.body)['message']);
+                            });
+                          }else{
+                            Navigator.pop(context);
+                          }
+
+
+                        },child: Text('Yes'),
+                        ),
+                        TextButton(onPressed: () {
                           Navigator.pop(context);
-                        }
+                        },child: Text('No'),
+                        ),
+                      ],
 
-
-                      },child: Text('Yes'),
-                      ),
-                      TextButton(onPressed: () {
-                        Navigator.pop(context);
-                      },child: Text('No'),
-                      ),
-                    ],
-
+                    ),
                   ) );
                 },
                 child: Container(
