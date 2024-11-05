@@ -17,6 +17,8 @@ import 'package:n_prep/src/Coupon%20and%20Buy%20plan/subsciption_plan.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../Local_Database/database.dart';
+import '../Models/Exam.dart';
 import '../constants/Api_Urls.dart';
 import '../src/Nphase2/VideoScreens/DatabaseSqflite.dart';
 import '../main.dart';
@@ -238,38 +240,96 @@ class ExamController extends GetxController {
   }
 
 
-  GetExamData3(url)async{
+  Future<void> fetchAndSaveExams() async {
+    // Show loading state
+    getELoader(true); // Assuming you have a method to show a loading indicator
+
+    // Fetch data from the API
+    try {
+      var result = await apiCallingHelper().getAPICall(apiUrls().all_exams, true);
+
+        if (result.statusCode == 200) {
+          var fetchedData = jsonDecode(result.body);
+
+          // Clear existing exams in the database
+          await DatabaseHelper().clearExams();
+
+          // Loop through the fetched exams and save them in the database
+          for (var examData in fetchedData['data']) {
+            Exam exam = Exam(
+              id: examData['id'],
+              image: examData['image'],
+              examType: examData['exam_type'],
+              subject: examData['subject'],
+              title: examData['title'],
+              feeType: examData['fee_type'],
+              examYear: examData['exam_year'],
+              userTag: examData['user_tag'],
+              examDuration: examData['exam_duration'],
+              description: examData['description'] ?? '', // Assuming description field is present
+              sortOrder: examData['sort_order'] ?? 0, // Default value if sort_order is not present
+              status: examData['status'] ?? 1, // Default value if status is not present
+              isPublished: examData['is_published'] ?? 0 // Default value if is_published is not present
+            );
+
+            // Insert the exam into the database
+            await DatabaseHelper().insertExam(exam);
+          }
+
+          // Hide loading state
+          getELoader(false);
+        }
+    } catch (e) {
+      print(e);
+      // Optionally hide loading state on error
+      getELoader(false);
+    }
+  }
+
+
+
+  GetExamData3(url,parentId)async{
     try {
       getELoader(true);
-      var result = await apiCallingHelper().getAPICall(url, true);
-      get_data = jsonDecode(result.body);
-      if (result != null) {
-        if (result.statusCode == 200) {
-          get_data.clear();
-          get_data = jsonDecode(result.body);
-          print("get year exam  list > " + get_data.toString());
+
+      var temp = sprefs.getBool("is_internet");
+      if(temp){
+        var result = await apiCallingHelper().getAPICall(url, true);
+        get_data = jsonDecode(result.body);
+        if (result != null) {
+          if (result.statusCode == 200) {
+            get_data.clear();
+            get_data = jsonDecode(result.body);
+            print("get year exam  list > " + get_data.toString());
 
 
+            getELoader(false);
+            update();
+            refresh();
+          }
+          else if (result.statusCode == 401) {
+            getELoader(false);
+            update();
+            refresh();
+          }
+          else if (result.statusCode == 404) {
+            getELoader(false);
+            update();
+            refresh();
+          }
+          else if (result.statusCode == 500) {
+            getELoader(false);
+            update();
+            refresh();
+          }
+        } else {
           getELoader(false);
           update();
           refresh();
         }
-        else if (result.statusCode == 401) {
-          getELoader(false);
-          update();
-          refresh();
-        }
-        else if (result.statusCode == 404) {
-          getELoader(false);
-          update();
-          refresh();
-        }
-        else if (result.statusCode == 500) {
-          getELoader(false);
-          update();
-          refresh();
-        }
-      } else {
+      }else{
+        var res = await DatabaseHelper().fetchAndDisplayFilteredExams(parentId);
+        get_data = res;
         getELoader(false);
         update();
         refresh();

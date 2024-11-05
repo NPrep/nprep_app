@@ -5,7 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:n_prep/Controller/Exam_Controller.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
+import 'package:n_prep/Shimmer/Shimmer.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
+import 'package:n_prep/constants/validations.dart';
+import 'package:n_prep/main.dart';
+import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/src/test/TestSeriesHistory.dart';
 
 import 'package:n_prep/utils/colors.dart';
@@ -47,7 +51,7 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
     var getExamUrl = apiUrls().exam_list_api + '?' + queryString;
     log('getExamUrl==>' + getExamUrl.toString());
     // getExamUrl = apiUrls().exam_list_api;
-    await examController.GetExamData3(getExamUrl);
+    await examController.GetExamData3(getExamUrl,subjectId);
     setState(() {});
     log('getExamTypeData(Pyq,mock,sub)==>' +examController.get_data.toString());
     log('length==>' + examController.get_data['data'].length.toString());
@@ -85,7 +89,7 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
 
         ),
         body: examController.getELoader == true || examController.get_data['data'].length == 0 || examController.get_data['data'][0]['id']==null ? Center(
-          child: CircularProgressIndicator(),
+          child: ShimmerScreen(),
         ) : SubjectListscroll());
   }
 
@@ -116,47 +120,48 @@ class _SubjetWiseTestPaperState extends State<SubjetWiseTestPaper> {
                         var examdetails = examController.get_data['data'][index1];
                         return  GestureDetector(
                           onTap: () async {
-                            print("examdetails......"+examdetails.toString());
-                            examController.QuestionTitle.value= examdetails['title'];
-                            examController.sessionValueSetDefault(examdetails['is_section'],3) ;
+                            var temp = sprefs.getBool('is_internet');
+                            if(temp && examdetails['MCQs']!=""){
+                              print("examdetails......"+examdetails.toString());
+                              examController.QuestionTitle.value= examdetails['title'];
+                              examController.sessionValueSetDefault(examdetails['is_section'],3) ;
 
-                            if(examdetails['last_attempt_result_id']!=null){
-                              Get.to(TestSeriesHistory(
-                                title: examdetails['title'],
-                                data_type: 0,
-                                header: "${widget.subjectName}",
-                                attempquestion: examdetails['MCQs'],
-                                checkstatus: 3,
-                                completed_date: examdetails['last_attempt_result_date'],
-                                examid:examdetails['id'] ,
-                                lastexamid: examdetails['last_attempt_result_id'] ,
-                                total_questions: examdetails['MCQs'],
-                                total_questions_duration: int.parse(examdetails['exam_duration'].toString()), created_at: examdetails['last_attempt_result_date'],));
+                              if(examdetails['last_attempt_result_id']!=null){
+                                Get.to(TestSeriesHistory(
+                                  title: examdetails['title'],
+                                  data_type: 0,
+                                  header: "${widget.subjectName}",
+                                  attempquestion: examdetails['MCQs'],
+                                  checkstatus: 3,
+                                  completed_date: examdetails['last_attempt_result_date'],
+                                  examid:examdetails['id'] ,
+                                  lastexamid: examdetails['last_attempt_result_id'] ,
+                                  total_questions: examdetails['MCQs'],
+                                  total_questions_duration: int.parse(examdetails['exam_duration'].toString()), created_at: examdetails['last_attempt_result_date'],));
+                              }else{
+                                var exam_details_id =
+                                examdetails['id'];
+                                var exam_duration = int.parse(
+                                    examdetails[
+                                    'exam_duration']
+                                        .toString());
+                                var attemptExamUrl =
+                                    "${apiUrls().exam_attempt_api}"
+                                    "${exam_details_id}";
+
+                                await examController
+                                    .AttemptExamData(
+                                    attemptExamUrl,
+                                    exam_duration);
+
+                                print("attemptExamUrl......" +
+                                    attemptExamUrl
+                                        .toString());
+                              }
                             }else{
-                              var exam_details_id =
-                              examdetails['id'];
-                              var exam_duration = int.parse(
-                                  examdetails[
-                                  'exam_duration']
-                                      .toString());
-                              var attemptExamUrl =
-                                  "${apiUrls().exam_attempt_api}"
-                                  "${exam_details_id}";
-
-                              await examController
-                                  .AttemptExamData(
-                                  attemptExamUrl,
-                                  exam_duration);
-
-                              print("attemptExamUrl......" +
-                                  attemptExamUrl
-                                      .toString());
+                              Get.offAll(BottomBar(bottomindex: 2,));
+                              toastMsg("Please Check Your Internet Connections", true);
                             }
-                            // Navigator.pushReplacement(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => ReviewPage(exam_Ids:13)));
-
                           },
                           child: Container(
                             margin: EdgeInsets.only(right: 0),

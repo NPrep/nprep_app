@@ -5,8 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:n_prep/App_update/App_BuySubcription.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
+import 'package:n_prep/Shimmer/Shimmer.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
+import 'package:n_prep/constants/validations.dart';
+import 'package:n_prep/main.dart';
 import 'package:n_prep/src/Coupon%20and%20Buy%20plan/subsciption_plan.dart';
 import 'package:n_prep/src/Nphase2/Constant/nprep_2_custom_timeline.dart';
 import 'package:n_prep/src/Nphase2/Constant/textstyles_constants.dart';
@@ -59,6 +62,8 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
   }
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     // TODO: implement initState
     super.initState();
     tabController = TabController(length: 3, vsync: this);
@@ -231,22 +236,7 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
       return GetBuilder<VideoSubsubjectcontroller>(
           builder: (videosubsubjectcontroller) {
             if (videosubsubjectcontroller.VideoSubsubjectloader.value) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  Center(child: CircularProgressIndicator(color: primary,)),
-                  SizedBox(height: 5,),
-                  Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length ==0?Text(""):
-                  Text('"${Get.find<SettingController>().settingData['data']['general_settings']['quotes'][random.nextInt(Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length)].toString()}"',textAlign: TextAlign.center, style: TextStyle(
-                      color: primary,
-                      letterSpacing: 0.5,
-                      fontWeight: FontWeight.w600
-                  )),
-
-                ],
-              );
+              return ShimmerScreen();
             }
             else
               return Container(
@@ -331,37 +321,54 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
                                           // log("Datta>>"+data['image'].toString());
                                           return GestureDetector(
                                             onTap: () async {
-                                            if(data['is_subscribe']==true){
-                                              if(data['is_allow']==true){
-                                                // toastMsg("No Video Allowed", false);
-                                                // if(widget.showDilog==true){
-                                                //   Get.dialog(MyDialogSub());
-                                                // }else{
-                                                //   Get.to(SubscriptionPlan());
-                                                // }
-                                                var sabcatid = data['id'];
-                                                var cate_names = data['category_name'];
-                                                var perent_id = cat['category_name'];
+                                              var temp = sprefs.getBool("is_internet");
+                                              if(temp) {
+                                                if (data['is_subscribe'] ==
+                                                    true) {
+                                                  if (data['is_allow'] ==
+                                                      true) {
+                                                    // toastMsg("No Video Allowed", false);
+                                                    // if(widget.showDilog==true){
+                                                    //   Get.dialog(MyDialogSub());
+                                                    // }else{
+                                                    //   Get.to(SubscriptionPlan());
+                                                    // }
+                                                    var sabcatid = data['id'];
+                                                    var cate_names = data['category_name'];
+                                                    var perent_id = cat['category_name'];
 
-                                                print("data......"+data.toString());
-                                                print("sabcatid......"+sabcatid.toString());
-                                                print("cate_names......"+cate_names.toString());
-                                                print("perent_id......"+perent_id.toString());
+                                                    print("data......" +
+                                                        data.toString());
+                                                    print("sabcatid......" +
+                                                        sabcatid.toString());
+                                                    print("cate_names......" +
+                                                        cate_names.toString());
+                                                    print("perent_id......" +
+                                                        perent_id.toString());
 
-                                                 Get.to(VideoDetailScreen(CatId: sabcatid));
+                                                    Get.to(VideoDetailScreen(
+                                                        CatId: sabcatid));
 
-                                                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                                                  systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                                                  statusBarColor: Color(0xFF000000), // status bar color
-                                                ));
+                                                    SystemChrome
+                                                        .setSystemUIOverlayStyle(
+                                                        SystemUiOverlayStyle(
+                                                          systemNavigationBarColor: Color(
+                                                              0xFFFFFFFF),
+                                                          // navigation bar color
+                                                          statusBarColor: Color(
+                                                              0xFF000000), // status bar color
+                                                        ));
+                                                  }
+                                                  else {
+                                                    Get.dialog(MyDialogSub());
+                                                  }
+                                                } else {
+                                                  Get.to(SubscriptionPlan());
+                                                }
+                                              }else{
+                                                Get.off(BottomBar(bottomindex: 3,));
+                                                toastMsg("Please Check Your Internet Connection", true);
                                               }
-                                              else{
-                                                Get.dialog(MyDialogSub());
-
-                                              }
-                                            }else{
-                                              Get.to(SubscriptionPlan());
-                                            }
                                             },
                                             child: Container(
                                               margin: EdgeInsets.only(right: 0),
@@ -408,21 +415,7 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
     return GetBuilder<VideoSubsubjectcontroller>(
         builder: (videosubsubjectcontroller) {
           if (videosubsubjectcontroller.VideoSubsubjectloader.value) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                Center(child: CircularProgressIndicator(color: primary,)),
-                SizedBox(height: 5,),
-                Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length ==0?Text(""):
-                Text('"${Get.find<SettingController>().settingData['data']['general_settings']['quotes'][random.nextInt(Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length)].toString()}"',textAlign: TextAlign.center, style: TextStyle(
-                    color: primary,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w600
-                )),
-              ],
-            );
+            return ShimmerScreen();
           }
           else
             return Container(
@@ -502,43 +495,44 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
                                             .indexOf(data) + 1;
                                         return GestureDetector(
                                           onTap: () async {
+                                            var temp = sprefs.getBool('is_internet');
+                                            if(temp){
+                                              if(data['is_subscribe']==true){
+                                                if(data['is_allow']==true){
+                                                  // toastMsg("No Video Allowed", false);
+                                                  // if(widget.showDilog==true){
+                                                  //   Get.dialog(MyDialogSub());
+                                                  // }else{
+                                                  //   Get.to(SubscriptionPlan());
+                                                  // }
+                                                  var sabcatid = data['id'];
+                                                  var cate_names = data['category_name'];
+                                                  var perent_id = cat['category_name'];
 
-                                            if(data['is_subscribe']==true){
-                                              if(data['is_allow']==true){
-                                                // toastMsg("No Video Allowed", false);
-                                                // if(widget.showDilog==true){
-                                                //   Get.dialog(MyDialogSub());
-                                                // }else{
-                                                //   Get.to(SubscriptionPlan());
-                                                // }
-                                                var sabcatid = data['id'];
-                                                var cate_names = data['category_name'];
-                                                var perent_id = cat['category_name'];
+                                                  print("sabcatid......"+data.toString());
+                                                  print("sabcatid......"+sabcatid.toString());
+                                                  print("cate_names......"+cate_names.toString());
+                                                  print("perent_id......"+perent_id.toString());
 
-                                                print("sabcatid......"+data.toString());
-                                                print("sabcatid......"+sabcatid.toString());
-                                                print("cate_names......"+cate_names.toString());
-                                                print("perent_id......"+perent_id.toString());
+                                                  Get.to(VideoDetailScreen(CatId: sabcatid,VideoDuration:data['pause_duration'] ,));
 
-                                                 Get.to(VideoDetailScreen(CatId: sabcatid,VideoDuration:data['pause_duration'] ,));
+                                                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                                                    systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+                                                    statusBarColor: Color(0xFF000000), // status bar color
+                                                  ));
+                                                }
+                                                else{
+                                                  Get.dialog(MyDialogSub());
 
-                                                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                                                  systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                                                  statusBarColor: Color(0xFF000000), // status bar color
-                                                ));
+                                                }
                                               }
                                               else{
-                                                Get.dialog(MyDialogSub());
-
+                                                Get.to(SubscriptionPlan());
                                               }
+                                            }else{
+                                              Get.off(BottomBar(bottomindex: 3,));
+                                              toastMsg("Please Check Your Internet Connection", true);
                                             }
-                                            else{
-                                              Get.to(SubscriptionPlan());
-                                            }
-
-
-
-
                                           },
                                           child: Container(
 
@@ -584,21 +578,7 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
     return GetBuilder<VideoSubsubjectcontroller>(
         builder: (videosubsubjectcontroller) {
           if (videosubsubjectcontroller.VideoSubsubjectloader.value) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                Center(child: CircularProgressIndicator(color: primary,)),
-                SizedBox(height: 5,),
-                Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length ==0?Text(""):
-                Text('"${Get.find<SettingController>().settingData['data']['general_settings']['quotes'][random.nextInt(Get.find<SettingController>().settingData['data']['general_settings']['quotes'].length)].toString()}"',textAlign: TextAlign.center, style: TextStyle(
-                    color: primary,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w600
-                )),
-              ],
-            );
+            return ShimmerScreen();
           }
           else
             return Container(
@@ -677,48 +657,51 @@ class _SubSubjectScreenState extends State<SubSubjectScreen> with SingleTickerPr
                                             .indexOf(data) + 1;
                                         return GestureDetector(
                                           onTap: () async {
+                                            var temp = sprefs.getBool('is_internet');
+                                            if(temp){
+                                              if(data['is_subscribe']==true){
+                                                if(data['is_allow']==true){
+                                                  // toastMsg("No Video Allowed", false);
+                                                  // if(widget.showDilog==true){
+                                                  //   Get.dialog(MyDialogSub());
+                                                  // }else{
+                                                  //   Get.to(SubscriptionPlan());
+                                                  // }
+                                                  var sabcatid = data['id'];
+                                                  var cate_names = data['category_name'];
+                                                  var perent_id = cat['category_name'];
 
-                                            if(data['is_subscribe']==true){
-                                              if(data['is_allow']==true){
-                                                // toastMsg("No Video Allowed", false);
-                                                // if(widget.showDilog==true){
-                                                //   Get.dialog(MyDialogSub());
-                                                // }else{
-                                                //   Get.to(SubscriptionPlan());
-                                                // }
-                                                var sabcatid = data['id'];
-                                                var cate_names = data['category_name'];
-                                                var perent_id = cat['category_name'];
+                                                  print("sabcatid......"+sabcatid.toString());
+                                                  print("cate_names......"+cate_names.toString());
+                                                  print("perent_id......"+perent_id.toString());
 
-                                                print("sabcatid......"+sabcatid.toString());
-                                                print("cate_names......"+cate_names.toString());
-                                                print("perent_id......"+perent_id.toString());
+                                                  Get.to(VideoDetailScreen(CatId: sabcatid));
 
-                                                 Get.to(VideoDetailScreen(CatId: sabcatid));
+                                                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                                                    systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+                                                    statusBarColor: Color(0xFF000000), // status bar color
+                                                  ));
+                                                }
+                                                else{
+                                                  Get.dialog(MyDialogSub());
 
-                                                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                                                  systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-                                                  statusBarColor: Color(0xFF000000), // status bar color
-                                                ));
+                                                }
+                                              }else{
+                                                Get.to(SubscriptionPlan());
                                               }
-                                              else{
-                                                Get.dialog(MyDialogSub());
+                                              // var sabcatid = data['id'];
+                                              // var cate_names = data['category_name'];
+                                              // var perent_id = cat['category_name'];
+                                              //
+                                              // print("sabcatid......"+sabcatid.toString());
+                                              // print("cate_names......"+cate_names.toString());
+                                              // print("perent_id......"+perent_id.toString());
+                                              //
 
-                                              }
                                             }else{
-                                              Get.to(SubscriptionPlan());
+                                              Get.off(BottomBar(bottomindex: 3,));
+                                              toastMsg("Please Check Your Internet Connection", true);
                                             }
-                                            // var sabcatid = data['id'];
-                                            // var cate_names = data['category_name'];
-                                            // var perent_id = cat['category_name'];
-                                            //
-                                            // print("sabcatid......"+sabcatid.toString());
-                                            // print("cate_names......"+cate_names.toString());
-                                            // print("perent_id......"+perent_id.toString());
-                                            //
-
-
-
                                           },
                                           child: Container(
 

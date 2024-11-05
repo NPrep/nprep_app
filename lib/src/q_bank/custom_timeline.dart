@@ -90,7 +90,7 @@ class CustomTimeline extends StatelessWidget {
                                   // color: Colors.grey.shade300,
                                   alignment: Alignment.center,
                                   child: Image.asset(
-                                    "assets/nprep2_images/LOGO.png",
+                                    "assets/images/NPrep.jpeg",
                                     height: 55,
                                     width: MediaQuery.of(context).size.width * 0.15,
                                   ),
@@ -100,7 +100,7 @@ class CustomTimeline extends StatelessWidget {
                               },
                             height: 60,
                             width: 60,
-                            placeholder: "assets/nprep2_images/LOGO.png",
+                            placeholder: "assets/images/NPrep.jpeg",
                             image: image.toString())
                         // child:   Image.network(image,
                         //   fit: BoxFit.cover,

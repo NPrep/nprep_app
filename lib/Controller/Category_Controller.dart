@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:n_prep/Envirovement/Environment.dart';
+import 'package:n_prep/Models/AllCategory.dart';
 import 'package:n_prep/Service/Service.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/error_message.dart';
@@ -18,6 +19,7 @@ import 'package:n_prep/src/q_bank/quetions.dart';
 import 'package:n_prep/src/q_bank/detail.dart';
 import 'package:n_prep/src/Coupon%20and%20Buy%20plan/subsciption_plan.dart';
 
+import '../Local_Database/database.dart';
 import '../main.dart';
 import '../src/home/bottom_bar.dart';
 
@@ -186,7 +188,7 @@ class CategoryController extends GetxController  with GetSingleTickerProviderSta
 
   var child;
 
-  ChildCategoryApi(url)async{
+  ChildCategoryApi(url,int parent_id)async{
     childLoader(true);
     var temp = await sprefs.getBool("is_internet");
     if(temp) {
@@ -204,6 +206,7 @@ class CategoryController extends GetxController  with GetSingleTickerProviderSta
             print("childdata Check.......${childdata[0]['third_level']}");
             print("second_levelCount.......${second_levelCount}");
             // print("second_level Check.......${second_level}");
+            await Future.delayed(Duration(seconds: 1));
             childLoader(false);
             update();
             refresh();
@@ -240,12 +243,75 @@ class CategoryController extends GetxController  with GetSingleTickerProviderSta
         throw FetchDataException('Something went wrong, try again later');
       }
     }else{
+      var dbHelper = DatabaseHelper();
+
+      // Call fetchChildCategories using the instance
+      var data = await dbHelper.fetchAllCategories(parent_id);
+      childdata.clear();
+      await childdata.add(data['data']);
+
+      await Future.delayed(Duration(seconds: 1));
       childLoader(false);
       update();
-      Get.offAll(BottomBar(bottomindex: 1,));
-      toastMsg("No Internet Connected with No Internet Available", true);
     }
   }
+
+
+  Future<void> fetchAllCategories() async {
+    // Show loading state (you can use a loader or any state management technique)
+    childLoader(true);
+
+    // Fetch data from the API
+    try {
+      var result = await apiCallingHelper().getAPICall(apiUrls().all_categories, true);
+
+      // Check if the result is valid
+      if (result != null) {
+        if (result.statusCode == 200) {
+          var fetchedData = jsonDecode(result.body);
+
+          // Clear existing categories in the database before inserting new ones
+          await DatabaseHelper().clearQBankCategories();
+
+          // Loop through the fetched categories and save them into the local database
+          for (var categoryData in fetchedData['data']) {
+            AllCategory category = AllCategory(
+              id: categoryData['id'],
+              slug: categoryData['slug'],
+              parentId: categoryData['parent_id'],
+              name: categoryData['name'],
+              description: categoryData['description'],
+              metaTitle: categoryData['meta_title'],
+              metaKeyword: categoryData['meta_keyword'],
+              metaDescription: categoryData['meta_description'],
+              feeType: categoryData['fee_type'],
+              isFeature: categoryData['is_feature'],
+              isMixed: categoryData['is_mixed'],
+              image: categoryData['image'] ?? '',
+              sortOrder: categoryData['sort_order'],
+              status: categoryData['status'],
+              deletedAt: categoryData['deleted_at'] ?? null,
+              createdAt: categoryData['created_at'] ?? null,
+              updatedAt: categoryData['updated_at'] ?? null,
+              totalQuestions: categoryData['total_questions']
+            );
+
+
+            // Insert the category into the database
+            await DatabaseHelper().insertAllCategory(category);
+          }
+
+          // Hide loading state
+          childLoader(false);
+        }
+      }
+    } catch (e) {
+      print(e);
+      // Optionally handle errors by hiding the loading state
+      childLoader(false);
+    }
+  }
+
 
 
   var attempLoader = false.obs;

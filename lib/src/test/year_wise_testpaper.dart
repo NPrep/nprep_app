@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:n_prep/Controller/Exam_Controller.dart';
@@ -491,26 +492,13 @@ if(widget.indexslected==3){
                             children: [
                               Row(
                                 children: [
-                                  FadeInImage.assetNetwork(
-                                      height: 50,
-                                      width: 50,
-                                      imageErrorBuilder: (context, error, stackTrace) {
-                                        return Container(
-
-                                          // color: Colors.grey.shade300,
-                                          alignment: Alignment.center,
-                                          child: Image.asset(
-                                            "assets/nprep2_images/LOGO.png",
-                                            height: 50,
-                                            width: 50,
-                                          ),
-                                          // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                          //   color: Colors.grey.shade300,),
-                                        );
-                                      },
-                                      placeholder: "assets/nprep2_images/LOGO.png",
-                                      image: subjectlistdata['image'].toString()),
-
+                                  CachedNetworkImage(
+                                    height: 50,
+                                    width: 50,
+                                    imageUrl: subjectlistdata['image'].toString(),
+                                    placeholder: (context, url) => Image.asset('assets/images/NPrep.jpeg'),
+                                    errorWidget: (context, url,e) => Image.asset('assets/images/NPrep.jpeg'),
+                                  ),
                                   sizebox_width_5,
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,

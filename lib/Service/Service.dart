@@ -144,7 +144,6 @@ class apiCallingHelper{
       final request = http.MultipartRequest('POST', Uri.parse(url));
       request.fields.addAll(parameter);
       log("multipartAPICall request : $request");
-
       request.headers.addAll(header==true?_mainHeaders:_subHeader);
       log("multipartAPICall request : ${ request.headers}");
       http.StreamedResponse responses = await request.send();

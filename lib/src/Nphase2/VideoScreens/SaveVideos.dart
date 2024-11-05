@@ -39,7 +39,6 @@ class _SaveVideosState extends State<SaveVideos> {
   List<TaskRecord> records = [];
   List TotalDownload =[];
   bool loadingdata =true;
-  StreamController<TaskProgressUpdate> updateStream = StreamController();
   Timer timer ;
   @override
   void initState() {
@@ -434,7 +433,7 @@ class _SaveVideosState extends State<SaveVideos> {
                                 //       width: width * 0.2,
                                 //       height: height * 0.05,
                                 //       child: Image.asset(
-                                //         "assets/nprep2_images/LOGO.png", fit: BoxFit.fill,
+                                //         "assets/images/NPrep.jpeg", fit: BoxFit.fill,
                                 //         // scale: 5,
                                 //       ),
                                 //     ),

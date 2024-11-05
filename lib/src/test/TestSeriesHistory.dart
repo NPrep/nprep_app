@@ -6,7 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:n_prep/Controller/Category_Controller.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/images.dart';
+import 'package:n_prep/constants/validations.dart';
 import 'package:n_prep/helper_widget/appbar_helper.dart';
+import 'package:n_prep/main.dart';
+import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/src/q_bank/new_questionbank/questions_qbank.dart';
 import 'package:n_prep/src/q_bank/quetions.dart';
 import 'package:n_prep/src/q_bank/review.dart';
@@ -58,6 +61,11 @@ class _TestSeriesHistoryState extends State<TestSeriesHistory> {
   void initState() {
     super.initState();
 
+    bool temp = sprefs.getBool("is_internet");
+    if(!temp){
+      Get.offAll(BottomBar(bottomindex: 2,));
+      toastMsg("Please Check Your Internet Connection", true);
+    }
    print("total attemp exam "+widget.attempquestion.toString());
   }
 

@@ -36,6 +36,7 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
   Offset _tapposition;
   bool _showForwardAnimation = false;
   bool _showBackwardAnimation = false;
+  bool isPlaying = false;
   @override
   Widget build(BuildContext context) {
     // log("onControlsVisibilityChanged>> "+widget.onControlsVisibilityChanged.isBlank.toString());
@@ -131,9 +132,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               }
             },
             child: Container(
-              color: videoDetailcontroller.videoVisable.value==true?
-              Colors.black.withOpacity(0.8):
-              Colors.black.withOpacity(0.0),
+              // color: videoDetailcontroller.videoVisable.value==true?
+              // Colors.black.withOpacity(0.8):
+              color: Colors.black,
               // height: MediaQuery.of(context).size.height,
               // width: MediaQuery.of(context).size.width,
               child: Stack(
@@ -144,7 +145,7 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                     // videoDetailcontroller.betterPlayerController_videoplayer,
                     // key:videoDetailcontroller.betterPlayerKey,
                   ),
-                  /// +10 sec Forward >>
+
                   _showForwardAnimation
                       ? Positioned(
                     top: 5,
@@ -153,10 +154,10 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.3),
+                        color: Colors.white.withOpacity(0.1),
                         borderRadius:  BorderRadius.only(
-                          topLeft: Radius.circular(125), // Half the height
-                          bottomLeft: Radius.circular(125), // Half the height
+                          topLeft: Radius.circular(100), // Half the height
+                          bottomLeft: Radius.circular(100), // Half the height
                         ),// S
                       ),
                       width: MediaQuery.of(context).size.width*0.4,
@@ -170,14 +171,15 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                             // decoration: BoxDecoration(
                             //   color: Colors.white.withOpacity(0.5),
                             // ),
-                            child: Row(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
 
                                 Text(
-                                  '+10s',
+                                  '+10 Seconds',
                                   style: TextStyle(
-                                    fontSize: 24,
+                                    color: Colors.white,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -197,10 +199,10 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                   _showBackwardAnimation
                       ? Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.white.withOpacity(0.1),
                       borderRadius:  BorderRadius.only(
-                        topRight: Radius.circular(125), // Half the height
-                        bottomRight: Radius.circular(125), // Half the height
+                        topRight: Radius.circular(100), // Half the height
+                        bottomRight: Radius.circular(100), // Half the height
                       ),// S
                     ),
                     width: MediaQuery.of(context).size.width*0.4,
@@ -211,15 +213,16 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 500),
 
-                          child: Row(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset("assets/nprep2_images/left.gif",height: 40,width: 40,),
                               SizedBox(width: 15,),
                               Text(
-                                '-10s',
+                                '-10 Seconds',
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -306,11 +309,36 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                                     shape: BoxShape.circle,
                                     color: Colors.grey.withOpacity(0.2),
                                   ),
-                                  child: Icon(
-                                    widget.controller.isPlaying
-                                        ? Icons.pause
-                                        : Icons.play_arrow,
-                                    color: Colors.white,size: 30,
+                                  child: ValueListenableBuilder<VideoPlayerValue>(
+                                    valueListenable: widget.videocontroller,
+                                    builder: (context, value, child) {
+                                      return InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (value.isPlaying)
+                                              widget.videocontroller.pause();
+                                            else
+                                              widget.videocontroller.play();
+                                          });
+
+                                        },
+                                        child:  Container(
+                                          height: 50,
+                                          width: 80,
+
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey.withOpacity(0.2),
+                                          ),
+                                          child: Icon(
+                                            value.isPlaying
+                                                ? Icons.pause
+                                                : Icons.play_arrow,
+                                            color: Colors.white,size: 30,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -405,6 +433,8 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                     top: 10,
                     child: GestureDetector(
                       onTap: () {
+                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+                        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
                         SystemChrome.setSystemUIOverlayStyle(
                             SystemUiOverlayStyle(
                               systemNavigationBarColor: Color(

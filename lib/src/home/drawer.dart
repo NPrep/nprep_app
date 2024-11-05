@@ -310,6 +310,6 @@ var shrMsg =sharemsg.toString();
 print("sharewithout......${sharewithout}");
 // print("shar......${shar}");
 print("shrMsg......${shrMsg}");
-   Share.share("\n ${shrMsg.toString()}:\n \n PlayStore Url: ${sharewithout} \n AppStore Url: ${sharewithIOS}");
+   Share.share("\n ${shrMsg.toString()}:\n \n Download now and get 100+ hours of videos for Free: ${sharewithout}");
   }
 }

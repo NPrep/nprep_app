@@ -26,10 +26,7 @@ class _DemoState extends State<Demo> {
     var dbHelper = DatabaseHelper();
 
     // Call fetchChildCategories using the instance
-    var data = await dbHelper.fetchChildCategories(10);
-
-    print(data);
-  }
+    }
 
 
   loadVideos() async {

@@ -477,14 +477,14 @@ class _ScoreListScreenState extends State<ScoreListScreen> {
                     ),
                     SizedBox(height: 10,),
 
-                    currentTime.hour >= noon.hour && currentTime.minute >= noon.minute?
-                    Text("Out of "+examController.examScore_data[0]["max_rank"].toString(), style: TextStyle(
+                    (currentTime.hour >= noon.hour && currentTime.minute >= noon.minute) || widget.today==false?
+                    Text(" Out of "+examController.examScore_data[0]["max_rank"].toString(), style: TextStyle(
 
                         fontWeight: FontWeight.w900, fontSize: 18,letterSpacing: 2.8)):Container(),
-                    currentTime.hour >= noon.hour && currentTime.minute >= noon.minute?
+                    (currentTime.hour >= noon.hour && currentTime.minute >= noon.minute) || widget.today==false?
                      SizedBox(height: 10,):Container(),
 
-                    currentTime.hour >= noon.hour && currentTime.minute >= noon.minute?
+                    (currentTime.hour >= noon.hour && currentTime.minute >= noon.minute) || widget.today==false?
                      RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(

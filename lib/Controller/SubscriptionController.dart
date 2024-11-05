@@ -98,7 +98,6 @@ UpdatePlanDetail(plannames,plannameAmts){
     print("paymentId sucess....."+response.paymentId.toString());
     print("signature sucess....."+response.signature.toString());
     print("orderId sucess....."+response.orderId.toString());
-
     var payment_sucessUrl= "${apiUrls().payment_sucess_api}${url_razorpay_id}";
 
     var parameterplaceorder={
@@ -106,6 +105,7 @@ UpdatePlanDetail(plannames,plannameAmts){
       'order_id': response.orderId.toString(),
       'signature_id':response.signature.toString()
     };
+
     print("payment_sucessUrl....."+payment_sucessUrl.toString());
     print("parameterplaceorder....."+parameterplaceorder.toString());
     UpdatePaymentData(payment_sucessUrl, parameterplaceorder);
@@ -151,7 +151,6 @@ UpdatePlanDetail(plannames,plannameAmts){
     }, onError: (Object error) {
       // handle error here.
       log("purchaseList onError> onError");
-      toastMsg("Error", false);
     });
 
     initStoreInfo(plan_inapp_id);
@@ -761,7 +760,6 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
           rezorpay_ammount = buyplanData['data']['razorpay_amount'];
           var voucher_no = buyplanData['data']['voucher_no'];
           url_razorpay_id = buyplanData['data']['id'];
-
           openCheckout(rezorpay_ammount,rezorpay_orderId);
           print("voucher_no..."+voucher_no.toString());
           print("rezorpay_orderId..."+rezorpay_orderId.toString());
@@ -796,6 +794,8 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
     update();
     try{
       var result = await apiCallingHelper().multipartAPICall(url, parameter, true);
+      toastMsg(result.statusCode, true);
+
       if(result != null){
         if(result.statusCode == 200){
           generate_PurchaseData =jsonDecode(result.body);
@@ -838,13 +838,15 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
   UpdatePaymentData(url, parameter)async{
     updateLoader(true);
     try{
+
       var result = await apiCallingHelper().multipartAPICall(url, parameter, true);
       if(result != null){
         if(result.statusCode == 200){
           // PaymentDialogSuccess();
-
           var sucessdata = jsonDecode(result.body);
           print("sucessdata....."+sucessdata.toString());
+          toastMsg("sucessdata", true);
+
           var sucessmsg =sucessdata['message'];
           Get.offAll(BottomBar(bottomindex: 0,));
           GetDilogssss(true);
@@ -854,10 +856,13 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
           refresh();
         }
         else if(result.statusCode == 404){
+          toastMsg("404", true);
+
 
           updateLoader(false);
         }
         else if(result.statusCode == 401){
+          toastMsg("401", true);
 
           updateLoader(false);
         }
@@ -869,6 +874,7 @@ log("productDetailResponse notFoundIDs>> "+productDetailResponse.notFoundIDs.toS
       }
     }
     catch (e){
+      toastMsg(e, true);
       Logger().e("catch error ........${e}");
       buyplanLoader(false);
       update();

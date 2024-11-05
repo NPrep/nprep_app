@@ -141,7 +141,6 @@ class DatabaseService{
     try{
       final data = await db.query(_tasksTableName);
 
-
       videodatatasks = data.map((e) {
         return VideoModel(
           id: e[_tasksIdColumnName] as int,

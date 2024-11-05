@@ -85,7 +85,7 @@ class LiveClassCardUITimeLine extends StatelessWidget {
                       // color: Colors.red.shade300,
                       alignment: Alignment.center,
                       child: Image.asset(
-                        "assets/nprep2_images/LOGO.png",
+                        "assets/images/NPrep.jpeg",
                         height: 75,
                         width: 115,
                       ),
@@ -95,14 +95,14 @@ class LiveClassCardUITimeLine extends StatelessWidget {
 
                     FadeInImage(
                       image: NetworkImage(image),
-                      placeholder: AssetImage("assets/nprep2_images/LOGO.png"),
+                      placeholder: AssetImage("assets/images/NPrep.jpeg"),
                       height: 70,
                       width: 70,
                       fit: BoxFit.cover,
                       imageErrorBuilder: (context, error, stackTrace) => Container(
                         alignment: Alignment.center,
                         child: Image.asset(
-                          "assets/nprep2_images/LOGO.png",
+                          "assets/images/NPrep.jpeg",
                           height: 20,
                           width: 20,
                         ),
@@ -112,7 +112,7 @@ class LiveClassCardUITimeLine extends StatelessWidget {
                       placeholderErrorBuilder: (context, error, stackTrace) => Container(
                         alignment: Alignment.center,
                         child: Image.asset(
-                          "assets/nprep2_images/LOGO.png",
+                          "assets/images/NPrep.jpeg",
                           height: 20,
                           width: 20,
                         ),

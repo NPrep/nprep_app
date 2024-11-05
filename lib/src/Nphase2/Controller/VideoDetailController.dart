@@ -68,9 +68,11 @@ var videoVisable = false.obs;
 
 
   var videothumbImgUrl;
+  var videothumbImgUrl2;
 
   DownloadTask task;
   double progress = 0.0;
+  String url="";
   var progressStatus = false.obs;
   var progressdownloadStatus = false.obs;
   Rx<ButtonState> buttonState = ButtonState.download.obs;
@@ -304,7 +306,6 @@ var videoVisable = false.obs;
     VideoDetailloader(false);
     VideoLoadingBeforeloader(true);
     update();
-    if(videoplayerUrl != null){
       final response =await http.head(Uri.parse('${videoplayerUrl}'));
       log("FetchVideoDetailData>> statusCode :${response.statusCode} ");
 
@@ -321,9 +322,9 @@ var videoVisable = false.obs;
             looping: false,
             allowMuting: false,
             fullScreenByDefault: false,
-            showControls: false
+            showControls: false,
+            showControlsOnInitialize: false
         );
-        betterPlayerController.play();
         Videoplayloader(true);
         VideoLoadingBeforeloader(false);
         VideoAvailableloader(false);
@@ -336,13 +337,6 @@ var videoVisable = false.obs;
         VideoAvailableloader(true);
         update();
       }
-    }
-    else{
-      Videoplayloader(false);
-      VideoLoadingBeforeloader(false);
-      VideoAvailableloader(true);
-      update();
-    }
   }
 
 
@@ -352,7 +346,6 @@ var videoVisable = false.obs;
     if(temp){
       VideoDetailloader(true);
 
-      VideoAvailableloader(false);
       Map<String, String> queryParams = {
         "category_id": VideoDetailCatid.value.toString(),
       };
@@ -370,6 +363,9 @@ var videoVisable = false.obs;
             VideoDetaildata.add(FetchSubjectData['data']);
             var pdfurl = "${VideoDetaildata[0]['pdf_attachment']}";
             var thumbImgurl = "${VideoDetaildata[0]['thumb_image']}";
+            var thumbImgurl2 = "${VideoDetaildata[0]['thumb_image2']}";
+
+            videothumbImgUrl2=thumbImgurl2;
             videothumbImgUrl=thumbImgurl;
             update();
             log("FetchVideoDetailData>> pdf :${pdfurl} ");
@@ -377,7 +373,14 @@ var videoVisable = false.obs;
 
 
             var videoplayerUrl = VideoDetaildata[0]['video_attachment'];
-            videoplayerstart(videoplayerUrl);
+
+            await sprefs.setString("video_url", videoplayerUrl.toString());
+
+            // videoplayerstart(videoplayerUrl);
+            Videoplayloader(false);
+            VideoDetailloader(false);
+            refresh();
+            update();
             if(VideoDetaildata[0]['pdf_attachment']!=null){
               await createFileOfPdfUrl(pdfurl).then((f) async {
                 remotePDFpath = f.path;
@@ -404,6 +407,7 @@ var videoVisable = false.obs;
             Video_downloadlisner(videoplayerUrl,videoId,videoTitle);
 
             opendilog();
+            VideoAvailableloader(false);
             update();
             refresh();
           }
@@ -440,7 +444,6 @@ var videoVisable = false.obs;
       update();
       refresh();
       Get.offAll(BottomBar(bottomindex: 3,));
-      toastMsg("No Internet Connected with No Internet Available", true);
     }
   }
 
@@ -506,7 +509,6 @@ var videoVisable = false.obs;
     // or get record for specific task
     final record = await FileDownloader().database.recordForId(taskId.toString());
     log('Video_downloadlisner>> download taskss|| '+record.toString());
-    log('Video_downloadlisner>> download taskss |status| '+record.status.toString());
     // Listen for download progress
     if(record!=null){
       try{
@@ -596,7 +598,7 @@ var videoVisable = false.obs;
     log("exists>> : ${exists.toString()}");
     if(exists==false){
 
-      dbHelper.addbeforeTask(name.toString(),videoid, video_stamps.toString(), remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),video_time.toString());
+      dbHelper.addbeforeTask(name.toString(),videoid,jsonEncode(video_stamps) , remotePDFpath.toString(), file.path.toString(), Thumbimg_remotePDFpath.toString(),video_time.toString());
 
     }else{
 
@@ -633,11 +635,12 @@ var videoVisable = false.obs;
       );
       FileDownloader().registerCallbacks(taskStatusCallback: taskStatusCallback,taskProgressCallback: taskProgressCallback);
 
-
+      url = url;
       await FileDownloader().download(
           task,
           onProgress: (value) {
-            if (!value.isNegative) {
+            if (value >= 0.0) {
+              sprefs.setDouble(url, value);
               progress = value;
               log("Download Progress Button >> "+progress.toString());
               log("Download Progress Button taskId>> "+task.taskId.toString());

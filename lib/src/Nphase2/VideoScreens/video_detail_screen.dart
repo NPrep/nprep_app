@@ -33,7 +33,6 @@ import 'package:n_prep/src/q_bank/new_questionbank/questions_qbank.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
-import 'package:wakelock/wakelock.dart';
 
 import '../Constant/VideoMcqdetail.dart';
 import 'package:screen_protector/screen_protector.dart';
@@ -65,12 +64,13 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
 
   bool _showForwardAnimation = false;
   bool _showBackwardAnimation = false;
+  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
       getdata();
-      getvideoFlag();
+      // getvideoFlag();
 
       tabController = TabController(length: 3, vsync: this);
       log('pages==>'+videoDetailcontroller.pages.toString());
@@ -86,6 +86,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
   }
 
   getdata()async {
+        videoDetailcontroller.videothumbImgUrl2="";
         videoDetailcontroller.Videoplayloader.value=false;
         videoDetailcontroller.Animation_controller = AnimationController(
           vsync: this,
@@ -98,7 +99,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
   }
 
   getvideoFlag() async {
-    Wakelock.toggle(enable: true);
     if(Platform.isAndroid){
       await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     }else{
@@ -345,7 +345,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
         //   systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
         //   statusBarColor: Color(0xFF64C4DA), // status bar color
         // ));
-        dispose();
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+        if(isPlaying){
+          dispose();
+        }
         Get.back();
         return true;
       },
@@ -576,17 +580,29 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                           padding: EdgeInsets.all(0.0),
                                           child: Stack(
                                             children: [
+
                                               CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,),
 
                                               Positioned(
                                                   top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
                                                   right: double.parse(videoDetailcontroller.right_post_small.value.toString()),
-                                                  child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8)))
+                                                  child: Text("+91 ${sprefs.getString("mobile")}",style: TextStyle(color: grey,fontWeight: FontWeight.bold,letterSpacing: 0.8))),
                                             ],
                                           ),
                                         ),
                                       ),
                                     ),
+
+                                    Positioned(
+                                      top: 10,
+                                        left: 20,
+                                        child: IconButton(
+                                          onPressed: (){
+                                            videoDetailcontroller.betterPlayerController.play();
+                                          },
+                                          icon: Icon(Icons.play_arrow,size: 100,color: Colors.grey,),
+                                        )),
+
                                     Positioned(
                                       top: double.parse(videoDetailcontroller.top_post.value.toString()),
                                       right: double.parse(videoDetailcontroller.right_post.value.toString()),
@@ -609,41 +625,68 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                             // Text("Videoplayloader "+videoDetailcontroller.Videoplayloader.value.toString()),
                                             // Text("VideoAvailableloader "+videoDetailcontroller.VideoAvailableloader.value.toString()),
                               AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: videoDetailcontroller.Videoplayloader.value==false?
-                              GestureDetector(
-                                onTap: (){
-
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image:
-                                      videoDetailcontroller.videothumbImgUrl.toString()=="null"?AssetImage(
-                                        "assets/nprep2_images/video.png",
-                                      ):
-                                      NetworkImage(videoDetailcontroller.videothumbImgUrl),
-                                      fit: BoxFit.contain,
-                                    ),
-                                    // color: Colors.white.withOpacity(0.5),
-
+                                aspectRatio: 16 / 9,
+                                child: videoDetailcontroller.Videoplayloader.value == false
+                                    ? GestureDetector(
+                                  onTap: () async {
+                                    if (!videoDetailcontroller.VideoAvailableloader.value) {
+                                      String url = sprefs.getString("video_url");
+                                      await videoDetailcontroller.videoplayerstart(url);
+                                      videoDetailcontroller.betterPlayerController.play(); // Starts video playback when tapped
+                                      setState(() {
+                                        isPlaying = true; // Sets the state to update the UI when the video starts playing
+                                      });
+                                    }
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      // Thumbnail image
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: videoDetailcontroller.videothumbImgUrl2.toString() == "null"
+                                                ? AssetImage(
+                                              "assets/nprep2_images/video.png",
+                                            )
+                                                : NetworkImage(videoDetailcontroller.videothumbImgUrl2),
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                        height: MediaQuery.of(context).size.height,
+                                        width: MediaQuery.of(context).size.width,
+                                      ),
+                                      // Black dullness effect
+                                      Container(
+                                        height: MediaQuery.of(context).size.height,
+                                        width: MediaQuery.of(context).size.width,
+                                        color: Colors.black.withOpacity(0.5), // Adjust the opacity for dullness
+                                      ),
+                                      // Play icon or loading indicator
+                                      videoDetailcontroller.VideoLoadingBeforeloader.value == true
+                                          ? Center(
+                                        child: CircularProgressIndicator(strokeWidth: 1.5),
+                                      )
+                                          : Center(
+                                        child: Icon(
+                                          Icons.play_arrow,
+                                          color: Colors.white,
+                                          size: 100,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  height: MediaQuery.of(context).size.height,
-                                  width: MediaQuery.of(context).size.width,
-                                  child:
-                                  videoDetailcontroller.VideoLoadingBeforeloader.value==true?
-                                  Center(child: CircularProgressIndicator(strokeWidth: 1.5,)):
-                                  Icon(Icons.play_arrow,color: white,size: 100,),
+                                )
+                                    : videoDetailcontroller.VideoAvailableloader.value == true
+                                    ? Container(
+                                  alignment: Alignment.center,
+                                  child: Text("No Video Available"),
+                                )
+                                    : CustomControlsWidget(
+                                  controller: videoDetailcontroller.betterPlayerController,
+                                  videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,
                                 ),
-                              ):
-                              videoDetailcontroller.VideoAvailableloader.value==true?Container(
-                                alignment: Alignment.center,
-                                child: Text("No Video Available"),
-                              ):
-                              CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,
-                                videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,)
-
                               ),
+
 
                               ///Readmore
                               sizebox_height_10,
@@ -694,17 +737,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                                 toastMsg('Already Downloaded', false);
                                               } else {
                                                 if (videoDetailcontroller.progressStatus ==false ) {
-                                                  //                videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
-                                                  //                videoDetailcontroller.VideoDetaildata[0] ['id'],
-                                                  //                videoDetailcontroller .VideoDetaildata[0]['title'],
-                                                  //                videoDetailcontroller .VideoDetaildata[0]['video_time'],
-                                                  //                videoDetailcontroller .VideoDetaildata[0]['video_stamps'],
-                                                  //                videoDetailcontroller .remotePDFpath,
-                                                  //                videoDetailcontroller .Thumbimg_remotePDFpath,
-                                                  //                videoDetailcontroller .VideoDetaildata[0]['thumb_image'],
-
-                                                  ///------------------///
-
                                                   videoDetailcontroller.downloadButtonPressed(
                                                       videoDetailcontroller.VideoDetaildata[0]['video_attachment'],
                                                       videoDetailcontroller.VideoDetaildata[0]['id'],
@@ -1279,7 +1311,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                           return Tablist2data['category_type'] == 1
                                               ? GestureDetector(
                                                   onTap: () async {
-                                                    videoDetailcontroller.betterPlayerController.pause();
                                                     // videoDetailcontroller.dispose();
                                                     await attempt_test_api(
                                                         Tablist2data['mcq_category']['id'] .toString(),
@@ -1491,7 +1522,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                                                   BorderRadius.circular(
                                                                       5.0),
                                                                   child: categoryImage(
-                                                                      "assets/nprep2_images/LOGO.png")),
+                                                                      "assets/images/NPrep.jpeg")),
                                                               height:
                                                               sheight *
                                                                   0.08,

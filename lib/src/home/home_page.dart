@@ -654,6 +654,7 @@ class _HomePageState extends State<HomePage> {
   var limit = 100;
   var perentUrl;
   var videos = [];
+  bool show = false;
   ExamController examController = Get.put(ExamController());
   Videosubjectcontroller videosubjectcontroller =Get.put(Videosubjectcontroller());
   SubscriptionController subscriptionController = Get.put(
@@ -734,6 +735,7 @@ class _HomePageState extends State<HomePage> {
     getTestDataMock("4","");
     getTestDataMock("2","");
     getSubjectData();
+    getdata();
     var aboutUrl ="${apiUrls().cms_api}9";
     cmsController.CmsData(aboutUrl);
     var aboutUrl2 ="${apiUrls().cms_api}7";
@@ -742,6 +744,8 @@ class _HomePageState extends State<HomePage> {
     cmsController.CmsData3(aboutUrl3);
     var profileUrl = "${apiUrls().profile_api}";
     profileController.GetProfile(profileUrl);
+    examController.fetchAndSaveExams();
+    categoryController.fetchAllCategories();
     videosubjectcontroller.FetchAllVideoCategories();
     videosubjectcontroller.FetchAllVideos();
     videosubjectcontroller.FetchSubjectData();
@@ -1288,6 +1292,9 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     homeContro.home_data['data']['todayquestion']['your_answer']==null?Container():GestureDetector(
                                       onTap: (){
+                                        setState(() {
+                                          show = !show;
+                                        });
                                         homeContro.updatelessmore();
                                       },
                                       child: Container(
@@ -1297,7 +1304,7 @@ class _HomePageState extends State<HomePage> {
                                             left: 10,
                                           ),
                                           child: Text(
-                                            homeContro.lessormore.value==true?"Hide":"See Rationale: ",
+                                            show==true?"Hide":"See Rationale: ",
                                             style: TextStyle(
                                                 color: Colors.grey,
                                                 // fontSize: 16,
@@ -1309,7 +1316,7 @@ class _HomePageState extends State<HomePage> {
                                           )),
                                     ),
                                     homeContro.home_data['data']['todayquestion']['your_answer']==null?
-                                    Container(): homeContro.lessormore.value==true?Padding(
+                                    Container(): show==true?Padding(
                                       padding: const EdgeInsets.all(14.0),
                                       child: Column(
                                         children: [
@@ -1317,11 +1324,9 @@ class _HomePageState extends State<HomePage> {
                                               .toString() ==
                                               "null"
                                               ? Container()
-                                              : Image.network(
-                                            homeContro.home_data['data']['todayquestion'][
+                                              : CachedNetworkImage(imageUrl: homeContro.home_data['data']['todayquestion'][
                                             'ans_description_attachment']
-                                                .toString(),
-                                          ),
+                                                .toString()),
 
                                           homeContro.home_data['data']['todayquestion']['ans_description']
                                               .toString() ==

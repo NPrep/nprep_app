@@ -90,7 +90,7 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
   void initState() {
     super.initState();
     getdata();
-    getvideoFlag();
+    // getvideoFlag();
   }
 
   getdata() async {
@@ -99,6 +99,8 @@ class _HiveSavedVideoDetailScreenState extends State<HiveSavedVideoDetailScreen>
 
     log("videonotes before> "+videodatatasks[widget.index].videonotes.toString());
     log("videonotes before> "+videodatatasks[widget.index].videopath.toString());
+    var temp = json.decode(videodatatasks[widget.index].videostamps);
+    var time = temp[0]['time'].split(':');
 
     // log("model after> "+model.);
 

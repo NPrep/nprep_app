@@ -1569,7 +1569,7 @@
 //                                                                   BorderRadius.circular(
 //                                                                       5.0),
 //                                                                   child: categoryImage(
-//                                                                       "assets/nprep2_images/LOGO.png")),
+//                                                                       "assets/images/NPrep.jpeg")),
 //                                                               height:
 //                                                               sheight *
 //                                                                   0.08,

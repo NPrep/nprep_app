@@ -93,7 +93,7 @@ class Nprep2CustomTimelineVideoSave extends StatelessWidget {
                         //   // color: Colors.grey.shade300,
                         //   alignment: Alignment.center,
                         //   child: Image.asset(
-                        //     "assets/nprep2_images/LOGO.png",
+                        //     "assets/images/NPrep.jpeg",
                         //     height: 55,
                         //     width: MediaQuery.of(context).size.width * 0.15,
                         //   ),
@@ -135,7 +135,7 @@ class Nprep2CustomTimelineVideoSave extends StatelessWidget {
                         //         // color: Colors.grey.shade300,
                         //         alignment: Alignment.center,
                         //         child: Image.asset(
-                        //           "assets/nprep2_images/LOGO.png",
+                        //           "assets/images/NPrep.jpeg",
                         //           height: 20,
                         //           width: 20,
                         //         ),
@@ -149,7 +149,7 @@ class Nprep2CustomTimelineVideoSave extends StatelessWidget {
                         //     // color: Colors.grey.shade300,
                         //     alignment: Alignment.center,
                         //     child: Image.asset(
-                        //       "assets/nprep2_images/LOGO.png",
+                        //       "assets/images/NPrep.jpeg",
                         //       height: 20,
                         //       width: 20,
                         //     ),

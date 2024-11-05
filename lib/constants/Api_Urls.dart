@@ -18,7 +18,7 @@ const entitlementID = 'Plan 1 Year';
 
 class apiUrls{
 
-  var app_version= 30;
+  var app_version= 31;
   var ios_app_version= 9;
   var App_force_updateNo="1";
   var App_Maintaince_updateNo="1";
@@ -81,6 +81,7 @@ class apiUrls{
   var generate_in_app_purchase_api = baseUrl+"in_app_purchase";
   var payment_in_app_purchase_api = baseUrl+"in_app_purchase/payment/status/";
   var plan_history_api = baseUrl+"plan_history";
+  var track_sub = baseUrl+"track";
 
   var verify_coupon_api = baseUrl+"coupons/verify/";
 
@@ -92,6 +93,8 @@ class apiUrls{
   var parent_categories_api = baseUrl+"parent_categories";
   var exam_subjects_categories_api = baseUrl+"exam_subjects";
   var child_categories_api = baseUrl+"child_categories";
+  var all_categories = baseUrl+"all_categories";
+
 
   var test_attempt_api = baseUrl+"test/attempt";
   var get_question_api = baseUrl+"test/questions/get";
@@ -100,6 +103,7 @@ class apiUrls{
 
   // EXAM API HERE ====
 
+  var all_exams = baseUrl+"all_exams";
   var exam_list_api = baseUrl+"exam_list";
   var Mock_exam_list_api = baseUrl+"mock_exam_list";
   var exam_attempt_api = baseUrl+"exam/attempt/";

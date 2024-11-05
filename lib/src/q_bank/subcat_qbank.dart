@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:n_prep/Controller/Category_Controller.dart';
+import 'package:n_prep/Shimmer/Shimmer.dart';
 import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/constants/validations.dart';
+import 'package:n_prep/main.dart';
 import 'package:n_prep/src/home/bottom_bar.dart';
 import 'package:n_prep/src/q_bank/custom_timeline.dart';
 import 'package:n_prep/utils/colors.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../constants/Api_Urls.dart';
+import 'package:dio/dio.dart';
+
 
 class Subcategory extends StatefulWidget {
   var perentId;
@@ -58,7 +62,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     var childUrl = apiUrls().child_categories_api + '?' + queryString;
     print("childUrl......" + childUrl.toString());
     // Get.find<CategoryController>().ChildCategoryApi(childUrl);
-    await categoryController.ChildCategoryApi(childUrl);
+    await categoryController.ChildCategoryApi(childUrl,int.parse(widget.perentId));
   }
 
   updatedata() async {
@@ -70,7 +74,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     var childUrl = apiUrls().child_categories_api + '?' + queryString;
     print("update child cate......" + childUrl.toString());
 
-    Get.find<CategoryController>().ChildCategoryApi(childUrl);
+    Get.find<CategoryController>().ChildCategoryApi(childUrl,int.parse(widget.perentId));
     // await categoryController.ChildCategoryApi(childUrl);
   }
 
@@ -79,15 +83,20 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     if(categoryController.attempLoader.value ){
       // toastMsg("You allready selected blocks category, please wait....", true);
     }else{
-      Map<String, String> queryParams = {
-        'category_id': sab_cat_id.toString(),
-      };
-      String queryString = Uri(queryParameters: queryParams).query;
-      var attempUrl = apiUrls().test_attempt_api + '?' + queryString;
-      print("attempUrl......" + attempUrl.toString());
+      var temp = sprefs.getBool("is_internet");
+      if(!temp) {
+        toastMsg("Please Check Your Internet Connection", true);
+      }else{
+        Map<String, String> queryParams = {
+          'category_id': sab_cat_id.toString(),
+        };
+        String queryString = Uri(queryParameters: queryParams).query;
+        var attempUrl = apiUrls().test_attempt_api + '?' + queryString;
+        print("attempUrl......" + attempUrl.toString());
 
-      await categoryController.AttemptTestApi(
-        attempUrl, context, perentId, cat_name,false);
+        await categoryController.AttemptTestApi(
+            attempUrl, context, perentId, cat_name,false);
+      }
     }
 
   }
@@ -138,6 +147,8 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
       child: WillPopScope(
         onWillPop: () async {
           if(widget.categorytype==1){
+            final CancelToken cancelToken = CancelToken();
+            cancelToken.cancel("Canceled by user.");
             SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
               systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
               statusBarColor: Color(0xFF64C4DA), // status bar color
@@ -582,7 +593,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
         builder: (categoryContro) {
 
           if (categoryContro.childLoader.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: ShimmerScreen());
           } else {
             return RefreshIndicator(
               displacement: 80,
@@ -688,7 +699,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     return GetBuilder<CategoryController>(
         builder: (categoryContro) {
           if (categoryContro.childLoader.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: ShimmerScreen());
           } else {
             return RefreshIndicator(
               displacement: 80,
@@ -781,7 +792,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     return GetBuilder<CategoryController>(
         builder: (categoryContro) {
           if (categoryContro.childLoader.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: ShimmerScreen());
           } else {
             return RefreshIndicator(
               displacement: 80,
@@ -865,7 +876,7 @@ class _SubcategoryState extends State<Subcategory> with SingleTickerProviderStat
     return GetBuilder<CategoryController>(
         builder: (categoryContro) {
           if (categoryContro.childLoader.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: ShimmerScreen());
           } else {
             return RefreshIndicator(
               displacement: 80,

@@ -94,6 +94,8 @@ class Videosubjectcontroller extends GetxController{
 
      // Clear existing categories in the database before inserting new ones
      await DatabaseHelper().clearCategories();
+     await DatabaseHelper().clearCategories();
+
 
      // Loop through the fetched categories and save them into the local database
      for (var categoryData in fetchedData['data']) {

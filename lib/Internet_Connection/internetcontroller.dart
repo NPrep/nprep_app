@@ -48,20 +48,20 @@ class ConnectivityController extends GetxController {
       case ConnectivityResult.wifi:
         await sprefs.setBool('is_internet', true);
         connectionType = MConnectivityResult.wifi;
-        toastMsg("Wifi Connected with wifi", true);
+        toastMsg("Connected to wifi", true);
         update();
         break;
       case ConnectivityResult.mobile:
         await sprefs.setBool('is_internet', true);
         connectionType = MConnectivityResult.mobile;
-        toastMsg("Mobile Data Connected with mobile data", true);
+        toastMsg("Mobile Data Connected", true);
 
         update();
         break;
       case ConnectivityResult.none:
         connectionType = MConnectivityResult.none;
         await sprefs.setBool('is_internet', false);
-        toastMsg("No Internet Connected with No Internet Available", true);
+        toastMsg("Please Check Your Internet Connection", true);
         update();
         break;
       default:

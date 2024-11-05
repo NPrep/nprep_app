@@ -91,9 +91,9 @@ class Nprep2CustomTimeline extends StatelessWidget {
                           // color: Colors.grey.shade300,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            "assets/nprep2_images/LOGO.png",
+                            "assets/images/NPrep.jpeg",
                             height: 55,
-                            width: MediaQuery.of(context).size.width * 0.15,
+                            width: 55,
                           ),
                           // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
                           //   color: Colors.grey.shade300,),
@@ -111,9 +111,9 @@ class Nprep2CustomTimeline extends StatelessWidget {
                                 return Container(
                                   alignment: Alignment.center,
                                   child: Image.asset(
-                                    "assets/nprep2_images/LOGO.png", // Placeholder while loading
-                                    height: 20,
-                                    width: 20,
+                                    "assets/images/NPrep.jpeg", // Placeholder while loading
+                                    height: 50,
+                                    width: 50,
                                   ),
                                 );
                               }
@@ -122,9 +122,9 @@ class Nprep2CustomTimeline extends StatelessWidget {
                               return Container(
                                 alignment: Alignment.center,
                                 child: Image.asset(
-                                  "assets/nprep2_images/LOGO.png", // Fallback if error occurs
-                                  height: 20,
-                                  width: 20,
+                                  "assets/images/NPrep.jpeg", // Fallback if error occurs
+                                  height: 50,
+                                  width: 50,
                                 ),
                               );
                             },
@@ -141,7 +141,7 @@ class Nprep2CustomTimeline extends StatelessWidget {
                         //         // color: Colors.grey.shade300,
                         //         alignment: Alignment.center,
                         //         child: Image.asset(
-                        //           "assets/nprep2_images/LOGO.png",
+                        //           "assets/images/NPrep.jpeg",
                         //           height: 20,
                         //           width: 20,
                         //         ),
@@ -149,7 +149,7 @@ class Nprep2CustomTimeline extends StatelessWidget {
                         //         //   color: Colors.grey.shade300,),
                         //       );
                         //     },
-                        //     // placeholder: "assets/nprep2_images/LOGO.png",
+                        //     // placeholder: "assets/images/NPrep.jpeg",
                         //     image: image.toString())
 
                             : Container(
@@ -157,9 +157,9 @@ class Nprep2CustomTimeline extends StatelessWidget {
                           // color: Colors.grey.shade300,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            "assets/nprep2_images/LOGO.png",
+                            "assets/images/NPrep.jpeg",
                             height: 55,
-                            width: MediaQuery.of(context).size.width * 0.15,
+                            width: 50,
                           ),
                           // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
                           //   color: Colors.grey.shade300,),

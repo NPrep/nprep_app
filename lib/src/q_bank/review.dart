@@ -153,19 +153,16 @@ class _ReviewPageState extends State<ReviewPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if(widget.pagestatus==true){
-          Navigator.popUntil(context, ModalRoute.withName("Foo"));
 
-        }else{
-          var perent_Id=   sprefs.getString("perent_Id");
-          var catName = sprefs.getString("catName");
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Subcategory(perentId: perent_Id.toString(),
-              categoryName: catName.toString(),categorytype: 1,)),
-          );
-        }
-
+          // var perent_Id=   sprefs.getString("perent_Id");
+          // var catName = sprefs.getString("catName");
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => Subcategory(perentId: perent_Id.toString(),
+          //     categoryName: catName.toString(),categorytype: 1,)),
+          // );
+        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
         return true;
       },
       child: Scaffold(
@@ -176,10 +173,6 @@ class _ReviewPageState extends State<ReviewPage> {
               // Check if showBackIcon is true
               GestureDetector(
                 onTap: () {
-                  if(widget.pagestatus==true){
-                    Navigator.popUntil(context, ModalRoute.withName("Foo"));
-
-                  }else{
                     var perent_Id=   sprefs.getString("perent_Id");
                     var catName = sprefs.getString("catName");
                     Navigator.pushReplacement(
@@ -187,7 +180,6 @@ class _ReviewPageState extends State<ReviewPage> {
                       MaterialPageRoute(builder: (context) => Subcategory(perentId: perent_Id.toString(),
                         categoryName: catName.toString(),categorytype: 1,)),
                     );
-                  }
                 },
                 child: Icon(Icons.arrow_back_ios, color: Colors.white),
               ),

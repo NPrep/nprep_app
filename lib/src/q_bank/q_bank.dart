@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:n_prep/Controller/Category_Controller.dart';
 import 'package:n_prep/Controller/Setting_controller.dart';
@@ -54,15 +56,7 @@ class _QbankState extends State<Qbank> {
   }
 
   categoryImage(imagess) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child: Image(
-          image: NetworkImage(imagess),
-          fit: BoxFit.cover,
-          height: 80,
-          width: 100,
-        )
-    );
+    return CachedNetworkImage(imageUrl: imagess);
   }
 
   @override
@@ -161,21 +155,27 @@ class _QbankState extends State<Qbank> {
                         ),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
-                            child: FadeInImage.assetNetwork(
-                                imageErrorBuilder:(context, error, stackTrace) {
-                                  return Container(
-                                    alignment: Alignment.center,
-                                    child: Image.asset(
-                                      "assets/images/NPrep.jpeg",
-                                      height: 55,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.15,
-                                    ),
-                                  );
-                                },
-                                placeholder: "assets/nprep2_images/LOGO.png",
-                                image: perentdata['image'].toString())
+                            child: CachedNetworkImage(
+                              imageUrl: perentdata['image'].toString(),
+                              placeholder: (context, url) => Image.asset('assets/images/NPrep.jpeg'),
+                              errorWidget: (context, url,e) => Image.asset('assets/images/NPrep.jpeg'),
+                            )
                         ),
+                        //
+                        // FadeInImage.assetNetwork(
+                        //     imageErrorBuilder:(context, error, stackTrace) {
+                        //       return Container(
+                        //         alignment: Alignment.center,
+                        //         child: Image.asset(
+                        //           "assets/images/NPrep.jpeg",
+                        //           height: 55,
+                        //           width: MediaQuery.of(context).size.width *
+                        //               0.15,
+                        //         ),
+                        //       );
+                        //     },
+                        //     placeholder: "assets/images/NPrep.jpeg",
+                        //     image: perentdata['image'].toString())
                         height: 60,
                         width: 60,
                       ),

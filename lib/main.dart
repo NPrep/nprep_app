@@ -25,6 +25,7 @@ import 'package:n_prep/utils/theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'Local_Database/database.dart';
 import 'Notification_pages/notification_redirect.dart';
@@ -143,6 +144,7 @@ log("On run >> main.dart");
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    WakelockPlus.enable();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
     statusBarColor: Color(0xFF64C4DA), // status bar color

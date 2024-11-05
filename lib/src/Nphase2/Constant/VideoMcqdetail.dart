@@ -61,7 +61,6 @@ class _VideoMcqDetailsState extends State<VideoMcqDetails> {
 
 print("total attemp exam "+widget.attempquestion.toString());
   }
-
   @override
   Widget build(BuildContext context) {
     Size size =  MediaQuery.of(context).size;

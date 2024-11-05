@@ -171,17 +171,19 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
                                             Row(
                                               children: [
                                                 MediaQuery(
-                                                  child: Text(
-                                                    " ${subscription_datas['name'].toString()}" == "null"? ""
-                                                        :
-                                                    "${subscription_datas['name'].toString()}",
-                                                    style: TextStyle(
+                                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+                                                  child: Container(
+                                                    width: 150, // Set the desired width here
+                                                    child: Text(
+                                                      subscription_datas['name'].toString() == "null" ? "" : subscription_datas['name'].toString(),
+                                                      style: TextStyle(
                                                         fontSize: 20,
                                                         fontWeight: FontWeight.w700,
                                                         fontFamily: 'PublicSans',
-                                                        color: black54),
+                                                        color: black54,
+                                                      ),
+                                                    ),
                                                   ),
-                                                  data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
                                                 ),
                                                 SizedBox(width: 5,),
                                                 subscription_datas['name']==null?Container():subscription_datas['name'].contains("GOLD") ? Image.asset("assets/nprep2_images/gold.gif",height: 25,):Container(),

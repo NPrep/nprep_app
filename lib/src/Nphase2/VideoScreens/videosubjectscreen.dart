@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -565,57 +566,14 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                         children: [
                                           Row(
                                             children: [
-                                              subjectsData['image'].toString()=="null"? Image.network( '${subjectsData['image']}',
-                                                  height: 50,
-                                                  width: 50,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-
-                                                      // color: Colors.grey.shade300,
-                                                      alignment: Alignment.center,
-                                                      child: Image.asset(
-                                                        "assets/images/NPrep.jpeg",
-                                                        // height: 20,
-                                                        width: MediaQuery.of(context).size.width * 0.18,
-                                                      ),
-                                                      // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                                      //   color: Colors.grey.shade300,),
-                                                    );
-                                                  }
-                                              ):
-                                              Container(
-                                                height: 50,
+                                              // subjectsData['image'].toString()=="null"?
+                                              CachedNetworkImage(
                                                 width: 50,
-                                                child: Image.network(
-                                                  subjectsData['image'] != null ? subjectsData['image'].toString() : '',
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-                                                      alignment: Alignment.center,
-                                                      child: Image.asset(
-                                                        "assets/images/NPrep.jpeg",
-                                                        height: 50,
-                                                        width: 50,
-                                                      ),
-                                                    );
-                                                  },
-                                                  loadingBuilder: (context, child, loadingProgress) {
-                                                    if (loadingProgress == null) {
-                                                      return child;
-                                                    } else {
-                                                      return Container(
-                                                        alignment: Alignment.center,
-                                                        child: Image.asset(
-                                                          "assets/images/NPrep.jpeg", // Placeholder image
-                                                          height: 50,
-                                                          width: 50,
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                ),
+                                                height: 50,
+                                                imageUrl: subjectsData['image'].toString(),
+                                                placeholder: (context, url) => Image.asset('assets/images/NPrep.jpeg'),
+                                                errorWidget: (context, url,e) => Image.asset('assets/images/NPrep.jpeg'),
                                               ),
-
                                               sizebox_width_5,
                                               Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -710,55 +668,14 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                         children: [
                                           Row(
                                             children: [
-                                              subjectsData['image'].toString()=="null"? Image.network( '${subjectsData['image']}',
-                                                  height: 50,
-                                                  width: 50,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-
-                                                      // color: Colors.grey.shade300,
-                                                      alignment: Alignment.center,
-                                                      child: Image.asset(
-                                                        "assets/images/NPrep.jpeg",
-                                                        // height: 20,
-                                                        width: MediaQuery.of(context).size.width * 0.18,
-                                                      ),
-                                                      // child: Icon(Icons.error,size: MediaQuery.of(context).size.width * 0.18,
-                                                      //   color: Colors.grey.shade300,),
-                                                    );
-                                                  }
-                                              ): Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.network(
-                                          subjectsData['image']?.toString() ?? "assets/images/NPrep.jpeg",
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Container(
-                                              alignment: Alignment.center,
-                                              child: Image.asset(
-                                                "assets/images/NPrep.jpeg",
-                                                height: 50,
+                                              // subjectsData['image'].toString()=="null"?
+                                              CachedNetworkImage(
                                                 width: 50,
+                                                height: 50,
+                                                imageUrl: subjectsData['image'].toString(),
+                                                placeholder: (context, url) => Image.asset('assets/images/NPrep.jpeg'),
+                                                errorWidget: (context, url,e) => Image.asset('assets/images/NPrep.jpeg'),
                                               ),
-                                            );
-                                          },
-                                          loadingBuilder: (context, child, loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            } else {
-                                              return Container(
-                                                alignment: Alignment.center,
-                                                child: Image.asset(
-                                                  "assets/nprep2_images/LOGO.png",
-                                                  height: 20,
-                                                  width: 20,
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
                                       // Image.network( '${subjectsData['image']}',
                                               //   height: 50,
                                               //   width: 50,
@@ -768,7 +685,7 @@ class _VideoSubjectScreenState extends State<VideoSubjectScreen> {
                                               //         // color: Colors.grey.shade300,
                                               //         alignment: Alignment.center,
                                               //         child: Image.asset(
-                                              //           "assets/nprep2_images/LOGO.png",
+                                              //           "assets/images/NPrep.jpeg",
                                               //           // height: 20,
                                               //           width: MediaQuery.of(context).size.width * 0.18,
                                               //         ),

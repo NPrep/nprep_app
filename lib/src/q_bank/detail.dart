@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,8 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   bool isReview = true;
+  final CancelToken cancelToken = CancelToken();
+
 
   showReview() {
     setState(() {
@@ -57,6 +60,13 @@ class _DetailsState extends State<Details> {
     super.initState();
 
 print("total attemp exam "+widget.attempquestion.toString());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    cancelToken.cancel("Canceled by user.");
+    super.dispose();
   }
 
   @override

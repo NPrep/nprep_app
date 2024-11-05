@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -5,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +17,7 @@ import 'package:n_prep/constants/custom_text_style.dart';
 import 'package:n_prep/constants/validations.dart';
 import 'package:n_prep/utils/colors.dart';
 
+import '../../Service/Service.dart';
 import '../../main.dart';
 
 const String _kSilverSubscriptionId = '1_Year';
@@ -56,8 +60,60 @@ class _PlandetailScreenState extends State<PlandetailScreen> {
     log('planname==>'+widget.plan_name.toString());
     log('plan_price_amt==>'+plan_price_amt.toString());
     log('plan_price_plan_index==>'+widget.plan_index.toString());
+    trackdata();
     getdataCall();
   }
+
+  var _mainHeaders = {
+    apiUrls().XAPIKEY: apiUrls().XAPIVALUE,
+    apiUrls().Authorization: apiUrls().AuthorizationKey,
+  };
+
+
+  Future<void> multipartAPICall(url, parameter) async {
+    print("post url : $url");
+    print("post parameter : $parameter");
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+      request.fields.addAll(parameter);
+
+      request.headers.addAll(_mainHeaders);
+
+      http.StreamedResponse responses = await request.send();
+
+      var responsedata = await http.Response.fromStream(responses);
+      final result = jsonDecode(responsedata.body);
+
+      if (responsedata.statusCode == 200) {
+        var msg = result;
+        // Fluttertoast.showToast(msg: msg.toString());
+        print(msg);
+      }
+
+      print("post response : ${responsedata.body.toString()}");
+
+      return responsedata;
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw FetchDataException('Something went wrong, try again later');
+    }
+  }
+
+
+      trackdata()async{
+    var trackUrl = apiUrls().track_sub;
+    var updateBody = {
+      'username': sprefs.getString("user_name"),
+      'email': sprefs.getString("email"),
+      'phone_number' : sprefs.getString("mobile"),
+      'package' : widget.plan_price.toString()
+    };
+    print("updateBody......" + updateBody.toString());
+    multipartAPICall(trackUrl, updateBody);
+  }
+
+
   getdataCall() async {
     subscriptionController.discountedPrice = 0.0;
 
@@ -613,7 +669,7 @@ class _PlandetailScreenState extends State<PlandetailScreen> {
                        onTap: () async {
                          bool temp = sprefs.getBool("is_internet");
                          if(!temp){
-                           toastMsg("Please Check Your Internet", true);
+                           toastMsg("Please Check Your Internet Connection", true);
                          }
                          // subscriptionController.GetDilogssss(true);
                             if(selectedItemIndex!= -1){
@@ -660,6 +716,7 @@ class _PlandetailScreenState extends State<PlandetailScreen> {
                                                   :"coupon_id": couponController.text.toString(),
                                               "package_id": plan_inapp_id.toString(),
                                             };
+
                                             print("generate_in_app_purchaseUrl...." + generate_in_app_purchaseUrl.toString());
                                             print("generate_in_app_purchaseBody...." + generate_in_app_purchaseBody.toString());
                                             subscriptionController.generate_In_App_PurchaseData(generate_in_app_purchaseUrl, generate_in_app_purchaseBody);

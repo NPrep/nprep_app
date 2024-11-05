@@ -125,8 +125,8 @@ class ReviewController extends GetxController{
     testreviewLoading(true);
     try{
       var result=  await apiCallingHelper().getAPICall(url,true);
+
       if (result != null) {
-        test_review_data =jsonDecode(result.body);
         if(result.statusCode == 200){
           test_review_data =jsonDecode(result.body);
           test_review_data['data']['attempt_questions'].forEach((e){
@@ -139,7 +139,7 @@ class ReviewController extends GetxController{
           update();
           refresh();
         }else  if(result.statusCode == 404){
-          print("test_review_data...."+test_review_data.toString());
+          print("test_review_data...."+test_review_data);
           testreviewLoading(false);
           update();
           refresh();
