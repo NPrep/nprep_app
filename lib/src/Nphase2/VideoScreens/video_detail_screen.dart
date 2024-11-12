@@ -631,8 +631,98 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                       children: [
 
 
-                                        CustomControlsWidget(controller:videoDetailcontroller.betterPlayerController ,videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,),
+                                        videoDetailcontroller.Videoplayloader.value == false
+                                            ? GestureDetector(
+                                          onTap: () async {
+                                            if (!videoDetailcontroller.VideoAvailableloader.value) {
+                                              String url = sprefs.getString("video_url");
+                                              await videoDetailcontroller.videoplayerstart(url);
+                                              videoDetailcontroller.betterPlayerController.play(); // Starts video playback when tapped
+                                              setState(() {
+                                                isPlaying = true; // Sets the state to update the UI when the video starts playing
+                                              });
+                                            }
+                                          },
+                                          child: Stack(
+                                            children: [
+                                              // Thumbnail image
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: videoDetailcontroller.videothumbImgUrl2.toString() == "null"
+                                                        ? AssetImage(
+                                                      "assets/nprep2_images/video.png",
+                                                    )
+                                                        : NetworkImage(videoDetailcontroller.videothumbImgUrl2),
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                height: MediaQuery.of(context).size.height,
+                                                width: MediaQuery.of(context).size.width,
+                                              ),
+                                              // Black dullness effect
+                                              Container(
+                                                height: MediaQuery.of(context).size.height,
+                                                width: MediaQuery.of(context).size.width,
+                                                color: Colors.black.withOpacity(0.5), // Adjust the opacity for dullness
+                                              ),
+                                              // Play icon or loading indicator
+                                              videoDetailcontroller.VideoLoadingBeforeloader.value == true
+                                                  ? Center(
+                                                child: CircularProgressIndicator(strokeWidth: 1.5),
+                                              )
+                                                  : Stack(
+                                                children: [
+                                                  Positioned(
+                                                    top: 10,
+                                                    left: 10,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+                                                        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+                                                        SystemChrome.setSystemUIOverlayStyle(
+                                                            SystemUiOverlayStyle(
+                                                              systemNavigationBarColor: Color(
+                                                                  0xFFFFFFFF), // navigation bar color
+                                                              statusBarColor: Color(
+                                                                  0xFF64C4DA), // status bar color
+                                                            ));
+                                                        Get.back();
+                                                      },
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 35,
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                            Colors.black45.withOpacity(0.2),
+                                                            borderRadius: BorderRadius.all(
+                                                                Radius.circular(50))),
+                                                        child: Icon(
+                                                          Icons.chevron_left,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
 
+
+                                                  Center(
+                                                    child: Icon(
+                                                      Icons.play_arrow,
+                                                      color: Colors.white,
+                                                      size: 100,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+
+
+                                            ],
+                                          ),
+                                        ) : CustomControlsWidget(
+                                          controller: videoDetailcontroller.betterPlayerController,
+                                          videocontroller: videoDetailcontroller.betterPlayerController_videoplayer,
+                                        ),
 
                                         Positioned(
                                             top: double.parse(videoDetailcontroller.top_post_small.value.toString()),
@@ -643,18 +733,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                   ),
                                 ),
                               ),
-
-
-                              Positioned(
-                                  top: 10,
-                                  left: 20,
-                                  child: IconButton(
-                                    onPressed: (){
-                                      videoDetailcontroller.betterPlayerController.play();
-                                    },
-                                    icon: Icon(Icons.play_arrow,size: 100,color: Colors.grey,),
-                                  )),
-
 
                               Positioned(
                                 top: double.parse(videoDetailcontroller.top_post.value.toString()),
