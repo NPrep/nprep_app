@@ -173,13 +173,14 @@ class _ReviewPageState extends State<ReviewPage> {
               // Check if showBackIcon is true
               GestureDetector(
                 onTap: () {
-                    var perent_Id=   sprefs.getString("perent_Id");
-                    var catName = sprefs.getString("catName");
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Subcategory(perentId: perent_Id.toString(),
-                        categoryName: catName.toString(),categorytype: 1,)),
-                    );
+                    // var perent_Id=   sprefs.getString("perent_Id");
+                    // var catName = sprefs.getString("catName");
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Subcategory(perentId: perent_Id.toString(),
+                    //     categoryName: catName.toString(),categorytype: 1,)),
+                    // );
+                  Navigator.of(context).pop();
                 },
                 child: Icon(Icons.arrow_back_ios, color: Colors.white),
               ),

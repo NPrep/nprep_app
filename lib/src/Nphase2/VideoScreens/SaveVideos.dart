@@ -46,8 +46,10 @@ class _SaveVideosState extends State<SaveVideos> {
 
   Videosubjectcontroller videosubjectcontroller =Get.put(Videosubjectcontroller());
   List<TaskRecord> records = [];
+  List<int> selectedItems = []; // Store selected item ids
   List TotalDownload =[];
   bool loadingdata =true;
+  bool isSelectionMode = false;
   StreamController<TaskProgressUpdate> updateStream = StreamController();
   Timer timer ;
   @override
@@ -62,9 +64,61 @@ class _SaveVideosState extends State<SaveVideos> {
     timer = Timer.periodic(Duration(seconds: 2), (timer) {
       getHiveData();
     });
-
-
   }
+
+  void toggleSelection(int itemId) {
+    setState(() {
+      if (selectedItems.contains(itemId)) {
+        selectedItems.remove(itemId);
+      } else {
+        selectedItems.add(itemId);
+      }
+
+      // If no items are selected, exit selection mode
+      if (selectedItems.isEmpty) {
+        isSelectionMode = false;
+      }
+    });
+  }
+
+
+  void deleteSelectedItems() async{
+    for(int i=0;i<selectedItems.length;i++){
+      var data = videodatatasks[i];
+      log("onPressed ${data}");
+      File file =File(data.videopath);
+      log("onPressed 1");
+      File file2 =File(data.videonotes);
+      log("onPressed 2");
+      if (await file.exists()) {
+        await file.delete();
+        await file2.delete();
+      }
+      log("onPressed 3");
+      var videos_saved ="${apiUrls().videos_unsaved_api}${data.videokey}";
+      // await apiCallingHelper().getAPICall(videos_saved, true);
+      log("onPressed 4");
+      var result = await apiCallingHelper().getAPICall(videos_saved, true);
+      log("onPressed 5");
+      var datas =jsonDecode(result.body);
+      log("onPressed 6");
+      toastMsg(datas['message'], true);
+      final DatabaseService _databaseService = DatabaseService.instance;
+
+
+      _databaseService.deleteTask(data.id);
+      log("onPressed 7");
+      log("onPressed 8");
+      FileDownloader().database.deleteRecordWithId(data.videokey.toString());
+      FileDownloader().cancelTasksWithIds([data.videokey.toString()]);
+      log("onPressed 9");
+    }
+    setState(() {
+      selectedItems.clear();
+      isSelectionMode = false;
+    });
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -85,20 +139,8 @@ class _SaveVideosState extends State<SaveVideos> {
     await FileDownloader().trackTasks();
     records = await FileDownloader().database.allRecords();
     TotalDownload.clear();
-
-
-
-
-
-
-
-
-
-
     loadingdata=false;
     setState(() {
-
-
     });
 
 
@@ -183,6 +225,13 @@ class _SaveVideosState extends State<SaveVideos> {
       },
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            if (isSelectionMode)
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: deleteSelectedItems,
+              ),
+          ],
           iconTheme: IconThemeData(
             color: Colors.white, // Change the icon color here
           ),
@@ -283,34 +332,9 @@ class _SaveVideosState extends State<SaveVideos> {
                                           status: ButtonreturnDownloadStatus(databasevideo.status),
                                           topic: databasevideo.task.metaData.split("/-/")[1],
                                           videoid:  databasevideo.task.taskId,
-
-
                                         ),
                                       ),
                                     ),
-                                    // Positioned(
-                                    //   top:0,
-                                    //   bottom: 0,
-                                    //   right: 10,
-                                    //   child: IconButton(
-                                    //       onPressed: () async {
-                                    //         log("onPressed");
-                                    //
-                                    //         log("onPressed 7");
-                                    //         log("onPressed 8");
-                                    //         FileDownloader().database.deleteRecordWithId(databasevideo.taskId.toString());
-                                    //         FileDownloader().cancelTasksWithIds([databasevideo.taskId.toString()]);
-                                    //
-                                    //         log("onPressed 9");
-                                    //         setState(() {
-                                    //
-                                    //         });
-                                    //       },
-                                    //       icon: Icon(Icons.delete,color: primary,)
-                                    //   ),
-                                    // ),
-
-
                                   ],
                                 );
 
@@ -375,17 +399,37 @@ class _SaveVideosState extends State<SaveVideos> {
                                   itemBuilder: (context, index) {
                                     // var data = videoItems[index];
                                     var data = videodatatasks[index];
-
+                                    var videoId = data.videokey;
 
                                     return GestureDetector(
-                                      onTap: () {
-                                        Get.to(HiveSavedVideoDetailScreen(
-                                          index: index,
-                                          title: data.videotitle,
-                                        ));
+                                      onLongPress: () {
+                                        print("hello ${selectedItems}");
+                                        setState(() {
+                                          isSelectionMode = true;
+                                          toggleSelection(index);
+                                        });
                                       },
-                                      child: Stack(
+                                      onTap: () {
+                                        if(isSelectionMode){
+                                          print("hello ${selectedItems}");
+                                          print("${[0].contains(index)}");
+                                          toggleSelection(index);
+                                        }else{
+                                          Get.to(HiveSavedVideoDetailScreen(
+                                            index: index,
+                                            title: data.videotitle,
+                                          ));
+                                        }
+                                      },
+                                      child: Row(
                                         children: [
+                                          if (isSelectionMode)
+                                            Checkbox(
+                                              value: selectedItems.contains(index),
+                                              onChanged: (value) {
+                                                toggleSelection(index);
+                                              },
+                                            ),
                                           Container(
                                             margin: EdgeInsets.only(right: 0),
                                             child: Nprep2CustomTimelineVideoSave(
@@ -394,113 +438,16 @@ class _SaveVideosState extends State<SaveVideos> {
                                               isLast: true,
                                               showimage: true,
                                               isFirst: true,
+                                              width: isSelectionMode
+                                                  ? MediaQuery.of(context).size.width-50
+                                                  : MediaQuery.of(context).size.width,
                                               mcq: data.videoduration,
-                                              // noofattemp:data['attempt_videos'] ,
-                                              // questionnoofattemp: data['attempt_videos'] ,
-                                              // examstatus:data['video_status'] ,
                                               topic: data.videotitle,
-                                              // status: data['attempt_videos']
-                                              //     .toString() +
-                                              //     "/" +
-                                              //     data['total_videos'].toString(),
-                                              // label: data['fee_type'],
-                                              // labelColor: data['fee_type'].toString() ==
-                                              //     '2'
-                                              //     ? Colors.orange
-                                              //     : Colors.indigo.shade700,
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top:0,
-                                            bottom: 0,
-                                            right: 10,
-                                            child: IconButton(
-                                                onPressed: () async {
-                                                  log("onPressed");
-                                                  File file =File(data.videopath);
-                                                  log("onPressed 1");
-                                                  File file2 =File(data.videonotes);
-                                                  log("onPressed 2");
-                                                  if (await file.exists()) {
-                                                    await file.delete();
-                                                    await file2.delete();
-                                                  }
-                                                  log("onPressed 3");
-                                                  var videos_saved ="${apiUrls().videos_unsaved_api}${data.videokey}";
-                                                  // await apiCallingHelper().getAPICall(videos_saved, true);
-                                                  log("onPressed 4");
-                                                  var result = await apiCallingHelper().getAPICall(videos_saved, true);
-                                                  log("onPressed 5");
-                                                  var datas =jsonDecode(result.body);
-                                                  log("onPressed 6");
-                                                  toastMsg(datas['message'], true);
-                                                  final DatabaseService _databaseService = DatabaseService.instance;
-
-
-                                                  _databaseService.deleteTask(data.id);
-                                                  log("onPressed 7");
-                                                  log("onPressed 8");
-                                                  FileDownloader().database.deleteRecordWithId(data.videokey.toString());
-                                                  FileDownloader().cancelTasksWithIds([data.videokey.toString()]);
-
-
-                                                  log("onPressed 9");
-                                                  setState(() {
-
-
-                                                  });
-                                                },
-                                                icon: Icon(Icons.delete,color: primary,)
                                             ),
                                           ),
                                         ],
                                       ),
                                     );
-                                    // return Card(
-                                    //   margin: EdgeInsets.only(top: 6, left: 8, right: 8),
-                                    //   elevation: 3,
-                                    //
-                                    //   // color: Colors.orange,
-                                    //   child: ListTile(
-                                    //     onTap: () {
-                                    //       Get.to(HiveSavedVideoDetailScreen(
-                                    //         index:  index,
-                                    //         title: currentItm['video_title'],
-                                    //       ));
-                                    //     },
-                                    //     leading: Container(
-                                    //       width: width * 0.2,
-                                    //       height: height * 0.05,
-                                    //       child: Image.asset(
-                                    //         "assets/images/NPrep.jpeg", fit: BoxFit.fill,
-                                    //         // scale: 5,
-                                    //       ),
-                                    //     ),
-                                    //     title: Text(currentItm['video_title'].toString()),
-                                    //     //subtitle: Text(currentItm['file_path'].toString()),
-                                    //     trailing: Row(
-                                    //       mainAxisSize: MainAxisSize.min,
-                                    //       children: [
-                                    //         IconButton(
-                                    //             onPressed: () async {
-                                    //               File file =File(currentItm['video_path']);
-                                    //               File file2 =File(currentItm['video_Notes']);
-                                    //               videoDetailcontroller.deleteItem(currentItm['key']);
-                                    //               if (await file.exists()) {
-                                    //                 await file.delete();
-                                    //                 await file2.delete();
-                                    //               }
-                                    //               var videos_saved ="${apiUrls().videos_unsaved_api}${currentItm['id']}";
-                                    //               await apiCallingHelper().getAPICall(videos_saved, true);
-                                    //               var result = await apiCallingHelper().getAPICall(videos_saved, true);
-                                    //               var data =jsonDecode(result.body);
-                                    //               toastMsg(data['message'], true);
-                                    //               },
-                                    //             icon: Icon(Icons.delete,color: primary,)),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // );
                                   }),
                             ),
                           ],

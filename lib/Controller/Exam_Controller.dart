@@ -950,7 +950,7 @@ class ExamController extends GetxController {
 
 
   }
-  UpdateExamAnswerData(index,answer_id) async {
+  UpdateExamAnswerData(index,answer_id,is_attempt) async {
     log("UpdateExamAnswerData onstart $index :: $answer_id");
     log("UpdateExamAnswerData your_answer before ${get_que_list[index]['your_answer']}");
     log("UpdateExamAnswerData is_attempt before ${get_que_list[index]['is_attempt']}");
@@ -965,7 +965,7 @@ class ExamController extends GetxController {
     final DatabaseService dbHelper = DatabaseService.instance;
 
     // Insert/Update questiondata
-    await dbHelper.updateQuestionData( Copy_get_que_list[index]['id'], 1, Copy_get_que_list[index]['your_answer'].toString());
+    await dbHelper.updateQuestionData( Copy_get_que_list[index]['id'], is_attempt, Copy_get_que_list[index]['your_answer'].toString());
 
   }
   updateExitLoader(){

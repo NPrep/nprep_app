@@ -800,7 +800,7 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
 
                                             }else{
                                               examController.callindex(index,indexs);
-                                              examController.UpdateExamAnswerData((quecounter),optionText['option_id']);
+                                              examController.UpdateExamAnswerData((quecounter),optionText['option_id'],1);
 
                                             }
                                             if(examController.get_que_list.length>quecounter){
@@ -991,6 +991,7 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
                                         );
                                       },
                                     ),
+
                                     SizedBox(
                                       height: 15,
                                     ),
@@ -1004,141 +1005,6 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
                                         thickness: 1.5,
                                       ),
                                     ),
-
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.center,
-                                    //   children: [
-                                    //     examController.ontap_answer[index]==true?  GestureDetector(
-                                    //       onTap: () async{
-                                    //         print("qr: "+quecounter.toString());
-                                    //         // print("qr: "+(quecounter>1).toString());
-                                    //         if((quecounter>1)==true){
-                                    //           quecounter = quecounter - 1;
-                                    //         // log("qr: "+examController.get_que_list[quecounter]['your_answer'].toString());
-                                    //           // examController.callagainindex(index);
-                                    //           setState(()  {
-                                    //           });
-                                    //         }
-                                    //         else{
-                                    //
-                                    //           toastMsg("No Previous Question Left", true);
-                                    //           /* toastMsg("No Question Left", true);*/
-                                    //         }
-                                    //
-                                    //
-                                    //       },
-                                    //       child: Container(
-                                    //         alignment: Alignment.center,
-                                    //         width: size.width * 0.3,
-                                    //         height: size.height * 0.05,
-                                    //         margin: EdgeInsets.only(bottom: 20, top: 20),
-                                    //         decoration: BoxDecoration(
-                                    //             borderRadius: BorderRadius.circular(4),
-                                    //             color: primary),
-                                    //         child: Text(
-                                    //           "Previous" ,
-                                    //           style: TextStyle(
-                                    //             fontSize: 19,
-                                    //             fontWeight: FontWeight.w500,
-                                    //             fontFamily: 'Poppins-Regular',
-                                    //             color: white,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ):Container(),
-                                    //     examController.ontap_answer[index]==true? SizedBox(
-                                    //       width: 20,
-                                    //     ):Container(),
-                                    //     GestureDetector(
-                                    //       onTap: () async{
-                                    //         log("data>> index: "+index.toString());
-                                    //         log("data>> onlist: "+examController. ontap_answer[index].toString());
-                                    //         if(examController.ontap_answer[index]==true){
-                                    //           if(examController.get_que_list.length>quecounter){
-                                    //             quecounter = quecounter + 1;
-                                    //             examController.callagainindex(index);
-                                    //             setState(()  {
-                                    //             });
-                                    //           }else{
-                                    //
-                                    //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                    //             var examBody = {'question_id': qid.toString(), 'answer_id': ansid.toString(),};
-                                    //             print("examBody...."+examBody.toString());
-                                    //             await examController.ExamAnswerData(examansUrl, examBody);
-                                    //             setState((){});
-                                    //             Navigator.pushReplacement(context,
-                                    //                 MaterialPageRoute(
-                                    //                     builder: (context) => ExamReviewPage(exam_Ids:id,
-                                    //                         pageId:2)));
-                                    //             /* toastMsg("No Question Left", true);*/
-                                    //           }
-                                    //
-                                    //         }
-                                    //         else{
-                                    //           var qid =get_data['id'];
-                                    //           var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                    //           var examBody = {
-                                    //             'question_id': qid.toString(),
-                                    //           };
-                                    //           print("examBody skip...."+examBody.toString());
-                                    //           await examController.ExamAnswerData(examansUrl, examBody);
-                                    //
-                                    //           if (examController.get_que_list.length > quecounter) {
-                                    //             quecounter = quecounter + 1;
-                                    //             print("quecounter after update......"+quecounter.toString());
-                                    //             // examController.get_que_list[quecounter];
-                                    //
-                                    //             setState(()  {
-                                    //             });
-                                    //
-                                    //             // getQuestion(false);
-                                    //           } else {
-                                    //             var qid =get_data['id'];
-                                    //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                    //             var examBody = {
-                                    //               'question_id': qid.toString(),
-                                    //             };
-                                    //             print("examansUrl...."+examansUrl.toString());
-                                    //             print("examBody...."+examBody.toString());
-                                    //             await examController.ExamAnswerData(examansUrl, examBody);
-                                    //             Navigator.pushReplacement(
-                                    //                 context,
-                                    //                 MaterialPageRoute(
-                                    //                     builder: (context) => ExamReviewPage(exam_Ids:id,
-                                    //                         pageId:2)));
-                                    //             // toastMsg("No Question Left", true);
-                                    //             // quecounter = quecounter - 1;
-                                    //             // examController.get_que_list[quecounter];
-                                    //             // Navigator.push(context,
-                                    //             //     MaterialPageRoute(builder: (context) => ReviewPage(skip:true)));
-                                    //           }
-                                    //
-                                    //         }
-                                    //
-                                    //
-                                    //       },
-                                    //       child: Container(
-                                    //         alignment: Alignment.center,
-                                    //         width: examController.ontap_answer[index]==true?size.width*0.3:size.width * 0.6,
-                                    //         height: size.height * 0.05,
-                                    //         margin: EdgeInsets.only(bottom: 20, top: 20),
-                                    //         decoration: BoxDecoration(
-                                    //             borderRadius: BorderRadius.circular(4),
-                                    //             color: primary),
-                                    //         child: Text(
-                                    //           examController. ontap_answer[index]==true?"Next":  "Skip",
-                                    //           style: TextStyle(
-                                    //             fontSize: 19,
-                                    //             fontWeight: FontWeight.w500,
-                                    //             fontFamily: 'Poppins-Regular',
-                                    //             color: white,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ),
-                                    //
-                                    //   ],
-                                    // ),
                                   ],
                                 ),
                               );
@@ -1180,6 +1046,38 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
                               SizedBox(
                                 width: 5,
                               ),
+
+
+                              examController.ontap_answer[quecounter]==false?Container():GestureDetector(
+                                onTap: () async{
+                                  setState(() {
+                                    selectedIndex = null; // Reset the selected index
+                                  });
+
+                                  examController.ontap_answer[quecounter] = false;
+                                  // Call the update function to reflect no answer selection
+                                  examController.UpdateExamAnswerData((quecounter),'',0);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: size.width * 0.2,
+                                  height: size.height * 0.04,
+                                  margin: EdgeInsets.only(bottom: 20, top: 20),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: primary),
+                                  child: Text(
+                                    "clear" ,
+                                    style: TextStyle(
+                                      fontSize:examController.dailysection==true?13: 19,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Poppins-Regular',
+                                      color: white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
                               examController.ontap_answer[quecounter]==true?
                               GestureDetector(
                                 onTap: () async{
@@ -1203,7 +1101,7 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
                                 child: Container(
                                   alignment: Alignment.center,
                                   width: size.width * 0.3,
-                                  height: size.height * 0.05,
+                                  height: size.height * 0.04,
                                   margin: EdgeInsets.only(bottom: 20, top: 20),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4),
@@ -1403,8 +1301,8 @@ class _MockExamQuestionState extends State<MockExamQuestion> with TickerProvider
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
-                                  width: examController.ontap_answer[quecounter]==true?size.width*0.3:size.width * 0.6,
-                                  height: size.height * 0.05,
+                                  width: examController.ontap_answer[quecounter]==true?size.width*0.2:size.width * 0.6,
+                                  height: size.height * 0.04,
                                   margin: EdgeInsets.only(bottom: 20, top: 20),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4),

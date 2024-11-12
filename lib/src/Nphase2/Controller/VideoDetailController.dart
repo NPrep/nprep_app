@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' hide log;  // Hide the log function from dart:math
 
 // import 'package:chewie/chewie.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:chewie/chewie.dart';
+import 'package:uuid/uuid.dart'; // Import the uuid package
 // import 'package:better_player/better_player.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -88,6 +90,7 @@ var videoVisable = false.obs;
   var VideoAvailableloader = false.obs;
   var VideoLoadingBeforeloader = false.obs;
   var Videoplayloader = false.obs;
+  var Videopdfloader = false.obs;
   var VideoDetailCatid = 0.obs;
   var VideoDetailStatusCode = 0.obs;
   var VideoDetailErrorMSg = "".obs;
@@ -230,7 +233,7 @@ var videoVisable = false.obs;
   }
 
   // Method to show labels based on current playback position
-  void _showLabels(time) {
+  void _showLabels() {
     // Duration currentPosition = event.parameters['duration'];
     Duration currentPosition;
     if(Videoplayloader.value==true){
@@ -280,7 +283,7 @@ var videoVisable = false.obs;
     if (currentPosition >= startTime && currentPosition < endTime) {
       // Display label
 
-      _showLabels(time);
+      _showLabels();
       // update();
       return true;
 
@@ -325,6 +328,12 @@ var videoVisable = false.obs;
             showControls: false,
             showControlsOnInitialize: false
         );
+
+        betterPlayerController_videoplayer.addListener(() {
+          // This method will be called every time the video position changes
+          _showLabels(); // Update labels based on current playback position
+        });
+
         Videoplayloader(true);
         VideoLoadingBeforeloader(false);
         VideoAvailableloader(false);
@@ -345,6 +354,7 @@ var videoVisable = false.obs;
     var temp = await sprefs.getBool("is_internet");
     if(temp){
       VideoDetailloader(true);
+      Videopdfloader(true);
 
       Map<String, String> queryParams = {
         "category_id": VideoDetailCatid.value.toString(),
@@ -389,6 +399,9 @@ var videoVisable = false.obs;
 
 
                 // pages= int.parse(controllerpdfview.getPageCount().toString());
+
+                Videopdfloader(false);
+                refresh();
                 update();
               });
             }
@@ -448,21 +461,28 @@ var videoVisable = false.obs;
   }
 
 
+  String generateRandomString(int length) {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    Random random = Random();
+    return List.generate(length, (index) => characters[random.nextInt(characters.length)]).join();
+  }
+
 
   Future<File> createFileOfPdfUrl(String url) async {
-    print("Start download file from internet!");
+    print("Start download file from internet!"+url);
     try {
       // "https://berlin2017.droidcon.cod.newthinking.net/sites/global.droidcon.cod.newthinking.net/files/media/documents/Flutter%20-%2060FPS%20UI%20of%20the%20future%20%20-%20DroidconDE%2017.pdf";
       // final url = "https://pdfkit.org/docs/guide.pdf";
       // final url = "http://www.pdf995.com/samples/pdf.pdf";
-      final filename = url.substring(url.lastIndexOf("/") + 1);
+      final filename = '${generateRandomString(12)}.pdf';
+      var uuid = Uuid();
       var dir;
       if(Platform.isAndroid){
         dir = await getApplicationDocumentsDirectory();
       }else{
         dir = await getLibraryDirectory();
       }
-      log("path> ${dir.path}/ $filename");
+      log("path> ${dir.path}/$filename");
       File file = File("${dir.path}/$filename");
       if (await file.exists()) {
         update();

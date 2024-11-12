@@ -84,7 +84,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     getdata();
     getvideoFlag();
 
-
     tabController = TabController(length: 3, vsync: this);
     log('pages==>'+videoDetailcontroller.pages.toString());
   }
@@ -1304,7 +1303,9 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
 
 
                                     /// Video PDF
-                                    videoDetailcontroller.VideoDetaildata[0]
+                                    videoDetailcontroller.Videopdfloader.value ? Center(
+                                      child: CircularProgressIndicator(),
+                                    ) : videoDetailcontroller.VideoDetaildata[0]
                                     ['pdf_attachment'] ==
                                         null
                                         ? Container(

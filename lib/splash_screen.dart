@@ -51,22 +51,36 @@ class SpalshScreenState extends State<SpalshScreen> {
   }
 
   void toLogin() async {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
-      statusBarColor: primarysplash, // status bar color
-    ));
-    await settingController.getdata();
-    log("App_version_server ${settingController.App_version_server}");
-    if (double.parse(settingController.App_version_server) > (Platform.isAndroid?apiUrls().app_version:apiUrls().ios_app_version)) {
-      print("force update here 1");
-      var body = {
-        "forceupdate": settingController.Force_update,
-        "applogo":  settingController.settingData['data']['general_settings']['logo'].toString(),
-        "appname":  settingController.settingData['data']['general_settings']['application_name'].toString(),
-        "appurl": settingController.App_app_url_server.toString() ,
-      };
-      print("force update here 1 Check>> "+body.toString());
-      Get.dialog(
+
+    print("force update here 3");
+    Timer(Duration(seconds: 3), () async {
+      var sharedPref = await SharedPreferences.getInstance();
+      var isLoggedIn = sharedPref.getBool("islogin");
+
+      if (isLoggedIn != null && isLoggedIn) {
+        Get.to(BottomBar());
+      } else {
+        print("force update here 4");
+        Get.to(LoginPage());
+      }
+    });
+    try{
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
+        statusBarColor: primarysplash, // status bar color
+      ));
+      await settingController.getdata();
+      log("App_version_server ${settingController.App_version_server}");
+      if (double.parse(settingController.App_version_server) > (Platform.isAndroid?apiUrls().app_version:apiUrls().ios_app_version)) {
+        print("force update here 1");
+        var body = {
+          "forceupdate": settingController.Force_update,
+          "applogo":  settingController.settingData['data']['general_settings']['logo'].toString(),
+          "appname":  settingController.settingData['data']['general_settings']['application_name'].toString(),
+          "appurl": settingController.App_app_url_server.toString() ,
+        };
+        print("force update here 1 Check>> "+body.toString());
+        Get.dialog(
 
           ForceUpdatePage(
             forceupdate: settingController.Force_update,
@@ -75,32 +89,23 @@ class SpalshScreenState extends State<SpalshScreen> {
             appname:  settingController.settingData['data']['general_settings']['application_name'].toString(),
             appurl: settingController.App_app_url_server.toString() ,
           ),
-      );
-    }
-    else if (settingController.Maitaince ==apiUrls(). App_Maintaince_updateNo) {
-      print("force update here 2");
-      Get.to(MaitainceScreen(
-        Maitaince_text:settingController.Maitaince_text,
-        applogo:  settingController.settingData['data']['general_settings']['logo'].toString(),
-        appname:  settingController.settingData['data']['general_settings']['application_name'].toString(),
-        appurl: settingController.settingData['data']['general_settings']['playstore_link'].toString() ,
-      ));
-    }
-    else{
-      print("force update here 3");
-      Timer(Duration(seconds: 3), () async {
-        var sharedPref = await SharedPreferences.getInstance();
-        var isLoggedIn = sharedPref.getBool("islogin");
+        );
+      }
+      else if (settingController.Maitaince ==apiUrls(). App_Maintaince_updateNo) {
+        print("force update here 2");
+        Get.to(MaitainceScreen(
+          Maitaince_text:settingController.Maitaince_text,
+          applogo:  settingController.settingData['data']['general_settings']['logo'].toString(),
+          appname:  settingController.settingData['data']['general_settings']['application_name'].toString(),
+          appurl: settingController.settingData['data']['general_settings']['playstore_link'].toString() ,
+        ));
+      }
+      // else{
 
-        if (isLoggedIn != null && isLoggedIn) {
-          Get.to(BottomBar());
-        } else {
-          print("force update here 4");
-          Get.to(LoginPage());
-        }
-      });
+      // }
+    }catch(e){
+      log(e);
     }
-
   }
 
   @override

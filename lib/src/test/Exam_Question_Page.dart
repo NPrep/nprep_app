@@ -701,7 +701,7 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                                         onTap: () async {
                                           examController.MenuQuestionList[quecounter]=examController.AttempSeenquestion;
                                           examController.callindex(index,indexs);
-                                          examController.UpdateExamAnswerData((quecounter),optionText['option_id']);
+                                          examController.UpdateExamAnswerData((quecounter),optionText['option_id'],1);
                                           if(examController.get_que_list.length>quecounter){
                                             selectedIndex = indexs;
                                             print("if index  ....."+selectedIndex.toString());
@@ -1118,6 +1118,36 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                             SizedBox(
                               width: 5,
                             ),
+                            examController.ontap_answer[quecounter]==false?Container():GestureDetector(
+                              onTap: () async{
+                                setState(() {
+                                  selectedIndex = null; // Reset the selected index
+                                });
+
+                                examController.ontap_answer[quecounter] = false;
+                                // Call the update function to reflect no answer selection
+                                examController.UpdateExamAnswerData((quecounter),'',0);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: size.width * 0.2,
+                                height: size.height * 0.04,
+                                margin: EdgeInsets.only(bottom: 20, top: 20),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: primary),
+                                child: Text(
+                                  "clear" ,
+                                  style: TextStyle(
+                                    fontSize:examController.dailysection==true?13: 19,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Poppins-Regular',
+                                    color: white,
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             examController.ontap_answer[quecounter]==true?  GestureDetector(
                               onTap: () async{
                                 print("qr: "+quecounter.toString());
@@ -1140,7 +1170,7 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                               child: Container(
                                 alignment: Alignment.center,
                                 width: size.width * 0.3,
-                                height: size.height * 0.05,
+                                height: size.height * 0.04,
                                 margin: EdgeInsets.only(bottom: 20, top: 20),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(4),
@@ -1161,7 +1191,6 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                             ):Container(),
                             GestureDetector(
                               onTap: () async{
-
                                 if(examController.get_que_list.length==(quecounter+1)){
                                   var  examansUrl = apiUrls().Copy_exam_ans_attempt_api+id.toString();
                                   var examBody = jsonEncode({
@@ -1177,6 +1206,7 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                                               pageId:2)));
                                 }
                                 else{
+                                  print("hello2");
                                   quecounter = quecounter + 1;
                                   Question_controller.jumpToPage(quecounter);
                                   setState(()  {
@@ -1188,7 +1218,7 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
                               child: Container(
                                 alignment: Alignment.center,
                                 width: examController.ontap_answer[quecounter]==true?size.width*0.3:size.width * 0.6,
-                                height: size.height * 0.05,
+                                height: size.height * 0.04,
                                 margin: EdgeInsets.only(bottom: 20, top: 20),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(4),
