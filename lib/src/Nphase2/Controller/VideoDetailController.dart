@@ -607,7 +607,7 @@ var videoVisable = false.obs;
     if(Platform.isAndroid){
       dir = await getApplicationDocumentsDirectory();
     }else{
-      dir = await getLibraryDirectory();
+      dir = await getApplicationSupportDirectory();  // Ensure it's writable on iOS
     }
 
     file = File('${dir.path}/$filename');
@@ -643,7 +643,7 @@ var videoVisable = false.obs;
           retries: 10,
           taskId: videoid.toString(),
           allowPause: true,
-          baseDirectory: BaseDirectory.applicationDocuments,
+          baseDirectory: Platform.isIOS ? BaseDirectory.applicationSupport : BaseDirectory.applicationDocuments,
           metaData: '${thumb_image}/-/${name}');
       progressStatus(true);
       log("downloadButtonPressed task : $task");
