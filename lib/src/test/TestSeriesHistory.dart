@@ -310,7 +310,7 @@ class _TestSeriesHistoryState extends State<TestSeriesHistory> {
                                     widget.checkstatus != 3 ? 'SOLVE' : 'REVIEW',
                                     style: TextStyle(
                                         overflow: TextOverflow.ellipsis,
-                                        fontSize: widget.checkstatus == 3 ? 22 : 22,
+                                        fontSize: 19,
                                         fontWeight: FontWeight.w700,
                                         fontFamily: 'PublicSans',
                                         color: white,letterSpacing: 1),
