@@ -224,29 +224,29 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
             });
 
       },
-      child: SafeArea(
+      child: Scaffold(
+        backgroundColor: examBgColor,
 
-        child: Scaffold(
-          backgroundColor: examBgColor,
+        body: GetBuilder<ExamController>(
+            builder: (examController) {
 
-          body: GetBuilder<ExamController>(
-              builder: (examController) {
+              if(examController.getQueLoader.value){
+                return Center(child: CircularProgressIndicator());
+              }
+              return Wrap(
+                children: [
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 40),
+                  //   alignment: Alignment.center,
+                  //   // child: Image.asset(
+                  //   //   logo,
+                  //   //   scale: 4.5,
+                  //   // ),
+                  // ),
 
-                if(examController.getQueLoader.value){
-                  return Center(child: CircularProgressIndicator());
-                }
-                return Wrap(
-                  children: [
-                    // Container(
-                    //   margin: EdgeInsets.only(top: 40),
-                    //   alignment: Alignment.center,
-                    //   // child: Image.asset(
-                    //   //   logo,
-                    //   //   scale: 4.5,
-                    //   // ),
-                    // ),
-
-                    Container(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Container(
                       // margin: EdgeInsets.only(top: 30),
                       child: SizedBox(
                         height: 50,
@@ -483,769 +483,769 @@ class _ExamQuestionState extends State<ExamQuestion> with TickerProviderStateMix
 
                       ),
                     ),
+                  ),
 
-                    LinearPercentIndicator(
-                      width: MediaQuery.of(context).size.width,
-                      percent: 1.0,
-                      lineHeight: 4.0,
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Colors.grey,
-                      progressColor: primary,
-                      animation: true,
-                      animationDuration: timeInMilisecondes,
-                      restartAnimation: false,
-                      isRTL: true,
-                      addAutomaticKeepAlive: true,
-                      // onAnimationEnd: timeComplete ,
+                  LinearPercentIndicator(
+                    width: MediaQuery.of(context).size.width,
+                    percent: 1.0,
+                    lineHeight: 4.0,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Colors.grey,
+                    progressColor: primary,
+                    animation: true,
+                    animationDuration: timeInMilisecondes,
+                    restartAnimation: false,
+                    isRTL: true,
+                    addAutomaticKeepAlive: true,
+                    // onAnimationEnd: timeComplete ,
+                  ),
+
+                  Container(
+                    // color: Colors.green,
+                    alignment: Alignment.center,
+                    child: Padding(
+
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(" ${quecounter+1} of ${examController.get_que_list.length} ",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: primary,
+                              fontWeight: FontWeight.w400)),
                     ),
+                  ),
+                  examController.get_que_list.length==0?Center(child: Text("No Question Found")): SingleChildScrollView(
+                    child: Container(
+                      // color: Colors.red,
+                      height:  size.height - 250,
+                      child: PageView.builder(
+                        controller:Question_controller,
+                        key: ValueKey(id),
 
-                    Container(
-                      // color: Colors.green,
-                      alignment: Alignment.center,
-                      child: Padding(
+                        // padding: EdgeInsets.all(2.0),
 
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text(" ${quecounter+1} of ${examController.get_que_list.length} ",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: primary,
-                                fontWeight: FontWeight.w400)),
-                      ),
-                    ),
-                    examController.get_que_list.length==0?Center(child: Text("No Question Found")): SingleChildScrollView(
-                      child: Container(
-                        // color: Colors.red,
-                        height:  size.height - 250,
-                        child: PageView.builder(
-                          controller:Question_controller,
-                          key: ValueKey(id),
+                        itemCount: examController.get_que_list.length,
+                        scrollDirection: Axis.horizontal,
+                        onPageChanged: (v){
+                          log("onPageChanged >> NO Mock"+v.toString());
 
-                          // padding: EdgeInsets.all(2.0),
+                          quecounter = v;
+                          setState(() {
+                            log("MenuQuestionList onPageChanged before>> "+ examController.MenuQuestionList[quecounter].toString());
 
-                          itemCount: examController.get_que_list.length,
-                          scrollDirection: Axis.horizontal,
-                          onPageChanged: (v){
-                            log("onPageChanged >> NO Mock"+v.toString());
+                            if(examController.MenuQuestionList[quecounter]==examController.NotSeenquestion){
+                              examController.MenuQuestionList[quecounter] = examController.Seenquestion;
+                            }
+                            log("MenuQuestionList onPageChanged after>> "+ examController.MenuQuestionList[quecounter].toString());
+                          });
+                        },
+                        // shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          var get_data = examController.get_que_list[index];
+                          return SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
 
-                            quecounter = v;
-                            setState(() {
-                              log("MenuQuestionList onPageChanged before>> "+ examController.MenuQuestionList[quecounter].toString());
+                              children: [
 
-                              if(examController.MenuQuestionList[quecounter]==examController.NotSeenquestion){
-                                examController.MenuQuestionList[quecounter] = examController.Seenquestion;
-                              }
-                              log("MenuQuestionList onPageChanged after>> "+ examController.MenuQuestionList[quecounter].toString());
-                            });
-                          },
-                          // shrinkWrap: true,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            var get_data = examController.get_que_list[index];
-                            return SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-
-                                children: [
-
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 10.0,right: 8),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Text("Q.${quecounter}) ",
-                                        //     style: TextStyle(
-                                        //         fontSize: 18,
-                                        //         color: primary,
-                                        //         fontWeight: FontWeight.w700)),
-                                        SizedBox(
-                                          width: 3,
-                                        ),
-                                        get_data['question'].toString()=="null"?Container():
-                                        Container(
-                                          // alignment: Alignment.centerLeft,
-                                          // color: primary,
-                                          width: MediaQuery.of(context).size.width - 80,
-                                          child: Text('${get_data['question'].toString()=="null"?""
-                                              :get_data['question'].toString()}',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontFamily: 'PublicSans',
-                                                  color: black54,
-                                                  letterSpacing: 0.5
-                                              )),
-                                        ),
-                                      ],
-                                    ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0,right: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Text("Q.${quecounter}) ",
+                                      //     style: TextStyle(
+                                      //         fontSize: 18,
+                                      //         color: primary,
+                                      //         fontWeight: FontWeight.w700)),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      get_data['question'].toString()=="null"?Container():
+                                      Container(
+                                        // alignment: Alignment.centerLeft,
+                                        // color: primary,
+                                        width: MediaQuery.of(context).size.width - 80,
+                                        child: Text('${get_data['question'].toString()=="null"?""
+                                            :get_data['question'].toString()}',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: 'PublicSans',
+                                                color: black54,
+                                                letterSpacing: 0.5
+                                            )),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 10),
-                                  get_data['attachment'].toString() == "null"
-                                      ? Container()
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (BuildContext
-                                        context) {
-                                          return WillPopScope(
-                                              onWillPop:
-                                                  () async =>
-                                              true,
-                                              child: Stack(
-                                                clipBehavior:
-                                                Clip.none,
-                                                children: [
-                                                  AlertDialog(
-
-                                                    content:
-                                                    new SingleChildScrollView(
-                                                      child:
-                                                      Container(
-                                                        height:
-                                                        250,
-                                                        width:
-                                                        250,
-                                                        child:
-                                                        InteractiveViewer(
-                                                          child: Image.network(
-                                                            "${get_data['attachment'].toString()}",
-
-                                                          ),
-                                                          maxScale: 5.0,
-                                                        ),
-                                                        // PhotoView(
-                                                        //   imageProvider:
-                                                        //   NetworkImage("${get_data['attachment'].toString()}"),
-                                                        // ),
-                                                      ),
-                                                    ),
-                                                    // actions: <Widget>[
-                                                    //   ElevatedButton(
-                                                    //     child: const Text(
-                                                    //       'Close',
-                                                    //     ),
-                                                    //     style: ElevatedButton.styleFrom(
-                                                    //       minimumSize: const Size(0, 45),
-                                                    //       primary: Colors.amber,
-                                                    //       onPrimary: const Color(0xFFFFFFFF),
-                                                    //       shape: RoundedRectangleBorder(
-                                                    //         borderRadius: BorderRadius.circular(8),
-                                                    //       ),
-                                                    //     ),
-                                                    //     onPressed: () {
-                                                    //       Get.back();
-                                                    //     },
-                                                    //   ),
-                                                    // ],
-                                                  ),
-                                                  Positioned(
-                                                      top: 199,
-                                                      right: 50,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-
-                                                            Get.back();
-                                                          },
-                                                          child: Icon(
-                                                            Icons
-                                                                .cancel,
-                                                            color:
-                                                            primary,
-                                                          )))
-                                                ],
-                                              ));
-                                        },
-                                      );
-
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 10,left: 10,right: 10),
-                                      padding: EdgeInsets.all( 5),
-                                      // color: primary,
-                                      alignment: Alignment.topCenter,
-                                      width: MediaQuery.of(context).size.width,
-
-
-                                      height: 250,
-                                      child: Image.network(get_data['attachment'].toString(),
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            color: Colors.grey.shade300,
-                                            alignment: Alignment.center,
-                                            child: Icon(Icons.broken_image_outlined,size: 50,
-                                              color: Colors.grey.shade500,),
-                                          );
-                                        },),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  ListView.builder(
-                                    itemCount: get_data['examQuestionObjects'].length,
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.all(2.0),
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemBuilder:(BuildContext context, int indexs) {
-                                      final optionIndex = String.fromCharCode(97 + indexs);
-                                      final optionText =get_data['examQuestionObjects'][indexs];
-                                      // bool isSelectedOption = isSelected[indexs];
-                                      // print("optionText...."+index.toString());
-                                      // log("optionText...."+examController.ontap_answer[index].toString());
-
-                                      return GestureDetector(
-                                        onTap: () async {
-                                          examController.MenuQuestionList[quecounter]=examController.AttempSeenquestion;
-                                          examController.callindex(index,indexs);
-                                          examController.UpdateExamAnswerData((quecounter),optionText['option_id'],1);
-                                          if(examController.get_que_list.length>quecounter){
-                                            selectedIndex = indexs;
-                                            print("if index  ....."+selectedIndex.toString());
-
-                                            print("selected index ....."+selectedIndex.toString());
-
-                                            setState((){});
-                                          }
-                                          else{
-                                            selectedIndex = indexs;
-                                            print("else index  ....."+selectedIndex.toString());
-                                            setState(() {
-
-                                            });
-                                          }
-
-
-                                        },
-                                        child: Card(
-                                          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10)),
-                                          elevation: 3,
-                                          child: Container(
-                                            // margin: EdgeInsets.symmetric(vertical: 2),
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                                color:get_data['is_attempt']==1?get_data['your_answer'].toString() == optionText['option_id'].toString()?
-                                                Colors.blue.shade100:white:white,
-                                                borderRadius:
-                                                BorderRadius.circular(8),
-                                                border: Border.fromBorderSide(
-                                                    BorderSide(color: Colors.grey.shade300))
-                                            ),
-
-                                            child: Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                ),
+                                SizedBox(height: 10),
+                                get_data['attachment'].toString() == "null"
+                                    ? Container()
+                                    : GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext
+                                      context) {
+                                        return WillPopScope(
+                                            onWillPop:
+                                                () async =>
+                                            true,
+                                            child: Stack(
+                                              clipBehavior:
+                                              Clip.none,
                                               children: [
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      color:primary,
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                          30)),
-                                                  child: Padding(
-                                                    padding:
-                                                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                                    child: Text(
-                                                      optionIndex.toUpperCase(),
-                                                      style: TextStyle(
-                                                        fontSize: 19,
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                        fontFamily:
-                                                        'Poppins-Regular',
-                                                        //  color red krna h agar answer galat ho
-                                                        color: white,
+                                                AlertDialog(
+
+                                                  content:
+                                                  new SingleChildScrollView(
+                                                    child:
+                                                    Container(
+                                                      height:
+                                                      250,
+                                                      width:
+                                                      250,
+                                                      child:
+                                                      InteractiveViewer(
+                                                        child: Image.network(
+                                                          "${get_data['attachment'].toString()}",
+
+                                                        ),
+                                                        maxScale: 5.0,
                                                       ),
+                                                      // PhotoView(
+                                                      //   imageProvider:
+                                                      //   NetworkImage("${get_data['attachment'].toString()}"),
+                                                      // ),
+                                                    ),
+                                                  ),
+                                                  // actions: <Widget>[
+                                                  //   ElevatedButton(
+                                                  //     child: const Text(
+                                                  //       'Close',
+                                                  //     ),
+                                                  //     style: ElevatedButton.styleFrom(
+                                                  //       minimumSize: const Size(0, 45),
+                                                  //       primary: Colors.amber,
+                                                  //       onPrimary: const Color(0xFFFFFFFF),
+                                                  //       shape: RoundedRectangleBorder(
+                                                  //         borderRadius: BorderRadius.circular(8),
+                                                  //       ),
+                                                  //     ),
+                                                  //     onPressed: () {
+                                                  //       Get.back();
+                                                  //     },
+                                                  //   ),
+                                                  // ],
+                                                ),
+                                                Positioned(
+                                                    top: 199,
+                                                    right: 50,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+
+                                                          Get.back();
+                                                        },
+                                                        child: Icon(
+                                                          Icons
+                                                              .cancel,
+                                                          color:
+                                                          primary,
+                                                        )))
+                                              ],
+                                            ));
+                                      },
+                                    );
+
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 10,left: 10,right: 10),
+                                    padding: EdgeInsets.all( 5),
+                                    // color: primary,
+                                    alignment: Alignment.topCenter,
+                                    width: MediaQuery.of(context).size.width,
+
+
+                                    height: 250,
+                                    child: Image.network(get_data['attachment'].toString(),
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          color: Colors.grey.shade300,
+                                          alignment: Alignment.center,
+                                          child: Icon(Icons.broken_image_outlined,size: 50,
+                                            color: Colors.grey.shade500,),
+                                        );
+                                      },),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                ListView.builder(
+                                  itemCount: get_data['examQuestionObjects'].length,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.all(2.0),
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder:(BuildContext context, int indexs) {
+                                    final optionIndex = String.fromCharCode(97 + indexs);
+                                    final optionText =get_data['examQuestionObjects'][indexs];
+                                    // bool isSelectedOption = isSelected[indexs];
+                                    // print("optionText...."+index.toString());
+                                    // log("optionText...."+examController.ontap_answer[index].toString());
+
+                                    return GestureDetector(
+                                      onTap: () async {
+                                        examController.MenuQuestionList[quecounter]=examController.AttempSeenquestion;
+                                        examController.callindex(index,indexs);
+                                        examController.UpdateExamAnswerData((quecounter),optionText['option_id'],1);
+                                        if(examController.get_que_list.length>quecounter){
+                                          selectedIndex = indexs;
+                                          print("if index  ....."+selectedIndex.toString());
+
+                                          print("selected index ....."+selectedIndex.toString());
+
+                                          setState((){});
+                                        }
+                                        else{
+                                          selectedIndex = indexs;
+                                          print("else index  ....."+selectedIndex.toString());
+                                          setState(() {
+
+                                          });
+                                        }
+
+
+                                      },
+                                      child: Card(
+                                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10)),
+                                        elevation: 3,
+                                        child: Container(
+                                          // margin: EdgeInsets.symmetric(vertical: 2),
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              color:get_data['is_attempt']==1?get_data['your_answer'].toString() == optionText['option_id'].toString()?
+                                              Colors.blue.shade100:white:white,
+                                              borderRadius:
+                                              BorderRadius.circular(8),
+                                              border: Border.fromBorderSide(
+                                                  BorderSide(color: Colors.grey.shade300))
+                                          ),
+
+                                          child: Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    color:primary,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        30)),
+                                                child: Padding(
+                                                  padding:
+                                                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                  child: Text(
+                                                    optionIndex.toUpperCase(),
+                                                    style: TextStyle(
+                                                      fontSize: 19,
+                                                      fontWeight:
+                                                      FontWeight.w400,
+                                                      fontFamily:
+                                                      'Poppins-Regular',
+                                                      //  color red krna h agar answer galat ho
+                                                      color: white,
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(width: 8),
+                                              ),
+                                              SizedBox(width: 8),
 
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
 
-                                                    optionText['objective'].toString()=="null"?Container():
-                                                    Container(
-                                                      width: MediaQuery.of(context).size.width-120,
-                                                      child: Text(
-                                                        "${optionText['objective'].toString()=="null"?"":
-                                                        optionText['objective'].toString()}",
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight: FontWeight.w600,
-                                                            fontFamily: 'PublicSans',
-                                                            color: black54,
-                                                            letterSpacing: 0.5
-                                                        ),
+                                                  optionText['objective'].toString()=="null"?Container():
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width-120,
+                                                    child: Text(
+                                                      "${optionText['objective'].toString()=="null"?"":
+                                                      optionText['objective'].toString()}",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.w600,
+                                                          fontFamily: 'PublicSans',
+                                                          color: black54,
+                                                          letterSpacing: 0.5
                                                       ),
                                                     ),
+                                                  ),
 
-                                                    optionText['attachment'].toString()== "null"?Container()
-                                                        : GestureDetector(
-                                                      onTap: () {
-                                                        showDialog(
-                                                          barrierDismissible: false,
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                          context) {
-                                                            return WillPopScope(
-                                                                onWillPop:
-                                                                    () async =>
-                                                                true,
-                                                                child: Stack(
-                                                                  clipBehavior:
-                                                                  Clip.none,
-                                                                  children: [
-                                                                    AlertDialog(
+                                                  optionText['attachment'].toString()== "null"?Container()
+                                                      : GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        barrierDismissible: false,
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                        context) {
+                                                          return WillPopScope(
+                                                              onWillPop:
+                                                                  () async =>
+                                                              true,
+                                                              child: Stack(
+                                                                clipBehavior:
+                                                                Clip.none,
+                                                                children: [
+                                                                  AlertDialog(
 
-                                                                      content:
-                                                                      new SingleChildScrollView(
+                                                                    content:
+                                                                    new SingleChildScrollView(
+                                                                      child:
+                                                                      Container(
+                                                                        height:
+                                                                        250,
+                                                                        width:
+                                                                        250,
                                                                         child:
-                                                                        Container(
-                                                                          height:
-                                                                          250,
-                                                                          width:
-                                                                          250,
-                                                                          child:
-                                                                          InteractiveViewer(
-                                                                            child: Image.network(
-                                                                              "${optionText['attachment'].toString()}",
+                                                                        InteractiveViewer(
+                                                                          child: Image.network(
+                                                                            "${optionText['attachment'].toString()}",
 
-                                                                            ),
-                                                                            maxScale: 5.0,
                                                                           ),
-                                                                          // PhotoView(
-                                                                          //   imageProvider:
-                                                                          //   NetworkImage("${optionText['attachment'].toString()}"),
-                                                                          // ),
+                                                                          maxScale: 5.0,
                                                                         ),
+                                                                        // PhotoView(
+                                                                        //   imageProvider:
+                                                                        //   NetworkImage("${optionText['attachment'].toString()}"),
+                                                                        // ),
                                                                       ),
-                                                                      // actions: <Widget>[
-                                                                      //   ElevatedButton(
-                                                                      //     child: const Text(
-                                                                      //       'Close',
-                                                                      //     ),
-                                                                      //     style: ElevatedButton.styleFrom(
-                                                                      //       minimumSize: const Size(0, 45),
-                                                                      //       primary: Colors.amber,
-                                                                      //       onPrimary: const Color(0xFFFFFFFF),
-                                                                      //       shape: RoundedRectangleBorder(
-                                                                      //         borderRadius: BorderRadius.circular(8),
-                                                                      //       ),
-                                                                      //     ),
-                                                                      //     onPressed: () {
-                                                                      //       Get.back();
-                                                                      //     },
-                                                                      //   ),
-                                                                      // ],
                                                                     ),
-                                                                    Positioned(
-                                                                        top: 199,
-                                                                        right: 50,
-                                                                        child: GestureDetector(
-                                                                            onTap: () {
+                                                                    // actions: <Widget>[
+                                                                    //   ElevatedButton(
+                                                                    //     child: const Text(
+                                                                    //       'Close',
+                                                                    //     ),
+                                                                    //     style: ElevatedButton.styleFrom(
+                                                                    //       minimumSize: const Size(0, 45),
+                                                                    //       primary: Colors.amber,
+                                                                    //       onPrimary: const Color(0xFFFFFFFF),
+                                                                    //       shape: RoundedRectangleBorder(
+                                                                    //         borderRadius: BorderRadius.circular(8),
+                                                                    //       ),
+                                                                    //     ),
+                                                                    //     onPressed: () {
+                                                                    //       Get.back();
+                                                                    //     },
+                                                                    //   ),
+                                                                    // ],
+                                                                  ),
+                                                                  Positioned(
+                                                                      top: 199,
+                                                                      right: 50,
+                                                                      child: GestureDetector(
+                                                                          onTap: () {
 
-                                                                              Get.back();
-                                                                            },
-                                                                            child: Icon(
-                                                                              Icons
-                                                                                  .cancel,
-                                                                              color:
-                                                                              primary,
-                                                                            )))
-                                                                  ],
-                                                                ));
-                                                          },
-                                                        );
+                                                                            Get.back();
+                                                                          },
+                                                                          child: Icon(
+                                                                            Icons
+                                                                                .cancel,
+                                                                            color:
+                                                                            primary,
+                                                                          )))
+                                                                ],
+                                                              ));
+                                                        },
+                                                      );
 
-                                                      },
-                                                      child: Container(
-                                                        // color: primary,
-                                                        margin: EdgeInsets.only(top: 10),
-                                                        alignment: Alignment.topLeft,
-                                                        width: MediaQuery.of(context).size.width*0.3,
-                                                        height: MediaQuery.of(context).size.height*0.1,
-                                                        child: Image.network(optionText['attachment'].toString(),
-                                                          errorBuilder: (context, error, stackTrace) {
-                                                            return Container(
-                                                              color: Colors.grey.shade300,
-                                                              alignment: Alignment.center,
-                                                              child: Icon(Icons.broken_image_outlined,size: 50,
-                                                                color: Colors.grey.shade500,),
-                                                            );
-                                                          },),
-                                                      ),
+                                                    },
+                                                    child: Container(
+                                                      // color: primary,
+                                                      margin: EdgeInsets.only(top: 10),
+                                                      alignment: Alignment.topLeft,
+                                                      width: MediaQuery.of(context).size.width*0.3,
+                                                      height: MediaQuery.of(context).size.height*0.1,
+                                                      child: Image.network(optionText['attachment'].toString(),
+                                                        errorBuilder: (context, error, stackTrace) {
+                                                          return Container(
+                                                            color: Colors.grey.shade300,
+                                                            alignment: Alignment.center,
+                                                            child: Icon(Icons.broken_image_outlined,size: 50,
+                                                              color: Colors.grey.shade500,),
+                                                          );
+                                                        },),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
+                                              ),
 
-                                              ],
-                                            ),
+                                            ],
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: Divider(
-                                      color: Colors.grey[350],
-                                      thickness: 1.5,
-                                    ),
-                                  ),
-
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: [
-                                  //     examController.ontap_answer[index]==true?  GestureDetector(
-                                  //       onTap: () async{
-                                  //         print("qr: "+quecounter.toString());
-                                  //         // print("qr: "+(quecounter>1).toString());
-                                  //         if((quecounter>1)==true){
-                                  //           quecounter = quecounter - 1;
-                                  //         // log("qr: "+examController.get_que_list[quecounter]['your_answer'].toString());
-                                  //           // examController.callagainindex(index);
-                                  //           setState(()  {
-                                  //           });
-                                  //         }
-                                  //         else{
-                                  //
-                                  //           toastMsg("No Previous Question Left", true);
-                                  //           /* toastMsg("No Question Left", true);*/
-                                  //         }
-                                  //
-                                  //
-                                  //       },
-                                  //       child: Container(
-                                  //         alignment: Alignment.center,
-                                  //         width: size.width * 0.3,
-                                  //         height: size.height * 0.05,
-                                  //         margin: EdgeInsets.only(bottom: 20, top: 20),
-                                  //         decoration: BoxDecoration(
-                                  //             borderRadius: BorderRadius.circular(4),
-                                  //             color: primary),
-                                  //         child: Text(
-                                  //           "Previous" ,
-                                  //           style: TextStyle(
-                                  //             fontSize: 19,
-                                  //             fontWeight: FontWeight.w500,
-                                  //             fontFamily: 'Poppins-Regular',
-                                  //             color: white,
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //     ):Container(),
-                                  //     examController.ontap_answer[index]==true? SizedBox(
-                                  //       width: 20,
-                                  //     ):Container(),
-                                  //     GestureDetector(
-                                  //       onTap: () async{
-                                  //         log("data>> index: "+index.toString());
-                                  //         log("data>> onlist: "+examController. ontap_answer[index].toString());
-                                  //         if(examController.ontap_answer[index]==true){
-                                  //           if(examController.get_que_list.length>quecounter){
-                                  //             quecounter = quecounter + 1;
-                                  //             examController.callagainindex(index);
-                                  //             setState(()  {
-                                  //             });
-                                  //           }else{
-                                  //
-                                  //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                  //             var examBody = {'question_id': qid.toString(), 'answer_id': ansid.toString(),};
-                                  //             print("examBody...."+examBody.toString());
-                                  //             await examController.ExamAnswerData(examansUrl, examBody);
-                                  //             setState((){});
-                                  //             Navigator.pushReplacement(context,
-                                  //                 MaterialPageRoute(
-                                  //                     builder: (context) => ExamReviewPage(exam_Ids:id,
-                                  //                         pageId:2)));
-                                  //             /* toastMsg("No Question Left", true);*/
-                                  //           }
-                                  //
-                                  //         }
-                                  //         else{
-                                  //           var qid =get_data['id'];
-                                  //           var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                  //           var examBody = {
-                                  //             'question_id': qid.toString(),
-                                  //           };
-                                  //           print("examBody skip...."+examBody.toString());
-                                  //           await examController.ExamAnswerData(examansUrl, examBody);
-                                  //
-                                  //           if (examController.get_que_list.length > quecounter) {
-                                  //             quecounter = quecounter + 1;
-                                  //             print("quecounter after update......"+quecounter.toString());
-                                  //             // examController.get_que_list[quecounter];
-                                  //
-                                  //             setState(()  {
-                                  //             });
-                                  //
-                                  //             // getQuestion(false);
-                                  //           } else {
-                                  //             var qid =get_data['id'];
-                                  //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
-                                  //             var examBody = {
-                                  //               'question_id': qid.toString(),
-                                  //             };
-                                  //             print("examansUrl...."+examansUrl.toString());
-                                  //             print("examBody...."+examBody.toString());
-                                  //             await examController.ExamAnswerData(examansUrl, examBody);
-                                  //             Navigator.pushReplacement(
-                                  //                 context,
-                                  //                 MaterialPageRoute(
-                                  //                     builder: (context) => ExamReviewPage(exam_Ids:id,
-                                  //                         pageId:2)));
-                                  //             // toastMsg("No Question Left", true);
-                                  //             // quecounter = quecounter - 1;
-                                  //             // examController.get_que_list[quecounter];
-                                  //             // Navigator.push(context,
-                                  //             //     MaterialPageRoute(builder: (context) => ReviewPage(skip:true)));
-                                  //           }
-                                  //
-                                  //         }
-                                  //
-                                  //
-                                  //       },
-                                  //       child: Container(
-                                  //         alignment: Alignment.center,
-                                  //         width: examController.ontap_answer[index]==true?size.width*0.3:size.width * 0.6,
-                                  //         height: size.height * 0.05,
-                                  //         margin: EdgeInsets.only(bottom: 20, top: 20),
-                                  //         decoration: BoxDecoration(
-                                  //             borderRadius: BorderRadius.circular(4),
-                                  //             color: primary),
-                                  //         child: Text(
-                                  //           examController. ontap_answer[index]==true?"Next":  "Skip",
-                                  //           style: TextStyle(
-                                  //             fontSize: 19,
-                                  //             fontWeight: FontWeight.w500,
-                                  //             fontFamily: 'Poppins-Regular',
-                                  //             color: white,
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //
-                                  //   ],
-                                  // ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    // GestureDetector(
-                    //   onTap: () async{
-                    //
-                    //
-                    //
-                    //
-                    //   },
-                    //   child: Container(
-                    //     alignment: Alignment.center,
-                    //     // width: size.width*0.5,
-                    //     height: size.height * 0.05,
-                    //     margin: EdgeInsets.only(bottom: 20, top: 20,left: 15),
-                    //     decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(4),
-                    //         color: primary),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text(
-                    //           "Mark for review",
-                    //           style: TextStyle(
-                    //             fontSize: 19,
-                    //             fontWeight: FontWeight.w500,
-                    //             fontFamily: 'Poppins-Regular',
-                    //             color: white,
-                    //           ),
-                    //         ),
-                    //         Icon(Icons.star,color: Colors.white,)
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 20),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0,right: 15.0),
-                        child: Row(
-                          mainAxisAlignment: examController.ontap_answer[quecounter]==true?MainAxisAlignment.spaceBetween:MainAxisAlignment.spaceAround,
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Tooltip(
-                              message: 'Mark Review',
-                              preferBelow: true,
-                              enableFeedback: true,
-
-                              child: GestureDetector(
-                                  onTap: (){
-                                    if(examController.MenuQuestionMarkReviewList[quecounter]==examController.MarkReviewSeenquestion){
-                                      examController.MenuQuestionMarkReviewList[quecounter] = examController.MarkReviewNotSeenquestion;
-                                      setState(() {
-
-                                      });
-                                    }
-                                    else{
-                                      examController.MenuQuestionMarkReviewList[quecounter] = examController.MarkReviewSeenquestion;
-                                      setState(() {
-
-                                      });
-                                    }
+                                      ),
+                                    );
                                   },
-                                  child: Icon(examController.MenuQuestionMarkReviewList[quecounter]==examController.MarkReviewSeenquestion?Icons.star:Icons.star_border_outlined,color:   primary,)),
-                            ),
-                            // GestureDetector(
-                            //     onTap: (){
-                            //
-                            //     },
-                            //     child: Icon(Icons.menu)),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            examController.ontap_answer[quecounter]==false?Container():GestureDetector(
-                              onTap: () async{
-                                setState(() {
-                                  selectedIndex = null; // Reset the selected index
-                                });
-
-                                examController.ontap_answer[quecounter] = false;
-                                // Call the update function to reflect no answer selection
-                                examController.UpdateExamAnswerData((quecounter),'',0);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: size.width * 0.2,
-                                height: size.height * 0.04,
-                                margin: EdgeInsets.only(bottom: 20, top: 20),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: primary),
-                                child: Text(
-                                  "clear" ,
-                                  style: TextStyle(
-                                    fontSize:examController.dailysection==true?13: 19,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Poppins-Regular',
-                                    color: white,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Divider(
+                                    color: Colors.grey[350],
+                                    thickness: 1.5,
                                   ),
                                 ),
-                              ),
+
+                                // Row(
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                //   children: [
+                                //     examController.ontap_answer[index]==true?  GestureDetector(
+                                //       onTap: () async{
+                                //         print("qr: "+quecounter.toString());
+                                //         // print("qr: "+(quecounter>1).toString());
+                                //         if((quecounter>1)==true){
+                                //           quecounter = quecounter - 1;
+                                //         // log("qr: "+examController.get_que_list[quecounter]['your_answer'].toString());
+                                //           // examController.callagainindex(index);
+                                //           setState(()  {
+                                //           });
+                                //         }
+                                //         else{
+                                //
+                                //           toastMsg("No Previous Question Left", true);
+                                //           /* toastMsg("No Question Left", true);*/
+                                //         }
+                                //
+                                //
+                                //       },
+                                //       child: Container(
+                                //         alignment: Alignment.center,
+                                //         width: size.width * 0.3,
+                                //         height: size.height * 0.05,
+                                //         margin: EdgeInsets.only(bottom: 20, top: 20),
+                                //         decoration: BoxDecoration(
+                                //             borderRadius: BorderRadius.circular(4),
+                                //             color: primary),
+                                //         child: Text(
+                                //           "Previous" ,
+                                //           style: TextStyle(
+                                //             fontSize: 19,
+                                //             fontWeight: FontWeight.w500,
+                                //             fontFamily: 'Poppins-Regular',
+                                //             color: white,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ):Container(),
+                                //     examController.ontap_answer[index]==true? SizedBox(
+                                //       width: 20,
+                                //     ):Container(),
+                                //     GestureDetector(
+                                //       onTap: () async{
+                                //         log("data>> index: "+index.toString());
+                                //         log("data>> onlist: "+examController. ontap_answer[index].toString());
+                                //         if(examController.ontap_answer[index]==true){
+                                //           if(examController.get_que_list.length>quecounter){
+                                //             quecounter = quecounter + 1;
+                                //             examController.callagainindex(index);
+                                //             setState(()  {
+                                //             });
+                                //           }else{
+                                //
+                                //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
+                                //             var examBody = {'question_id': qid.toString(), 'answer_id': ansid.toString(),};
+                                //             print("examBody...."+examBody.toString());
+                                //             await examController.ExamAnswerData(examansUrl, examBody);
+                                //             setState((){});
+                                //             Navigator.pushReplacement(context,
+                                //                 MaterialPageRoute(
+                                //                     builder: (context) => ExamReviewPage(exam_Ids:id,
+                                //                         pageId:2)));
+                                //             /* toastMsg("No Question Left", true);*/
+                                //           }
+                                //
+                                //         }
+                                //         else{
+                                //           var qid =get_data['id'];
+                                //           var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
+                                //           var examBody = {
+                                //             'question_id': qid.toString(),
+                                //           };
+                                //           print("examBody skip...."+examBody.toString());
+                                //           await examController.ExamAnswerData(examansUrl, examBody);
+                                //
+                                //           if (examController.get_que_list.length > quecounter) {
+                                //             quecounter = quecounter + 1;
+                                //             print("quecounter after update......"+quecounter.toString());
+                                //             // examController.get_que_list[quecounter];
+                                //
+                                //             setState(()  {
+                                //             });
+                                //
+                                //             // getQuestion(false);
+                                //           } else {
+                                //             var qid =get_data['id'];
+                                //             var  examansUrl = apiUrls().exam_ans_attempt_api+id.toString();
+                                //             var examBody = {
+                                //               'question_id': qid.toString(),
+                                //             };
+                                //             print("examansUrl...."+examansUrl.toString());
+                                //             print("examBody...."+examBody.toString());
+                                //             await examController.ExamAnswerData(examansUrl, examBody);
+                                //             Navigator.pushReplacement(
+                                //                 context,
+                                //                 MaterialPageRoute(
+                                //                     builder: (context) => ExamReviewPage(exam_Ids:id,
+                                //                         pageId:2)));
+                                //             // toastMsg("No Question Left", true);
+                                //             // quecounter = quecounter - 1;
+                                //             // examController.get_que_list[quecounter];
+                                //             // Navigator.push(context,
+                                //             //     MaterialPageRoute(builder: (context) => ReviewPage(skip:true)));
+                                //           }
+                                //
+                                //         }
+                                //
+                                //
+                                //       },
+                                //       child: Container(
+                                //         alignment: Alignment.center,
+                                //         width: examController.ontap_answer[index]==true?size.width*0.3:size.width * 0.6,
+                                //         height: size.height * 0.05,
+                                //         margin: EdgeInsets.only(bottom: 20, top: 20),
+                                //         decoration: BoxDecoration(
+                                //             borderRadius: BorderRadius.circular(4),
+                                //             color: primary),
+                                //         child: Text(
+                                //           examController. ontap_answer[index]==true?"Next":  "Skip",
+                                //           style: TextStyle(
+                                //             fontSize: 19,
+                                //             fontWeight: FontWeight.w500,
+                                //             fontFamily: 'Poppins-Regular',
+                                //             color: white,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //
+                                //   ],
+                                // ),
+                              ],
                             ),
-
-                            examController.ontap_answer[quecounter]==true?  GestureDetector(
-                              onTap: () async{
-                                print("qr: "+quecounter.toString());
-
-                                if((quecounter>0)==true){
-                                  quecounter = quecounter - 1;
-                                  Question_controller.jumpToPage(quecounter);
-                                  print("IF qr: "+quecounter.toString());
-                                  setState(()  {
-                                  });
-                                }
-                                else{
-
-                                  toastMsg("No Previous Question Left", true);
-                                  /* toastMsg("No Question Left", true);*/
-                                }
-
-
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: size.width * 0.3,
-                                height: size.height * 0.04,
-                                margin: EdgeInsets.only(bottom: 20, top: 20),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: primary),
-                                child: Text(
-                                  "Previous" ,
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Poppins-Regular',
-                                    color: white,
-                                  ),
-                                ),
-                              ),
-                            ):Container(),
-                            examController.ontap_answer[quecounter]==true?SizedBox(
-                              width: 15,
-                            ):Container(),
-                            GestureDetector(
-                              onTap: () async{
-                                if(examController.get_que_list.length==(quecounter+1)){
-                                  var  examansUrl = apiUrls().Copy_exam_ans_attempt_api+id.toString();
-                                  var examBody = jsonEncode({
-                                    'answer_data': examController.Copy_get_que_list
-                                  });
-                                  log("examBody skip...."+examBody.toString());
-                                  await examController.ExamAnswerData(examansUrl, examBody);
-
-                                  setState((){});
-                                  Navigator.pushReplacement(context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ExamReviewPage(exam_Ids:id,exam_Id: exam_id,today: false,
-                                              pageId:2)));
-                                }
-                                else{
-                                  print("hello2");
-                                  quecounter = quecounter + 1;
-                                  Question_controller.jumpToPage(quecounter);
-                                  setState(()  {
-                                  });
-                                }
-
-
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: examController.ontap_answer[quecounter]==true?size.width*0.3:size.width * 0.6,
-                                height: size.height * 0.04,
-                                margin: EdgeInsets.only(bottom: 20, top: 20),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: primary),
-                                child: Text(
-                                  examController.get_que_list.length==(quecounter+1)?"Submit Test": examController.ontap_answer[quecounter]==true?"Next":"Skip",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Poppins-Regular',
-                                    color: white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            )
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     ),
+                  ),
+                  // GestureDetector(
+                  //   onTap: () async{
+                  //
+                  //
+                  //
+                  //
+                  //   },
+                  //   child: Container(
+                  //     alignment: Alignment.center,
+                  //     // width: size.width*0.5,
+                  //     height: size.height * 0.05,
+                  //     margin: EdgeInsets.only(bottom: 20, top: 20,left: 15),
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(4),
+                  //         color: primary),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         Text(
+                  //           "Mark for review",
+                  //           style: TextStyle(
+                  //             fontSize: 19,
+                  //             fontWeight: FontWeight.w500,
+                  //             fontFamily: 'Poppins-Regular',
+                  //             color: white,
+                  //           ),
+                  //         ),
+                  //         Icon(Icons.star,color: Colors.white,)
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15.0,right: 15.0),
+                      child: Row(
+                        mainAxisAlignment: examController.ontap_answer[quecounter]==true?MainAxisAlignment.spaceBetween:MainAxisAlignment.spaceAround,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Tooltip(
+                            message: 'Mark Review',
+                            preferBelow: true,
+                            enableFeedback: true,
 
-                  ],
-                );
-              }
-          ),
+                            child: GestureDetector(
+                                onTap: (){
+                                  if(examController.MenuQuestionMarkReviewList[quecounter]==examController.MarkReviewSeenquestion){
+                                    examController.MenuQuestionMarkReviewList[quecounter] = examController.MarkReviewNotSeenquestion;
+                                    setState(() {
+
+                                    });
+                                  }
+                                  else{
+                                    examController.MenuQuestionMarkReviewList[quecounter] = examController.MarkReviewSeenquestion;
+                                    setState(() {
+
+                                    });
+                                  }
+                                },
+                                child: Icon(examController.MenuQuestionMarkReviewList[quecounter]==examController.MarkReviewSeenquestion?Icons.star:Icons.star_border_outlined,color:   primary,)),
+                          ),
+                          // GestureDetector(
+                          //     onTap: (){
+                          //
+                          //     },
+                          //     child: Icon(Icons.menu)),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          examController.ontap_answer[quecounter]==false?Container():GestureDetector(
+                            onTap: () async{
+                              setState(() {
+                                selectedIndex = null; // Reset the selected index
+                              });
+
+                              examController.ontap_answer[quecounter] = false;
+                              // Call the update function to reflect no answer selection
+                              examController.UpdateExamAnswerData((quecounter),'',0);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: size.width * 0.2,
+                              height: size.height * 0.04,
+                              margin: EdgeInsets.only(bottom: 20, top: 20),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: primary),
+                              child: Text(
+                                "clear" ,
+                                style: TextStyle(
+                                  fontSize:examController.dailysection==true?13: 19,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins-Regular',
+                                  color: white,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          examController.ontap_answer[quecounter]==true?  GestureDetector(
+                            onTap: () async{
+                              print("qr: "+quecounter.toString());
+
+                              if((quecounter>0)==true){
+                                quecounter = quecounter - 1;
+                                Question_controller.jumpToPage(quecounter);
+                                print("IF qr: "+quecounter.toString());
+                                setState(()  {
+                                });
+                              }
+                              else{
+
+                                toastMsg("No Previous Question Left", true);
+                                /* toastMsg("No Question Left", true);*/
+                              }
+
+
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: size.width * 0.3,
+                              height: size.height * 0.04,
+                              margin: EdgeInsets.only(bottom: 20, top: 20),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: primary),
+                              child: Text(
+                                "Previous" ,
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins-Regular',
+                                  color: white,
+                                ),
+                              ),
+                            ),
+                          ):Container(),
+                          examController.ontap_answer[quecounter]==true?SizedBox(
+                            width: 15,
+                          ):Container(),
+                          GestureDetector(
+                            onTap: () async{
+                              if(examController.get_que_list.length==(quecounter+1)){
+                                var  examansUrl = apiUrls().Copy_exam_ans_attempt_api+id.toString();
+                                var examBody = jsonEncode({
+                                  'answer_data': examController.Copy_get_que_list
+                                });
+                                log("examBody skip...."+examBody.toString());
+                                await examController.ExamAnswerData(examansUrl, examBody);
+
+                                setState((){});
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ExamReviewPage(exam_Ids:id,exam_Id: exam_id,today: false,
+                                            pageId:2)));
+                              }
+                              else{
+                                print("hello2");
+                                quecounter = quecounter + 1;
+                                Question_controller.jumpToPage(quecounter);
+                                setState(()  {
+                                });
+                              }
+
+
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: examController.ontap_answer[quecounter]==true?size.width*0.3:size.width * 0.6,
+                              height: size.height * 0.04,
+                              margin: EdgeInsets.only(bottom: 20, top: 20),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: primary),
+                              child: Text(
+                                examController.get_que_list.length==(quecounter+1)?"Submit Test": examController.ontap_answer[quecounter]==true?"Next":"Skip",
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins-Regular',
+                                  color: white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+
+                ],
+              );
+            }
         ),
       ),
     );

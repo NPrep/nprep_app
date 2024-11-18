@@ -13,6 +13,7 @@ import 'package:n_prep/Controller/Setting_controller.dart';
 import 'package:n_prep/Service/Service.dart';
 import 'package:n_prep/constants/Api_Urls.dart';
 import 'package:n_prep/constants/validations.dart';
+import 'package:n_prep/main.dart';
 import 'package:n_prep/src/Nphase2/Constant/nprep_2_custom_timeline.dart';
 
 
@@ -49,6 +50,7 @@ class _SaveVideosState extends State<SaveVideos> {
   List<int> selectedItems = []; // Store selected item ids
   List TotalDownload =[];
   bool loadingdata =true;
+  var progressbar=0.0;
   bool isSelectionMode = false;
   StreamController<TaskProgressUpdate> updateStream = StreamController();
   Timer timer ;
@@ -130,7 +132,13 @@ class _SaveVideosState extends State<SaveVideos> {
 
   getHiveData() async {
 
+    var temp = await sprefs.get("progress");
 
+    if(temp != null){
+      setState(() {
+        progressbar= temp;
+      });
+    }
     await _databaseService.getTasks();
 
 
@@ -328,7 +336,7 @@ class _SaveVideosState extends State<SaveVideos> {
                                           step: index + 1,
                                           image: databasevideo.task.metaData.split("/-/")[0],
                                           data:databasevideo.task,
-                                          downloding: databasevideo.progress<=0.0?0.1:databasevideo.progress,
+                                          downloding: databasevideo.progress<=0.0?progressbar:databasevideo.progress,
                                           status: ButtonreturnDownloadStatus(databasevideo.status),
                                           topic: databasevideo.task.metaData.split("/-/")[1],
                                           videoid:  databasevideo.task.taskId,

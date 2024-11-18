@@ -170,12 +170,12 @@ print("total attemp exam "+widget.attempquestion.toString());
                 Padding(
                   padding: const EdgeInsets.only(top: 10,bottom: 15,left: 7),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
                       Container(
                         height: 70,
-                        // width: size.width*0.42,
+                        width: size.width*0.42,
 
                         decoration: BoxDecoration(
                           // color: Colors.red,

@@ -662,6 +662,7 @@ var videoVisable = false.obs;
             if (value >= 0.0) {
               sprefs.setDouble(url, value);
               progress = value;
+              sprefs.setDouble("progress", value);
               log("Download Progress Button >> "+progress.toString());
               log("Download Progress Button taskId>> "+task.taskId.toString());
               log("Download Progress Button id>> "+VideoDetaildata[0]['id'].toString());
