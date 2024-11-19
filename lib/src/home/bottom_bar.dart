@@ -39,6 +39,8 @@ class _BottomBarState extends State<BottomBar> {
   ConnectivityController intcontrl =Get.put(ConnectivityController());
   String title = "0";
   List bodys =[];
+  PageController _pageController = PageController();
+
   void getpagesid(int yearwiseTabindex) {
 
     bodys = [
@@ -190,7 +192,18 @@ class _BottomBarState extends State<BottomBar> {
                     icon: Image.asset("assets/images/searchicon.png",scale: 2.4,),)
                 ],
               ),
-              body:bodys[_currentIndexBnb],
+              body:PageView.builder(
+                controller: _pageController,
+                itemCount: bodys.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndexBnb = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return bodys[_currentIndexBnb];
+                },
+              ),
               drawer: MyDrawer(),
               bottomNavigationBar: _bottomappbar(MediaQuery.of(context).size),
             );
@@ -262,8 +275,12 @@ class _BottomBarState extends State<BottomBar> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          log("Hit");
-          _currentIndexBnb = index;
+          // _currentIndexBnb = index;
+          _pageController.animateToPage(
+            index,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
         });
       },
       child: Focus(

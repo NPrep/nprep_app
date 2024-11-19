@@ -37,6 +37,8 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
   bool _showForwardAnimation = false;
   bool _showBackwardAnimation = false;
   bool isPlaying = false;
+  String speedText = "1.0x";
+
   @override
   Widget build(BuildContext context) {
     // log("onControlsVisibilityChanged>> "+widget.onControlsVisibilityChanged.isBlank.toString());
@@ -459,21 +461,6 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                       ),
                     ),
                   ):Container(),
-                  videoDetailcontroller.isInSmallMode==false? videoDetailcontroller.VideoLoadingBeforeloader.value!=true?
-                  Positioned(
-                    right: 10,
-                    top: 10,
-                    child: GestureDetector(
-                        onTap: (){
-                          _showCustomMenu(context);
-                        },
-                        child: Container(
-                            height: 30,
-                            width: 50,
-                            color: Colors.black.withOpacity(0.0),
-
-                            child: Icon(Icons.more_vert,color: Colors.white,size: 23,))),
-                  ):Container(): Container(),
                 ],
               ),
             ),
@@ -563,6 +550,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               ListTile(
                 title: Text('0.5x'),
                 onTap: () {
+                  setState(() {
+                    speedText = "0.5x";
+                  });
                   widget.videocontroller.setPlaybackSpeed(0.5); // Set playback speed
                   Navigator.pop(context); // Close the dialog
                 },
@@ -570,6 +560,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               ListTile(
                 title: Text('1.0x'),
                 onTap: () {
+                  setState(() {
+                    speedText = "1.0x";
+                  });
                   // widget.controller.setSpeed(1.0); // Set playback speed
                   widget.videocontroller.setPlaybackSpeed(1.0); // Set playback speed
 
@@ -579,6 +572,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               ListTile(
                 title: Text('1.25x'),
                 onTap: () {
+                  setState(() {
+                    speedText = "1.25x";
+                  });
                   // widget.controller.setSpeed(1.25); // Set playback speed
                   widget.videocontroller.setPlaybackSpeed(1.25); // Set playback speed
 
@@ -588,6 +584,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               ListTile(
                 title: Text('1.5x'),
                 onTap: () {
+                  setState(() {
+                    speedText = "1.5x";
+                  });
                   // widget.controller.setSpeed(1.5); // Set playback speed
                   widget.videocontroller.setPlaybackSpeed(1.5); // Set playback speed
 
@@ -597,6 +596,9 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
               ListTile(
                 title: Text('2.0x'),
                 onTap: () {
+                  setState(() {
+                    speedText = "2.0x";
+                  });
                   // widget.controller.setSpeed(2.0); // Set playback speed
                   widget.videocontroller.setPlaybackSpeed(2.0); // Set playback speed
 
@@ -614,16 +616,24 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
 }
 
 
-class CustomProgressBar extends StatelessWidget {
+class CustomProgressBar extends StatefulWidget {
   final VideoPlayerController controller;
   VideoDetailcontroller videoDetailcontroller;
   bool hiveornot;
   CustomProgressBar({this.controller,this.videoDetailcontroller,this.hiveornot});
 
   @override
+  State<CustomProgressBar> createState() => _CustomProgressBarState();
+}
+
+class _CustomProgressBarState extends State<CustomProgressBar> {
+
+  String speedText = "1.0x";
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<VideoPlayerValue>(
-      valueListenable: controller,
+      valueListenable: widget.controller,
       builder: (context, value, child) {
         return Column(
           children: [
@@ -662,19 +672,19 @@ class CustomProgressBar extends StatelessWidget {
                       /// Next Video
                       value.position.toString().split(".")[0]==value.duration.toString().split(".")[0]
                           ?
-                      hiveornot==true?Container():
-                      videoDetailcontroller.VideoDetaildata[0]['next_video_category']==null?Container():
+                      widget.hiveornot==true?Container():
+                      widget.videoDetailcontroller.VideoDetaildata[0]['next_video_category']==null?Container():
                       GestureDetector(
                         onTap: () async {
                           log("Hit Next Video");
                           try{
-                            controller.pause();
+                            widget.controller.pause();
 
                             await  Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => VideoDetailScreen(CatId: videoDetailcontroller.VideoDetaildata[0]['next_video_category'])),
+                              MaterialPageRoute(builder: (context) => VideoDetailScreen(CatId: widget.videoDetailcontroller.VideoDetaildata[0]['next_video_category'])),
                             );
-                            videoDetailcontroller.dispose();
+                            widget.videoDetailcontroller.dispose();
 
                           }catch(e){
                             log("Hit NextNavigator Exception> "+e.toString());
@@ -703,18 +713,38 @@ class CustomProgressBar extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              // widget.controller.value.isFullScreen
-                              //     ? Icons.fullscreen_exit
-                              //     :
-                              Icons.fullscreen,
-                              color: Colors.white,
-                              size: 28,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                widget.videoDetailcontroller.isInSmallMode==false? widget.videoDetailcontroller.VideoLoadingBeforeloader.value!=true?
+                                GestureDetector(
+                                    onTap: (){
+                                      _showPlaybackSpeedDialog(context);
+                                    },
+                                    child: Container(
+                                      // height: 30,
+                                      // width: 50,
+                                      color: Colors.black.withOpacity(0.0),
+
+                                      child: Text(speedText,style: TextStyle(color: Colors.white),),
+                                      // child: Icon(Icons.more_vert,color: Colors.white,size: 23,)
+                                    )):Container(): Container(),
+                                SizedBox(width: 15), // Optional spacing between elements
+                                Icon(
+                                  // widget.controller.value.isFullScreen
+                                  //     ? Icons.fullscreen_exit
+                                  //     :
+                                  Icons.fullscreen,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         onTap: (){
-                       videoDetailcontroller.updateVideoOrientation();
+                       widget.videoDetailcontroller.updateVideoOrientation();
                       },
                       ),
                     ],
@@ -737,7 +767,7 @@ class CustomProgressBar extends StatelessWidget {
 
               onDragUpdate: (details) {
                 debugPrint('${details.timeStamp}, ${details.localPosition}');
-                controller.seekTo(details.timeStamp);
+                widget.controller.seekTo(details.timeStamp);
                 print('User selected a onDragUpdate time:');
               },
 
@@ -760,7 +790,7 @@ class CustomProgressBar extends StatelessWidget {
               onSeek: (duration) {
                 print('User selected a new time: $duration');
 
-                controller.seekTo(duration);
+                widget.controller.seekTo(duration);
               },
               timeLabelTextStyle: TextStyle(color: Colors.white),
               progressBarColor: primary,
@@ -770,5 +800,83 @@ class CustomProgressBar extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _showPlaybackSpeedDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 280,
+          padding: EdgeInsets.all(16),
+          // color: Colors.red,
+          child: ListView(
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Select Playback Speed'),
+              ListTile(
+                title: Text('0.5x'),
+                onTap: () {
+                  setState(() {
+                    speedText = "0.5x";
+                  });
+                  widget.controller.setPlaybackSpeed(0.5); // Set playback speed
+                  Navigator.pop(context); // Close the dialog
+                },
+              ),
+              ListTile(
+                title: Text('1.0x'),
+                onTap: () {
+                  setState(() {
+                    speedText = "1.0x";
+                  });
+                  // widget.controller.setSpeed(1.0); // Set playback speed
+                  widget.controller.setPlaybackSpeed(1.0); // Set playback speed
+
+                  Navigator.pop(context); // Close the dialog
+                },
+              ),
+              ListTile(
+                title: Text('1.25x'),
+                onTap: () {
+                  setState(() {
+                    speedText = "1.25x";
+                  });
+                  // widget.controller.setSpeed(1.25); // Set playback speed
+                  widget.controller.setPlaybackSpeed(1.25); // Set playback speed
+
+                  Navigator.pop(context); // Close the dialog
+                },
+              ),
+              ListTile(
+                title: Text('1.5x'),
+                onTap: () {
+                  setState(() {
+                    speedText = "1.5x";
+                  });
+                  // widget.controller.setSpeed(1.5); // Set playback speed
+                  widget.controller.setPlaybackSpeed(1.5); // Set playback speed
+
+                  Navigator.pop(context); // Close the dialog
+                },
+              ),
+              ListTile(
+                title: Text('2.0x'),
+                onTap: () {
+                  setState(() {
+                    speedText = "2.0x";
+                  });
+                  // widget.controller.setSpeed(2.0); // Set playback speed
+                  widget.controller.setPlaybackSpeed(2.0); // Set playback speed
+
+                  Navigator.pop(context); // Close the dialog
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
   }
 }
