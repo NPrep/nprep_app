@@ -57,6 +57,7 @@ class _BottomBarState extends State<BottomBar> {
     getpagesid(widget.yearwiseTabindex??0);
     _currentIndexBnb = widget.bottomindex == null ? 0 : widget.bottomindex;
 
+    _pageController = PageController(initialPage: _currentIndexBnb);
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Color(0xFFFFFFFF), // navigation bar color
@@ -201,7 +202,7 @@ class _BottomBarState extends State<BottomBar> {
                   });
                 },
                 itemBuilder: (context, index) {
-                  return bodys[_currentIndexBnb];
+                  return bodys[index];
                 },
               ),
               drawer: MyDrawer(),
